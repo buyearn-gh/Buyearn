@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BuyEarn Ghana</title>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial;background:#f5f5f5}
+.header{background:#16a34a;color:white;padding:15px;text-align:center}
+.logo{font-weight:bold;font-size:24px}
+.card{background:white;margin:15px;border-radius:16px;padding:18px}
+.btn{background:#16a34a;color:white;border:none;padding:14px;width:100%;border-radius:12px;font-weight:bold}
+.btn-gold{background:#facc15;color:black}
+.input{width:100%;padding:13px;border:1px solid #ddd;border-radius:10px;margin:8px 0}
+.small{font-size:12px;color:#666;text-align:center;margin-top:8px}
+.bal{font-size:28px;font-weight:bold;color:#16a34a;text-align:center}
+.likebox{background:#f0fdf4;border:1px solid #bbf7d0;padding:10px;border-radius:10px;margin:6px 0}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="logo">BE BuyEarn</div>
+<div style="font-size:12px">Ghana's Earning Bank | 0592749345</div>
+</div>
+<div id="notPaid">
+<div class="card" style="text-align:center">
+<h2>💰 Start Earning Today</h2>
+<p>Pay <b>GHS 299 Once</b> & Earn Daily</p>
+<div style="text-align:left;background:#f0fdf4;padding:12px;border-radius:10px;margin:12px 0">
+✅ 5 Likes × 20p = <b>GHS 1 per day</b><br>
+✅ Referral = <b>GHS 50 per person</b><br>
+✅ 100 Referrals = <b>GHS 2,000 Bonus</b><br>
+✅ Withdraw to <b>MTN MoMo</b>
+</div>
+<input id="rName" class="input" placeholder="Your Full Name">
+<input id="rPhone" class="input" placeholder="MTN MoMo Number">
+<input id="rEmail" class="input" placeholder="Email address">
+<button class="btn" onclick="pay299()">Pay GHS 299 - Activate Now</button>
+<p class="small">Paystack Ghana Secured</p>
+</div>
+</div><div id="paid" style="display:none">
+<div class="card">
+<p style="text-align:center">Your Balance</p>
+<div class="bal">GHS <span id="bal">0.00</span></div>
+<div style="display:flex;gap:10px;margin-top:10px">
+<div style="flex:1;background:#f0fdf4;padding:10px;border-radius:10px;text-align:center"><b id="refCount">0</b><br><span style="font-size:12px">Referrals</span></div>
+<div style="flex:1;background:#fefce8;padding:10px;border-radius:10px;text-align:center"><b id="likeStreak">0</b><br><span style="font-size:12px">Days Earned</span></div>
+</div>
+</div>
+<div class="card">
+<h3>📅 Daily Task - Earn GHS 1</h3>
+<p class="small" style="text-align:left">Like 5 products - 20p each = GHS 1</p>
+<div id="likeList"></div>
+<button class="btn" id="likeBtn" onclick="doLikeTask()">Like All 5 - Get GHS 1</button>
+<p class="small" id="likeMsg"></p>
+</div>
+<div class="card">
+<h3>👥 Refer & Earn GHS 50</h3>
+<p class="small" style="text-align:left">Share your link - Get GHS 50 per person</p>
+<div style="background:#eee;padding:10px;border-radius:8px;word-break:break-all;font-size:13px" id="refLink"></div>
+<button class="btn" style="margin-top:10px;background:#111" onclick="shareWA()">Share on WhatsApp</button>
+<p class="small" style="text-align:left;margin-top:8px">Bonus: Refer 100 = Extra GHS 2,000</p>
+<div style="background:#ddd;height:10px;border-radius:5px;margin-top:8px"><div id="refBar" style="background:#16a34a;height:10px;border-radius:5px;width:0%"></div></div>
+<p class="small"><span id="refBarText">0</span>/100 for GHS 2,000 bonus</p>
+</div>
+<div class="card">
+<h3>💸 Withdraw to MoMo</h3>
+<input id="wAmt" class="input" placeholder="Amount - Min GHS 50">
+<p class="small" style="text-align:left">To: <span id="wPhone"></span></p>
+<button class="btn btn-gold" onclick="withdraw()">Withdraw Now</button>
+<p class="small" id="wMsg"></p>
+</div>
+<div class="card" style="text-align:center">
+<p class="small">WhatsApp: 0592749345<br>BuyEarn Ghana - 100% Real</p>
+</div>
+</div><script>
+const PAYSTACK_KEY="pk_test_YOUR_KEY_HERE";
+let user=JSON.parse(localStorage.getItem("buyearn_user")||"null");
+if(user){showPaid()}
+function pay299(){
+ let name=document.getElementById("rName").value;
+ let phone=document.getElementById("rPhone").value;
+ let email=document.getElementById("rEmail").value;
+ if(!name||!phone||!email){alert("Fill all fields");return}
+ let h=PaystackPop.setup({
+  key:PAYSTACK_KEY,email:email,amount:30483,currency:"GHS",ref:"BUYEARN_"+Date.now(),
+  callback:function(res){
+   let refCode=phone.slice(-6);
+   let urlRef=new URLSearchParams(window.location.search).get("ref");
+   user={name:name,phone:phone,email:email,balance:0,referrals:0,refCode:refCode,lastLike:"",streak:0,invitedBy:urlRef||null};
+   localStorage.setItem("buyearn_user",JSON.stringify(user));
+   alert("Payment Success! Account Activated!");
+   showPaid();
+  },
+  onClose:function(){alert("Payment cancelled")}
+ });
+ h.openIframe();
+}
+function showPaid(){
+ document.getElementById("notPaid").style.display="none";
+ document.getElementById("paid").style.display="block";
+ updateUI();
+}
+function updateUI(){
+ document.getElementById("bal").innerText=user.balance.toFixed(2);
+ document.getElementById("refCount").innerText=user.referrals;
+ document.getElementById("likeStreak").innerText=user.streak;
+ document.getElementById("wPhone").innerText=user.phone;
+ document.getElementById("refLink").innerText=window.location.origin+"/?ref="+user.refCode;
+ document.getElementById("refBar").style.width=(user.referrals)+"%";
+ document.getElementById("refBarText").innerText=user.referrals;
+ let html="";
+ for(let i=1;i<=5;i++){html+=`<div class="likebox">📦 Product ${i} - Like = 20p ❤️</div>`}
+ document.getElementById("likeList").innerHTML=html;
+ let today=new Date().toDateString();
+ if(user.lastLike==today){
+  document.getElementById("likeBtn").innerText="Already Earned Today - Come Tomorrow";
+  document.getElementById("likeBtn").disabled=true;
+  document.getElementById("likeBtn").style.background="#999";
+ }
+}
+function doLikeTask(){
+ let today=new Date().toDateString();
+ if(user.lastLike==today){alert("You already earned today");return}
+ user.balance+=1;user.lastLike=today;user.streak+=1;
+ localStorage.setItem("buyearn_user",JSON.stringify(user));
+ document.getElementById("bal").innerText=user.balance.toFixed(2);
+ document.getElementById("likeMsg").innerText="✅ GHS 1 added! 20p × 5 = GHS 1";
+ document.getElementById("likeBtn").innerText="Earned Today - Come Tomorrow";
+ document.getElementById("likeBtn").disabled=true;
+ document.getElementById("likeBtn").style.background="#999";
+}
+function shareWA(){
+ let link=document.getElementById("refLink").innerText;
+ let msg=`Join BuyEarn Ghana! Pay GHS 299 once & earn GHS 1 daily + GHS 50 per referral! My link: ${link}`;
+ window.open("https://wa.me/?text="+encodeURIComponent(msg));
+}
+function withdraw(){
+ let amt=parseFloat(document.getElementById("wAmt").value);
+ if(!amt||amt<50){alert("Min GHS 50");return}
+ if(amt>user.balance){alert("Low balance");return}
+ document.getElementById("wMsg").innerText="Request GHS "+amt+" to "+user.phone+" submitted! Auto MoMo in 24hrs";
+ user.balance-=amt;
+ localStorage.setItem("buyearn_user",JSON.stringify(user));
+ document.getElementById("bal").innerText=user.balance.toFixed(2);
+ if(user.referrals>=100&&!user.bonusPaid){
+  user.balance+=2000;user.bonusPaid=true;
+  localStorage.setItem("buyearn_user",JSON.stringify(user));
+  alert("🎉 CONGRATS! 100 referrals! GHS 2,000 bonus added!");
+  document.getElementById("bal").innerText=user.balance.toFixed(2);
+ }
+}
+</script>
+</body>
+</html>
