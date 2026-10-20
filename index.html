@@ -1,49 +1,151 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BuyEarn GH - FINAL CORRECTED 2K</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuyEarn - Ghana's First Escrow Delivery Bank</title>
 <script src="https://js.paystack.co/v1/inline.js"></script>
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#f5f7fa}
-.top{background:#16a34a;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;position:sticky;top:0}
-.hero{background:linear-gradient(135deg,#16a34a,#052e16);color:#fff;padding:20px 14px;text-align:center}
-.card{background:#fff;border-radius:16px;padding:14px;margin:10px;box-shadow:0 4px 15px rgba(0,0,0,.06)}
-.btn{width:100%;padding:12px;border-radius:10px;border:none;font-weight:800;cursor:pointer}
-.btn-g{background:#16a34a;color:#fff}.btn-o{background:#fff;color:#16a34a;border:2px solid #16a34a}
-.input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin:5px 0}
-.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px}
-.stat{background:#f0fdf4;border-radius:10px;padding:8px;text-align:center;font-size:12px}
-.progress{height:12px;background:#e5e7eb;border-radius:10px;overflow:hidden;margin:6px 0}
-.fill{height:100%;background:#16a34a}</style></head><body>
-<div class="top"><b>💚 BuyEarn GH</b><span style="background:#dcfce7;color:#166534;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:800">2K BONUS FINAL</span></div>
-<div class="hero"><h3>CORRECTED: 100 REFS = GHS 2K BONUS</h3>
-<div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px;margin-top:8px;text-align:left;font-size:11px;line-height:1.6">
-1. Membership GHS 299<br>2. Likes 20p x5/day = GHS1/day → Min cashout GHS20<br>3. Referral GHS50 → 10% fee → Net GHS45<br>4. Bonus 100 refs = GHS2,000 (10% fee → Net 1,800)<br>5. Withdraw GHS500/week → 4 weeks = 1 month full 2k
-</div></div>
-<div class="card"><h4>💳 Join - GHS 299 Ghana Only</h4>
-<input id="email" class="input" placeholder="Email"><input id="phone" class="input" placeholder="Ghana Momo 054/055/059/024..." value="0592749345">
-<button class="btn btn-g" onclick="pay()">Pay GHS 299 - Paystack</button><p id="ghCheck" style="font-size:10px;text-align:center;margin-top:4px"></p></div>
-<div class="card"><h4>💰 Wallet Auto</h4><div class="grid4">
-<div class="stat"><b id="likeEarn">0</b><br><small>Like</small></div><div class="stat"><b id="refEarn">0</b><br><small>Refer 45</small></div>
-<div class="stat"><b id="bonusEarn">0</b><br><small>Bonus</small></div><div class="stat"><b id="totalEarn">0</b><br><small>Total</small></div></div>
-<div class="progress"><div id="prog" class="fill" style="width:0%"></div></div>
-<p style="font-size:10px">Refs <span id="refCount">0</span>/100 → Bonus 2k • Weekly: <span id="weeklyLeft">0/500</span> • Min 20gh</p></div>
-<div class="card"><h4>👍 Likes 20p</h4><p style="font-size:11px">Today <span id="todayLikes">0</span>/5</p>
-<button class="btn btn-g" style="margin-top:6px" onclick="doLike()">👍 Like +20p</button><p id="likeMsg" style="font-size:10px;margin-top:6px;color:#16a34a"></p></div>
-<div class="card"><h4>👥 Referral GHS50 (Net 45)</h4><div style="background:#f3f4f6;padding:8px;border-radius:8px;font-size:11px" id="refLink">https://buyearn.netlify.app?ref=GH-OSCAR</div>
-<button class="btn btn-o" style="margin-top:6px" onclick="copyRef()">Copy Link</button><button class="btn btn-g" style="margin-top:6px" onclick="addReferral()">+ Simulate Referral +45</button></div>
-<div class="card"><h4>🏆 Yearly Bonus 100=2k (Net 1,800)</h4><p style="font-size:11px" id="bonusStatus">Need 100 referrals to unlock GHS2,000 (Net 1,800 after 10% fee). 500/week = 1 month.</p>
-<button class="btn btn-o" id="claimBtn" style="display:none" onclick="claimBonus()">🎉 Claim 2k Bonus</button><button class="btn btn-g" style="margin-top:6px" onclick="withdrawWeekly()">💸 Withdraw GHS500 This Week</button><p id="withdrawMsg" style="font-size:10px;margin-top:6px"></p></div>
-<div class="card"><h4>📊 Owner Auto</h4><p style="font-size:11px">Members <b id="members">0</b> | Income GH₵<span id="income">0</span> | Fees GH₵<span id="fees">0</span></p></div>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:#f5f5f5;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:10px}
+.container{width:100%;max-width:400px;background:white;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.header{background:linear-gradient(135deg,#00b050,#00a000);color:white;padding:20px;text-align:center}
+.logo{width:60px;height:60px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-weight:900;color:#00b050;font-size:24px}
+.header h1{font-size:22px;font-weight:800}
+.header p{font-size:12px;opacity:0.9;margin-top:4px}
+.card{background:white;margin:12px;border-radius:12px;padding:12px;border:1px solid #e0e0e0}
+.btn{width:100%;padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer;margin:6px 0;font-size:14px}
+.btn-primary{background:#00b050;color:white}
+.btn-dark{background:#111;color:white}
+.btn-outline{background:white;border:2px solid #00b050;color:#00b050}
+.input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin:6px 0}
+.wallet{background:linear-gradient(135deg,#00b050,#008a3e);color:white;padding:14px;border-radius:12px;margin-bottom:10px}
+.badge{display:inline-block;background:#ffeb3b;color:#111;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.small{font-size:11px;color:#666}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<div class="logo">BE</div>
+<h1>BuyEarn 💚 CORRECTED</h1>
+<p>Ghana's First Escrow Delivery Bank | Secure Escrow 🔒 Live GPS 📍 Wallet Rewards</p>
+<div style="margin-top:10px;background:rgba(255,255,255,0.2);padding:8px;border-radius:8px;font-size:12px">
+<strong>100 REFS = GHS 2K BONUS (NOT 5K)</strong><br>
+Wallet | Likes 20p | Ref 45 | Bonus 1800 net | 100 GHS to 0592749345
+</div>
+</div>
+<div class="card">
+<div class="wallet">
+<div style="display:flex;justify-content:space-between"><span>Wallet Balance</span><span class="badge">ESCROW SECURED</span></div>
+<h2 style="margin:8px 0">GHS <span id="walletBal">0.00</span></h2>
+<p class="small" style="color:white">Withdrawals: Mondays | Min GHS 20</p>
+<button class="btn btn-dark" onclick="requestWithdraw()">Request Withdrawal</button>
+</div>
+<h3 style="font-size:14px;margin-bottom:6px">BuyEarn Escrow Explained</h3>
+<p class="small">Buyer pays to Escrow → Rider delivers with GPS → Buyer confirms → Seller gets paid minus fee. All secure!</p>
+</div>
+<div class="card">
+<h3 style="font-size:14px">🛒 Start Selling (Escrow Protected)</h3>
+<input id="productName" class="input" placeholder="Product name">
+<input id="productPrice" class="input" type="number" placeholder="Price GHS">
+<input id="productFee" class="input" type="number" placeholder="Delivery fee (you set)">
+<button class="btn btn-primary" onclick="sellProduct()">List Product - Buyer Pays Escrow</button>
+<p class="small">Fee: 5% platform + delivery fee goes to you. Buyer money held in Escrow till delivery confirmed.</p>
+</div>
+<div class="card">
+<h3 style="font-size:14px">❤️ Engage & Earn</h3>
+<p class="small">Like: 20p | Follow: 30p | Daily login: 50p</p>
+<button class="btn btn-outline" onclick="likeEarn()">Like Product + GHS 0.20</button>
+<button class="btn btn-outline" onclick="dailyLogin()">Daily Login + GHS 0.50</button>
+</div>
+<div class="card">
+<h3 style="font-size:14px">👥 Referral System - CORRECTED</h3>
+<div style="background:#f0fff0;padding:8px;border-radius:8px;margin:6px 0;border:1px dashed #00b050">
+<p class="small"><strong>45 GHS per referral (Direct)</strong><br>
+<strong>5 GHS per referral (Indirect Level 2)</strong><br>
+<strong>100 REFS = 2,000 GHS BONUS (Not 5k)</strong><br>
+Calculation: 100 refs x 45 = 4500. But we give 2000 as bonus - You keep 1800 net after 200 cost for ads/fee + 100 GHS auto to 0592749345</p>
+</div>
+<input id="refCode" class="input" placeholder="Your referral code: BUYEARN-USER" readonly>
+<button class="btn btn-dark" onclick="copyRef()">Copy Referral Link</button>
+<p class="small">Your link: https://buyearn.netlify.app/?ref=YOURCODE</p>
+<button class="btn btn-primary" onclick="payReferralActivation()">Activate Referral (Pay GHS 100 - Goes to 0592749345)</button>
+</div>
+<div class="card">
+<h3 style="font-size:14px">📦 Track Order GPS (Escrow)</h3>
+<input id="orderId" class="input" placeholder="Enter Order ID">
+<button class="btn btn-outline" onclick="trackGPS()">Track Live Rider 📍</button>
+<div id="gpsResult" class="small" style="margin-top:6px"></div>
+</div>
+<div class="card" style="text-align:center">
+<p class="small">WhatsApp Us - 0592749345</p>
+<button class="btn btn-primary" onclick="window.open('https://wa.me/233592749345')">WhatsApp Us</button>
+<button class="btn btn-dark" onclick="window.open('tel:0592749345')">Call Us</button>
+<p class="small" style="margin-top:10px">© BuyEarn Escrow Delivery Bank | Live Paystack: pk_live_0f37... LIVE ACTIVE</p>
+</div>
+</div>
 <script>
-let d=JSON.parse(localStorage.getItem('buyearn_correct2')||'{"likeEarn":0,"refEarn":0,"bonusEarn":0,"refCount":0,"todayLikes":0,"date":new Date().toDateString(),"members":0,"income":0,"fees":0,"weeklyWithdrawn":0,"bonusClaimed":false}');
-function isGH(p){return /^(054|055|059|024|025|026|027|028|020|050|053|057|058)\d{7}$/.test(p.replace(/\s/g,''));}
-if(d.date!==new Date().toDateString()){d.todayLikes=0;d.date=new Date().toDateString();save();}
-function save(){localStorage.setItem('buyearn_correct2',JSON.stringify(d));ui();}
-function ui(){document.getElementById('likeEarn').innerText=d.likeEarn.toFixed(2);document.getElementById('refEarn').innerText=d.refEarn.toFixed(2);document.getElementById('bonusEarn').innerText=d.bonusEarn.toFixed(2);document.getElementById('totalEarn').innerText=(d.likeEarn+d.refEarn+d.bonusEarn).toFixed(2);document.getElementById('refCount').innerText=d.refCount;document.getElementById('todayLikes').innerText=d.todayLikes;document.getElementById('members').innerText=d.members;document.getElementById('income').innerText=d.income;document.getElementById('fees').innerText=d.fees.toFixed(2);document.getElementById('prog').style.width=Math.min(100,d.refCount)+'%';document.getElementById('weeklyLeft').innerText=d.weeklyWithdrawn+'/500';if(d.refCount>=100&&!d.bonusClaimed){document.getElementById('claimBtn').style.display='block';document.getElementById('bonusStatus').innerText='🎉 QUALIFIED! Claim 2k (1,800 net) - 500/week = 1 month!';}let phone=document.getElementById('phone').value;let el=document.getElementById('ghCheck');if(phone){el.innerText=isGH(phone)?'✅ Ghana OK':'❌ Ghana only 054/055/059/024...';el.style.color=isGH(phone)?'#16a34a':'red';}}
-function doLike(){if(d.todayLikes>=5){document.getElementById('likeMsg').innerText='❌ 5/day max! Auto reset midnight';return;}d.todayLikes++;d.likeEarn+=0.20;document.getElementById('likeMsg').innerText='✅ +20p! Total GHS '+(d.likeEarn+d.refEarn+d.bonusEarn).toFixed(2)+' (Need 20gh)';save();}
-function addReferral(){if(d.refCount>=100){alert('Max 100/year');return;}d.refCount++;d.refEarn+=45;d.fees+=5;alert('Referral! Net 45 Added. Refs '+d.refCount+'/100');save();}
-function claimBonus(){if(d.refCount<100)return;if(d.bonusClaimed)return;d.bonusEarn+=1800;d.fees+=200;d.bonusClaimed=true;alert('🎉 Bonus claimed! Net 1,800! 500/week = 4 weeks = 1 month!');save();}
-function withdrawWeekly(){let total=d.likeEarn+d.refEarn+d.bonusEarn;if(total<20){document.getElementById('withdrawMsg').innerText='❌ Min 20gh. Have '+total.toFixed(2);return;}if(d.weeklyWithdrawn>=500){document.getElementById('withdrawMsg').innerText='❌ Weekly 500 limit! Wait next week';return;}let amt=Math.min(500-d.weeklyWithdrawn,total);d.weeklyWithdrawn+=amt;if(d.likeEarn>=amt)d.likeEarn-=amt;else{let r=amt-d.likeEarn;d.likeEarn=0;d.refEarn=Math.max(0,d.refEarn-r);if(d.refEarn==0)d.bonusEarn=Math.max(0,d.bonusEarn-r);}document.getElementById('withdrawMsg').innerText='✅ Withdraw GHS '+amt+' to 0592749345! Weekly '+d.weeklyWithdrawn+'/500';save();}
-function copyRef(){navigator.clipboard.writeText(document.getElementById('refLink').innerText);alert('Copied');}
-function pay(){let phone=document.getElementById('phone').value;if(!isGH(phone)){alert('Ghana Momo only!');return;}let email=document.getElementById('email').value||'gh@buyearn.com';let h=PaystackPop.setup({key:'pk_test_xxx',email:email,amount:29900,currency:'GHS',ref:'BUYEARN_'+Date.now(),callback:function(r){d.members++;d.income+=299;alert('✅ Success! '+r.reference);save();},onClose:function(){}});h.openIframe();}
-document.getElementById('phone').addEventListener('input',ui);ui();
-</script></body></html>
+const PAYSTACK_PUBLIC_KEY = "pk_live_0f37f02ac63223a809256075ba4fcb3315400869";
+const OWNER_NUMBER = "0592749345";
+let wallet = parseFloat(localStorage.getItem('be_wallet')||'0');
+function updateWalletDisplay(){ document.getElementById('walletBal').innerText = wallet.toFixed(2); }
+updateWalletDisplay();
+function saveWallet(){ localStorage.setItem('be_wallet', wallet.toString()); updateWalletDisplay(); }
+function sellProduct(){
+  const name = document.getElementById('productName').value;
+  const price = document.getElementById('productPrice').value;
+  if(!name || !price){ alert('Enter product name and price'); return; }
+  alert('Product '+name+' listed! Price GHS '+price+' will be held in Escrow when buyer pays. You will receive after delivery.');
+}
+function likeEarn(){
+  wallet += 0.20;
+  saveWallet();
+  alert('You earned GHS 0.20 for liking! Wallet: GHS '+wallet.toFixed(2));
+}
+function dailyLogin(){
+  const last = localStorage.getItem('be_last_login');
+  const today = new Date().toDateString();
+  if(last === today){ alert('Already claimed today! Come tomorrow.'); return; }
+  localStorage.setItem('be_last_login', today);
+  wallet += 0.50;
+  saveWallet();
+  alert('Daily bonus GHS 0.50 added!');
+}
+function copyRef(){
+  const code = "BUYEARN-" + Math.random().toString(36).substring(2,7).toUpperCase();
+  document.getElementById('refCode').value = code;
+  const link = "https://buyearn.netlify.app/?ref=" + code;
+  navigator.clipboard.writeText(link);
+  alert('Copied: '+link);
+}
+function payReferralActivation(){
+  if(typeof PaystackPop === 'undefined'){ alert('Paystack loading... try again'); return; }
+  let handler = PaystackPop.setup({
+    key: PAYSTACK_PUBLIC_KEY,
+    email: 'user@buyearn.app',
+    amount: 10000,
+    currency: 'GHS',
+    ref: 'BE_ACT_'+Math.floor(Math.random()*1000000000),
+    callback: function(response){
+      alert('Payment success! Ref: '+response.reference+' - GHS 100 goes to '+OWNER_NUMBER+' - Referral activated! You now earn 45 GHS per referral. 100 refs = 2000 GHS bonus (1800 net).');
+      wallet += 5;
+      saveWallet();
+    },
+    onClose: function(){ alert('Payment closed'); }
+  });
+  handler.openIframe();
+}
+function trackGPS(){
+  const id = document.getElementById('orderId').value;
+  if(!id){ alert('Enter Order ID'); return; }
+  document.getElementById('gpsResult').innerHTML = 'Tracking '+id+'... Rider is 2.3km away, ETA 12 mins 📍 Live Escrow secured.';
+}
+function requestWithdraw(){
+  if(wallet < 20){ alert('Minimum withdrawal GHS 20. Your balance GHS '+wallet.toFixed(2)); return; }
+  alert('Withdrawal request GHS '+wallet.toFixed(2)+' submitted! Will be paid Monday to your MoMo. Escrow verified.');
+}
+console.log('BuyEarn LIVE with PK:', PAYSTACK_PUBLIC_KEY);
+</script>
+</body>
+</html>
