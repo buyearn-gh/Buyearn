@@ -6,47 +6,264 @@
 <title>BuyEarn Ghana - Shop & Earn</title>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
-*{padding:0;margin:0;box-sizing:border-box;font-family:system-ui}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#f5f5f5}
-.header{background:#00c853;color:#fff;padding:16px;text-align:center;position:sticky;top:0;z-index:10}
-.hero{background:linear-gradient(135deg,#00c853,#009624);color:#fff;padding:28px 16px;text-align:center}
-.pay-btn{background:#000;color:#fff;border:none;padding:16px 28px;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;width:90%;max-width:400px;margin:16px auto;display:block}
-.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px #0001}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
-.prod-img{width:100%;height:150px;object-fit:cover;border-radius:10px;background:#eee}
-.like-btn{width:100%;padding:10px;border:none;border-radius:8px;margin-top:8px;font-weight:700;cursor:pointer;background:#eee}
-.like-btn.liked{background:#00c853;color:#fff}
-.admin-overlay{display:none;position:fixed;inset:0;background:#0008;z-index:100;padding:20px;overflow:auto}
-.admin-inner{background:#fff;max-width:450px;margin:auto;padding:20px;border-radius:16px}
-.admin-inner input{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-size:16px}
-.upload-box{border:2px dashed #00c853;padding:20px;text-align:center;border-radius:12px;margin:8px 0;background:#f9fff9;cursor:pointer}
-.preview-img{width:100%;height:200px;object-fit:cover;border-radius:10px;display:none;margin-top:10px}
+.header{background:#111;color:#fff;padding:15px;text-align:center;position:sticky;top:0;z-index:10}
+.container{max-width:520px;margin:auto;padding:10px}
+.card{background:#fff;border-radius:12px;padding:15px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.btn{background:#111;color:#fff;border:none;padding:12px 20px;border-radius:8px;width:100%;font-weight:bold;cursor:pointer;margin-top:8px}
+.btn:disabled{background:#999;cursor:not-allowed}
+.btn-green{background:#00a651}
+.btn-yellow{background:#ffe600;color:#111}
+.input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin:6px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prod{border:1px solid #eee;border-radius:10px;padding:8px;text-align:center;background:#fff}
+.prod img{width:100%;height:115px;object-fit:cover;border-radius:8px;background:#eee}
+.badge{background:#ffe600;color:#111;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:bold}
+.small{font-size:12px;color:#666;line-height:1.4}
+.hidden{display:none}
+.uploadBox{width:100%;height:135px;border:2px dashed #111;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fafafa;overflow:hidden}
+.uploadBox img{width:100%;height:100%;object-fit:cover}
+.refItem{border:1px solid #eee;padding:8px;border-radius:8px;margin:5px 0;display:flex;justify-content:space-between;font-size:13px}
 </style>
 </head>
 <body>
-<div class="header"><h2>BuyEarn Ghana 🇬🇭</h2><p style="font-size:13px">Shop & Earn Daily</p></div>
-<div class="hero"><h1>Earn Daily by Liking Products</h1><p style="margin-top:8px">Like 5 products = GHS 5 • Pay GHS 299 once to start</p><button class="pay-btn" onclick="payWithPaystack()">💳 Pay GHS 299 to Activate - Paystack</button><p id="payStatus" style="margin-top:10px;font-weight:700"></p></div>
-<div style="padding:12px"><h3 style="padding:8px;">🔥 Like 5 Products Today</h3><div class="grid" id="productGrid"></div><p style="text-align:center;margin-top:10px">Liked today: <span id="likedCount">0</span>/5 - Earned: GHS <span id="earned">0</span></p></div>
-<button onclick="openAdmin()" style="background:#000;color:#fff;padding:10px 20px;border:none;border-radius:20px;position:fixed;bottom:20px;right:20px;z-index:50">⚙️ Admin</button>
-<div id="adminModal" class="admin-overlay"><div class="admin-inner"><h2 style="text-align:center;">⚙️ Admin Upload</h2><p style="text-align:center;font-size:12px;color:#666;margin-bottom:10px">Upload from your phone gallery</p><input id="adminPass" type="password" placeholder="Admin Password"><input id="pName" placeholder="Product Name"><input id="pPrice" placeholder="Price (e.g. GHS 899)" value="GHS "><div class="upload-box" onclick="document.getElementById('pFile').click()"><span style="font-size:30px">📸</span><br><b>Click to Upload from Gallery</b><br><span style="font-size:12px;color:#666">Choose photo from phone</span><input type="file" id="pFile" accept="image/*" style="display:none" onchange="previewFile()"></div><img id="preview" class="preview-img"><input id="pImage" placeholder="OR paste Image Link (optional)"><button onclick="saveProduct()" style="width:100%;background:#00c853;color:white;padding:14px;border:none;border-radius:10px;font-weight:700;font-size:16px;margin-top:10px;cursor:pointer">💾 Save Product</button><button onclick="closeAdmin()" style="width:100%;background:#eee;padding:10px;border:none;border-radius:10px;margin-top:8px;cursor:pointer">Close</button><div id="adminList" style="margin-top:12px;font-size:12px;max-height:200px;overflow:auto"></div></div></div>
+<div class="header">
+<h1>BUYEARN GHANA</h1>
+<div class="small" style="color:#ffe600">Fake Products Task - 20p x5/day | 50 per ref -10% | 100 ref=2K Bonus</div>
+</div>
+<div class="container">
+
+<div id="regCard" class="card">
+<h3>Step 1: Correct Registration (Required)</h3>
+<p class="small">Fill correct details. MoMo must be correct for cashout.</p>
+<input id="rName" class="input" placeholder="Full Name (as on MoMo)">
+<input id="rPhone" class="input" placeholder="Phone Number (10 digits)">
+<input id="rMomo" class="input" placeholder="MoMo Number">
+<input id="rMomoName" class="input" placeholder="MoMo Name">
+<input id="rPassword" class="input" type="password" placeholder="Create Password">
+<div id="refFromUrlBox" class="hidden" style="background:#ffe600;padding:8px;border-radius:6px">
+Referral Code from Link: <b id="refFromUrlText"></b>
+</div>
+<button class="btn" onclick="doRegister()">Save Registration & Continue</button>
+<div id="regMsg" class="small" style="color:red;margin-top:5px"></div>
+<p class="small" style="margin-top:8px">Already registered? <a href="#" onclick="showLogin()">Login here</a></p>
+</div>
+
+<div id="loginCard" class="card hidden">
+<h3>Login</h3>
+<input id="lPhone" class="input" placeholder="Phone Number">
+<input id="lPass" class="input" type="password" placeholder="Password">
+<button class="btn" onclick="doLogin()">Login</button>
+<div id="loginMsg" class="small"></div>
+</div>
+
+<div id="payCard" class="card hidden">
+<h3>Step 2: Pay Membership GHS 299</h3>
+<div id="userInfo" class="small" style="background:#f9f9f9;padding:8px;border-radius:6px"></div>
+<p class="small">Renewal every year. 2K Bonus Winners get FREE renewal.</p>
+<button class="btn btn-green" onclick="payWithPaystack()">Pay GHS 299 with Paystack</button>
+<button class="btn" onclick="logout()">Logout</button>
+</div>
+
+<div id="dashCard" class="card hidden">
+<h3>Dashboard (PRIVATE)</h3>
+<div style="background:#111;color:#fff;padding:12px;border-radius:8px">
+<p>Like Earnings (0.20 x5/day): GHS <b id="likeBal">0.00</b> <span class="badge" id="likeMinBadge">Need 20 to cashout</span></p>
+<p>Referral Earnings (50-10%=45): GHS <b id="refBal">0.00</b> | Refs: <b id="refCount">0</b>/100</p>
+<p>Bonus: GHS <b id="bonusBal">0.00</b></p>
+<p><b>Total: GHS <span id="totalBal">0.00</span></b></p>
+<p class="small" style="color:#ffe600">Withdrawal ONLY FRIDAY. Bonus 500/week x4</p>
+</div>
+
+<h4 style="margin-top:12px">Your Referral Link - Earn GHS 45 net per person</h4>
+<div style="display:flex;gap:5px">
+<input id="myRefLink" class="input" readonly>
+<button class="btn" style="width:70px" onclick="copyRef()">Copy</button>
+</div>
+<button class="btn btn-yellow" onclick="shareWhatsApp()">Share on WhatsApp</button>
+
+<div id="bonusWinBox" class="hidden" style="background:#ffe600;padding:10px;border-radius:8px;margin-top:10px">
+<b>🎉 YOU WON GHS 2000 BONUS! (1800 net after 10%)</b><br>
+<span class="small">Free Renewal! Withdraw 500 per Friday x4 weeks.</span><br>
+<p>Withdrawn: GHS <span id="bonusWithdrawn">0</span> / 1800</p>
+</div>
+
+<div style="margin-top:12px;background:#f9f9f9;padding:10px;border-radius:8px">
+<h4>People You Referred (You CAN see who you referred, NOT their balance)</h4>
+<div id="myRefsList"></div>
+<p id="noRefsMsg" class="small">No referrals yet. Share your link!</p>
+</div>
+
+<button class="btn btn-green" onclick="requestWithdrawal()">Request Withdrawal (Friday Only)</button>
+<div id="withMsg" class="small" style="margin-top:6px;font-weight:bold"></div>
+<button class="btn" onclick="logout()">Logout</button>
+
+<h4 style="margin-top:15px">Daily Task: Like 5 Fake Products = 0.20 each</h4>
+<p class="small">Likes today: <span id="todayLikes">0</span>/5</p>
+</div>
+
+<div class="card">
+<h3>Fake Products - For Like Task (Gallery Upload)</h3>
+<div id="prodGrid" class="grid"></div>
+</div>
+
+<div class="card">
+<h3>Admin (Owner)</h3>
+<button class="btn" onclick="openAdmin()">Open Admin - Upload From Gallery</button>
+<div id="adminBox" class="hidden">
+<div class="uploadBox" onclick="document.getElementById('fileIn').click()">
+<span id="uploadText">📸 Click - Choose From Gallery</span>
+<img id="preview" class="hidden">
+</div>
+<input type="file" id="fileIn" accept="image/*" class="hidden" onchange="handleFile(this)">
+<input id="pName" class="input" placeholder="Product Name (fake)">
+<input id="pPrice" class="input" type="number" placeholder="Price GHS (fake)">
+<button class="btn btn-green" onclick="addProduct()">Add Fake Product</button>
+<div id="adminList" style="margin-top:10px"></div>
+</div>
+</div>
+</div>
+
 <script>
-const PAYSTACK_KEY = "pk_live_0f37f02ac63223a809256075ba4fcb3315400869";
-const PAY_AMOUNT = 29900;
-const ADMIN_PASS = "buyearn2024";
-let defaultProducts = [{name:"Nike Air Max 270",price:"GHS 899",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"},{name:"Adidas Sneakers",price:"GHS 750",image:"https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=500"},{name:"Puma Runner",price:"GHS 650",image:"https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500"},{name:"iPhone 14 Pro",price:"GHS 12000",image:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500"},{name:"Samsung Galaxy",price:"GHS 8500",image:"https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500"},{name:"Laptop HP",price:"GHS 5500",image:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500"}];
-let products = JSON.parse(localStorage.getItem('buyearn_products') || 'null') || defaultProducts;
-let likedToday = JSON.parse(localStorage.getItem('buyearn_liked') || '[]');
-let imageBase64 = "";
-function previewFile(){const file=document.getElementById('pFile').files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){imageBase64=e.target.result;document.getElementById('preview').src=imageBase64;document.getElementById('preview').style.display='block';};reader.readAsDataURL(file);}
-function renderProducts(){const grid=document.getElementById('productGrid');grid.innerHTML="";products.forEach((p,i)=>{const isLiked=likedToday.includes(i);grid.innerHTML+=`<div class="card"><img src="${p.image}" class="prod-img"><h4 style="margin-top:8px;font-size:14px">${p.name}</h4><p style="color:#00c853;font-weight:700">${p.price}</p><button class="like-btn ${isLiked?'liked':''}" onclick="likeProduct(${i})">${isLiked?'❤️ Liked':'🤍 Like'}</button></div>`;});document.getElementById('likedCount').innerText=likedToday.length;document.getElementById('earned').innerText=likedToday.length*1;renderAdminList();}
-function likeProduct(i){if(likedToday.includes(i))return alert("Already liked today!");if(likedToday.length>=5)return alert("You liked 5 today! Come tomorrow");likedToday.push(i);localStorage.setItem('buyearn_liked',JSON.stringify(likedToday));renderProducts();}
-function openAdmin(){document.getElementById('adminModal').style.display='block';}
-function closeAdmin(){document.getElementById('adminModal').style.display='none';}
-function saveProduct(){const pass=document.getElementById('adminPass').value;if(pass!==ADMIN_PASS)return alert("Wrong password!");const name=document.getElementById('pName').value.trim();const price=document.getElementById('pPrice').value.trim();const link=document.getElementById('pImage').value.trim();let finalImage="";if(imageBase64)finalImage=imageBase64;else if(link)finalImage=link;else return alert("Please upload photo from gallery or paste link!");if(!name)return alert("Enter product name!");products.unshift({name,price,image:finalImage});localStorage.setItem('buyearn_products',JSON.stringify(products));document.getElementById('pName').value="";document.getElementById('pPrice').value="GHS ";document.getElementById('pImage').value="";document.getElementById('pFile').value="";imageBase64="";document.getElementById('preview').style.display='none';renderProducts();alert("✅ Product Added!");}
-function renderAdminList(){const list=document.getElementById('adminList');list.innerHTML="<b>Current Products ("+products.length+"):</b><br>";products.forEach((p,i)=>{list.innerHTML+=`<div style="display:flex;gap:8px;margin-top:8px;align-items:center"><img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:6px"><span>${p.name}</span><button onclick="deleteProduct(${i})" style="margin-left:auto;color:red;border:none;background:#fee;padding:4px 8px;border-radius:6px">Delete</button></div>`;});}
-function deleteProduct(i){if(!confirm("Delete this product?"))return;products.splice(i,1);localStorage.setItem('buyearn_products',JSON.stringify(products));renderProducts();}
-function payWithPaystack(){let handler=PaystackPop.setup({key:PAYSTACK_KEY,email:"customer@buyearn.com",amount:PAY_AMOUNT*100,currency:"GHS",callback:function(response){document.getElementById('payStatus').innerText="✅ Payment Successful! ID: "+response.reference;alert("Payment success! You can now earn daily!");localStorage.setItem('buyearn_paid','true');},onClose:function(){document.getElementById('payStatus').innerText="Payment window closed";}});handler.openIframe();}
-renderProducts();
+const DB_KEY='buyearn_products_v6';
+const USERS_DB='buyearn_all_users_v6';
+const CURR_KEY='buyearn_current_user_v6';
+let products=JSON.parse(localStorage.getItem(DB_KEY)||'[]');
+let allUsers=JSON.parse(localStorage.getItem(USERS_DB)||'[]');
+let currentUser=JSON.parse(localStorage.getItem(CURR_KEY)||'null');
+let selectedBase64='';
+function saveAll(){localStorage.setItem(DB_KEY,JSON.stringify(products));localStorage.setItem(USERS_DB,JSON.stringify(allUsers));localStorage.setItem(CURR_KEY,JSON.stringify(currentUser));}
+if(products.length===0){products=[{id:1,name:'Orange Slippers',price:150,img:'https://via.placeholder.com/300?text=Slippers'},{id:2,name:'Converse Box',price:750,img:'https://via.placeholder.com/300?text=Converse'}];saveAll();}
+let refFromUrl=new URLSearchParams(window.location.search).get('ref');
+if(refFromUrl){document.getElementById('refFromUrlBox').classList.remove('hidden');document.getElementById('refFromUrlText').innerText=refFromUrl;}
+function doRegister(){
+ const name=document.getElementById('rName').value.trim();
+ const phone=document.getElementById('rPhone').value.trim();
+ const momo=document.getElementById('rMomo').value.trim();
+ const momoName=document.getElementById('rMomoName').value.trim();
+ const pass=document.getElementById('rPassword').value.trim();
+ if(!name||!phone||!momo||!momoName||!pass){document.getElementById('regMsg').innerText='Fill all fields!';return;}
+ if(allUsers.find(u=>u.phone===phone)){document.getElementById('regMsg').innerText='Phone already registered, login';return;}
+ const referralCode='BUY'+Math.floor(10000+Math.random()*90000);
+ const newUser={id:Date.now(),name,phone,momo,momoName,password:pass,registered:true,paid:false,likeBalance:0,refBalance:0,bonusBalance:0,bonusGross:0,bonusWithdrawn:0,referralCode,referredBy:refFromUrl||'',refCount:0,referrals:[],todayLikes:0,lastLikeDate:'',joinDate:new Date().toISOString(),isBonusWinner:false,renewalFree:false,renewalDue:new Date(new Date().setFullYear(new Date().getFullYear()+1)).toISOString()};
+ if(refFromUrl){
+  const referrer=allUsers.find(u=>u.referralCode===refFromUrl);
+  if(referrer){referrer.refCount++;referrer.refBalance+=45;referrer.referrals.push({name:newUser.name,phone:newUser.phone,date:new Date().toLocaleDateString(),paid:false});if(referrer.refCount>=100&&!referrer.isBonusWinner){referrer.isBonusWinner=true;referrer.bonusGross=2000;referrer.bonusBalance=1800;referrer.renewalFree=true;}}
+ }
+ allUsers.push(newUser);currentUser=newUser;saveAll();showPay();
+}
+function showLogin(){document.getElementById('regCard').classList.add('hidden');document.getElementById('loginCard').classList.remove('hidden');}
+function doLogin(){
+ const phone=document.getElementById('lPhone').value.trim();
+ const pass=document.getElementById('lPass').value.trim();
+ const found=allUsers.find(u=>u.phone===phone&&u.password===pass);
+ if(!found){document.getElementById('loginMsg').innerText='Wrong phone or password';return;}
+ currentUser=found;saveAll();if(!currentUser.paid)showPay();else showDash();
+}
+function showPay(){
+ document.getElementById('regCard').classList.add('hidden');document.getElementById('loginCard').classList.add('hidden');document.getElementById('payCard').classList.remove('hidden');document.getElementById('dashCard').classList.add('hidden');
+ document.getElementById('userInfo').innerHTML=`Name: ${currentUser.name}<br>Phone: ${currentUser.phone}<br>MoMo: ${currentUser.momo} (${currentUser.momoName})<br>Your Code: <b>${currentUser.referralCode}</b><br>Referred By: ${currentUser.referredBy||'None'}<br>Renewal Free: ${currentUser.renewalFree?'YES':'No'}`;
+ renderProducts();
+}
+function showDash(){
+ document.getElementById('regCard').classList.add('hidden');document.getElementById('loginCard').classList.add('hidden');document.getElementById('payCard').classList.add('hidden');document.getElementById('dashCard').classList.remove('hidden');
+ document.getElementById('dashName').innerText=currentUser.name;document.getElementById('dashPhone').innerText=currentUser.phone;
+ document.getElementById('myRefLink').value=window.location.origin+window.location.pathname+'?ref='+currentUser.referralCode;
+ updateBal();renderMyRefs();if(currentUser.isBonusWinner){document.getElementById('bonusWinBox').classList.remove('hidden');}renderProducts();
+}
+function logout(){currentUser=null;localStorage.removeItem(CURR_KEY);location.reload();}
+function payWithPaystack(){
+ if(currentUser.renewalFree){currentUser.paid=true;const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();alert('Free Renewal - You won 2K!');showDash();return;}
+ let handler=PaystackPop.setup({
+  key:'pk_live_0f37f02ac63223a809256075ba4fcb3315400869',
+  email:currentUser.phone+'@buyearn.com',
+  amount:299*100,currency:'GHS',
+  ref:'BUY'+Math.floor(Math.random()*1000000000),
+  callback:function(res){
+   currentUser.paid=true;currentUser.joinDate=new Date().toISOString();
+   if(currentUser.referredBy){const referrer=allUsers.find(u=>u.referralCode===currentUser.referredBy);if(referrer){const r=referrer.referrals.find(x=>x.phone===currentUser.phone);if(r)r.paid=true;}}
+   const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();alert('Payment Successful '+res.reference);showDash();
+  },
+  onClose:function(){alert('Payment closed');}
+ });handler.openIframe();
+}
+function likeProd(id){
+ if(!currentUser||!currentUser.paid){alert('Pay 299 first');return;}
+ const today=new Date().toDateString();
+ if(currentUser.lastLikeDate!==today){currentUser.todayLikes=0;currentUser.lastLikeDate=today;}
+ if(currentUser.todayLikes>=5){alert('5 likes max today');return;}
+ currentUser.todayLikes++;currentUser.likeBalance=+(currentUser.likeBalance+0.20).toFixed(2);
+ const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();updateBal();alert('Liked! +0.20');
+}
+function updateBal(){
+ if(!currentUser)return;
+ document.getElementById('likeBal').innerText=currentUser.likeBalance.toFixed(2);
+ document.getElementById('refBal').innerText=currentUser.refBalance.toFixed(2);
+ document.getElementById('bonusBal').innerText=currentUser.bonusBalance.toFixed(2);
+ document.getElementById('refCount').innerText=currentUser.refCount;
+ document.getElementById('todayLikes').innerText=currentUser.todayLikes;
+ document.getElementById('totalBal').innerText=(currentUser.likeBalance+currentUser.refBalance+currentUser.bonusBalance).toFixed(2);
+ document.getElementById('bonusWithdrawn').innerText=currentUser.bonusWithdrawn||0;
+ if(currentUser.likeBalance>=20){document.getElementById('likeMinBadge').innerText='Ready to cashout';}
+}
+function renderMyRefs(){
+ const container=document.getElementById('myRefsList');
+ const noMsg=document.getElementById('noRefsMsg');
+ container.innerHTML='';
+ if(!currentUser.referrals||currentUser.referrals.length===0){noMsg.classList.remove('hidden');return;}
+ noMsg.classList.add('hidden');
+ currentUser.referrals.forEach((r,i)=>{
+  const div=document.createElement('div');div.className='refItem';
+  div.innerHTML=`<span><b>${i+1}. ${r.name}</b><br>${r.phone} | ${r.date}</span><span>${r.paid?'Paid ✅':'Registered'}</span>`;
+  container.appendChild(div);
+ });
+}
+function requestWithdrawal(){
+ if(!currentUser||!currentUser.paid){alert('Join first');return;}
+ const day=new Date().getDay();
+ if(day!==5){document.getElementById('withMsg').innerText='❌ Withdrawal ONLY FRIDAY. Today is '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][day]+'. Come Friday.';return;}
+ const total=currentUser.likeBalance+currentUser.refBalance+currentUser.bonusBalance;
+ if(currentUser.likeBalance>0&&currentUser.likeBalance<20){document.getElementById('withMsg').innerText='Need GHS 20 minimum from likes. Your likes: '+currentUser.likeBalance;return;}
+ if(total<1){document.getElementById('withMsg').innerText='No balance';return;}
+ if(currentUser.isBonusWinner&&currentUser.bonusBalance>0){
+  const toWithdraw=currentUser.bonusBalance>=500?500:currentUser.bonusBalance;
+  currentUser.bonusBalance-=toWithdraw;currentUser.bonusWithdrawn=(currentUser.bonusWithdrawn||0)+toWithdraw;
+  const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();updateBal();
+  document.getElementById('withMsg').innerText=`✅ Friday Bonus: GHS ${toWithdraw} to MoMo ${currentUser.momo} - Week ${currentUser.bonusWithdrawn/500}/4`;return;
+ }
+ document.getElementById('withMsg').innerText=`✅ Friday Withdrawal: GHS ${total.toFixed(2)} to MoMo ${currentUser.momo}`;
+ currentUser.likeBalance=0;currentUser.refBalance=0;
+ const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();updateBal();
+}
+function renderProducts(){
+ const grid=document.getElementById('prodGrid');grid.innerHTML='';
+ products.forEach(p=>{
+  const d=document.createElement('div');d.className='prod';
+  d.innerHTML=`<img src="${p.img}"><p><b>${p.name}</b></p><p class="small">GHS ${p.price} (fake)</p><button class="btn" onclick="likeProd(${p.id})">Like ❤️ 0.20</button>`;
+  grid.appendChild(d);
+ });
+ const list=document.getElementById('adminList');
+ if(list){list.innerHTML='';products.forEach(p=>{const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:5px;border-bottom:1px solid #eee';row.innerHTML=`<span>${p.name}</span><button onclick="delProd(${p.id})">Delete</button>`;list.appendChild(row);});}
+}
+function openAdmin(){const pw=prompt('Admin Password:');if(pw!=='buyearn2024'){alert('Wrong');return;}document.getElementById('adminBox').classList.remove('hidden');}
+function handleFile(inp){
+ const file=inp.files[0];if(!file)return;
+ const r=new FileReader();r.onload=function(e){selectedBase64=e.target.result;document.getElementById('preview').src=selectedBase64;document.getElementById('preview').classList.remove('hidden');document.getElementById('uploadText').classList.add('hidden');};r.readAsDataURL(file);
+}
+function addProduct(){
+ const name=document.getElementById('pName').value.trim();
+ const price=document.getElementById('pPrice').value.trim();
+ if(!selectedBase64){alert('Choose from gallery');return;}
+ if(!name){alert('Name');return;}
+ products.unshift({id:Date.now(),name,price:price||0,img:selectedBase64});
+ selectedBase64='';document.getElementById('pName').value='';document.getElementById('pPrice').value='';document.getElementById('preview').classList.add('hidden');document.getElementById('uploadText').classList.remove('hidden');document.getElementById('fileIn').value='';
+ saveAll();renderProducts();alert('Added from gallery!');
+}
+function delProd(id){if(!confirm('Delete?'))return;products=products.filter(p=>p.id!==id);saveAll();renderProducts();}
+function copyRef(){const el=document.getElementById('myRefLink');el.select();document.execCommand('copy');alert('Copied!');}
+function shareWhatsApp(){const link=document.getElementById('myRefLink').value;window.open('https://wa.me/?text='+encodeURIComponent('Join BuyEarn Ghana! My link: '+link),'_blank');}
+(function(){if(currentUser){if(!currentUser.paid)showPay();else showDash();}renderProducts();window.openAdmin=openAdmin;window.likeProd=likeProd;window.delProd=delProd;})();
 </script>
 </body>
 </html>
