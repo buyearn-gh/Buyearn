@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuyEarn 299 - Pay to 0507074240</title>
+<title>BuyEarn 299 - FREE RENEWAL FOR WINNERS</title>
 <script src="https://js.paystack.co/v1/inline.js"></script>
-<style>body{font-family:Arial;background:#f4f6f8;padding:12px}.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px}.header{background:#000;color:#fff;text-align:center}.wallet{background:#e8f5e9;padding:12px;border-radius:10px;text-align:center;font-weight:bold;font-size:18px}.btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:bold;margin:5px 0;cursor:pointer}.btn-p{background:#00c853;color:#fff}.btn-d{background:#111;color:#fff}.btn-o{background:#fff;border:2px solid #00c853;color:#00c853}.momo{background:#fff3e0;border:2px dashed #ff9800;padding:10px;border-radius:10px;text-align:center;font-weight:bold;color:#e65100}.product{background:#fafafa;border:1px solid #ddd;padding:10px;border-radius:10px;margin:5px 0;display:flex;justify-content:space-between;align-items:center}.small{font-size:11px;color:#555}</style>
+<style>body{font-family:Arial;background:#f4f6f8;padding:12px}.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px}.header{background:#000;color:#fff;text-align:center}.wallet{background:#e8f5e9;padding:12px;border-radius:10px;text-align:center;font-weight:bold;font-size:18px}.btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:bold;margin:5px 0;cursor:pointer}.btn-p{background:#00c853;color:#fff}.btn-d{background:#111;color:#fff}.btn-o{background:#fff;border:2px solid #00c853;color:#00c853}.momo{background:#fff3e0;border:2px dashed #ff9800;padding:10px;border-radius:10px;text-align:center;font-weight:bold;color:#e65100}.product{background:#fafafa;border:1px solid #ddd;padding:10px;border-radius:10px;margin:5px 0;display:flex;justify-content:space-between;align-items:center}.small{font-size:11px;color:#555}.winner-badge{background:gold;color:#000;padding:8px;border-radius:20px;font-weight:bold;text-align:center;margin:5px 0}</style>
 </head>
 <body>
 
@@ -12,32 +12,30 @@
 <h2>BuyEarn Ghana - 299 YEARLY</h2>
 <div class="momo">MEMBERSHIP: GHS 299<br>PAY TO: 0507074240 via Paystack</div>
 <div class="wallet">Wallet: GHS <span id="walletBal">0.00</span> | Referrals: <span id="refCount">0</span>/100</div>
-<p class="small" style="color:#fff">
-20p x5=1GHS/day | Min Cashout 20GHS | Refer 50-10%=45 NET | 100 refs=2K Bonus (1.8K NET) | Winners Withdraw FRIDAY 500x4 weeks
-</p>
+<div id="freeRenewalBadge"></div>
+<p class="small" style="color:#fff">20p x5=1GHS/day | Min 20GHS | Refer 50-10%=45 | 100 refs=2K (1.8K NET) + FREE YEARLY RENEWAL | Winners FRIDAY 500x4</p>
 </div>
 
 <div class="card">
 <h3>FAKE PRODUCTS - Like to Earn 20p (Not Real Sale)</h3>
-<p class="small">These are demo products - Just click LIKE to earn 20p. No buying, no selling. 5 likes/day max.</p>
 <div id="products"></div>
 <p id="likeInfo" style="font-weight:bold;color:#00c853">Likes today: 0/5</p>
 </div>
 
 <div class="card">
-<h3>Referral System</h3>
-<div class="momo">Earn 50 GHS - 10% Fee = 45 GHS NET per referral<br>100 Referrals = 2000 GHS -10% = 1800 NET Bonus</div>
+<h3>Referral + FREE RENEWAL</h3>
+<div class="momo">Earn 45 NET per ref | 100 refs = 1800 NET Bonus + FREE 1 YEAR RENEWAL (Save 299)</div>
 <input id="refCode" style="width:100%;padding:12px;border:2px solid #ddd;border-radius:10px;box-sizing:border-box" placeholder="Your Code e.g. EARN123">
 <button class="btn btn-d" onclick="copyRef()">Copy Referral Link</button>
-<button class="btn btn-p" onclick="payReferralActivation()">PAY GHS 299 TO 0507074240 - ACTIVATE</button>
+<button class="btn btn-p" id="payBtn" onclick="payReferralActivation()">PAY GHS 299 TO 0507074240 - ACTIVATE</button>
 <button class="btn btn-o" onclick="addFakeReferral()">[TEST] Add 1 Fake Referral (45 NET)</button>
+<p class="small">Membership Expiry: <span id="expiryDate">Not Active</span></p>
 </div>
 
 <div class="card">
 <h3>Withdrawal - WINNER RULE</h3>
-<p class="small">Normal: Min 20 GHS anytime | Winner (100 refs): 2K Bonus = 1800 NET, withdraw ONLY FRIDAY, 500 per week, 4 weeks to complete</p>
 <button class="btn btn-p" onclick="requestWithdraw()">Withdraw / Claim Winner Bonus</button>
-<p class="small">Status: <span id="winnerStatus">Not Winner Yet - Need 100 refs</span></p>
+<p class="small">Status: <span id="winnerStatus"></span></p>
 </div>
 
 <script>
@@ -50,56 +48,78 @@ let likesToday=parseInt(localStorage.getItem('b_likes299')||'0');
 let lastDate=localStorage.getItem('b_date299')||'';
 let refCount=parseInt(localStorage.getItem('b_refCount299')||'0');
 let bonusClaimed=parseFloat(localStorage.getItem('b_bonusClaimed299')||'0');
+let expiry=localStorage.getItem('b_expiry299')||'';
+let freeRenewed=localStorage.getItem('b_freeRenewed299')==='true';
 
-function save(){localStorage.setItem('b_wallet299',wallet);localStorage.setItem('b_refCount299',refCount);localStorage.setItem('b_bonusClaimed299',bonusClaimed);document.getElementById('walletBal').innerText=wallet.toFixed(2);document.getElementById('refCount').innerText=refCount;updateWinner();}
+function save(){localStorage.setItem('b_wallet299',wallet);localStorage.setItem('b_refCount299',refCount);localStorage.setItem('b_bonusClaimed299',bonusClaimed);localStorage.setItem('b_expiry299',expiry);localStorage.setItem('b_freeRenewed299',freeRenewed);updateUI();}
 function saveLikes(){localStorage.setItem('b_likes299',likesToday);localStorage.setItem('b_date299',new Date().toDateString());}
-function checkDay(){let t=new Date().toDateString();if(lastDate!==t){likesToday=0;saveLikes();}document.getElementById('likeInfo').innerText='Likes today: '+likesToday+'/5';}checkDay();save();
+function checkDay(){let t=new Date().toDateString();if(lastDate!==t){likesToday=0;saveLikes();}}
+function updateUI(){
+ document.getElementById('walletBal').innerText=wallet.toFixed(2);
+ document.getElementById('refCount').innerText=refCount;
+ document.getElementById('expiryDate').innerText=expiry||'Not Active';
+ let badge=document.getElementById('freeRenewalBadge');
+ let payBtn=document.getElementById('payBtn');
+ if(refCount>=100){
+   if(!freeRenewed){
+     let nextYear=new Date();nextYear.setFullYear(nextYear.getFullYear()+1);
+     expiry=nextYear.toDateString();freeRenewed=true;save();
+   }
+   badge.innerHTML='<div class="winner-badge">🏆 WINNER! FREE YEARLY RENEWAL ACTIVATED! Expiry: '+expiry+' - You saved 299 GHS!</div>';
+   payBtn.innerText='✅ FREE RENEWAL ACTIVE - NO NEED TO PAY 299 AGAIN';
+   payBtn.style.background='gold';payBtn.style.color='#000';
+   payBtn.onclick=function(){alert('You are WINNER! You have FREE yearly renewal! No need to pay 299 again. Your membership extended to '+expiry);};
+ }else{
+   badge.innerHTML='';
+   payBtn.innerText='PAY GHS 299 TO 0507074240 - ACTIVATE';
+   payBtn.style.background='#00c853';payBtn.style.color='#fff';
+   payBtn.onclick=payReferralActivation;
+ }
+ let left=1800-bonusClaimed;
+ document.getElementById('winnerStatus').innerText=refCount>=100?'WINNER! 1800 NET Bonus + FREE RENEWAL | Claimed '+bonusClaimed+' | Left '+left+' | 500 every FRIDAY x4':'Need '+(100-refCount)+' more refs for 2K Bonus + FREE RENEWAL';
+ document.getElementById('likeInfo').innerText='Likes today: '+likesToday+'/5';
+}
+checkDay();updateUI();
 
 function renderProducts(){
  let prods=[{name:'iPhone 15 Pro (DEMO)'},{name:'Nike Air (DEMO)'},{name:'Samsung TV (DEMO)'},{name:'Gucci Bag (DEMO)'},{name:'Laptop HP (DEMO)'}];
- let html='';prods.forEach((p,i)=>{html+=`<div class="product"><span>${p.name} - FAKE</span><button class="btn btn-o" style="width:auto;padding:8px 15px" onclick="likeEarn()">Like +20p</button></div>`});
+ let html='';prods.forEach(p=>{html+=`<div class="product"><span>${p.name} - FAKE</span><button class="btn btn-o" style="width:auto;padding:8px 15px" onclick="likeEarn()">Like +20p</button></div>`});
  document.getElementById('products').innerHTML=html;
 }renderProducts();
 
 function likeEarn(){
- checkDay();if(likesToday>=5){alert('Max 5 likes/day done! 1 GHS earned today. Come tomorrow!');return;}
- wallet+=0.20;likesToday+=1;save();saveLikes();document.getElementById('likeInfo').innerText='Likes today: '+likesToday+'/5';
- alert('Earned 20p for fake product like! Balance GHS '+wallet.toFixed(2));
+ checkDay();if(likesToday>=5){alert('Max 5/day done!');return;}
+ wallet+=0.20;likesToday+=1;save();saveLikes();updateUI();alert('20p added! Balance '+wallet.toFixed(2));
 }
 function copyRef(){
  let c=document.getElementById('refCode').value||'BUYEARN123';
  let l='https://buyearn-live.netlify.app/?ref='+c;navigator.clipboard.writeText(l);
- alert('Link copied: '+l+'\nYou earn 45 NET per 299 payment to 0507074240');
+ alert('Link copied! Earn 45 NET per 299 to 0507074240');
 }
 function payReferralActivation(){
+ if(refCount>=100){alert('You already have FREE RENEWAL! No need to pay!');return;}
  var h=PaystackPop.setup({key:PAYSTACK_PUBLIC_KEY,email:'customer@buyearn.com.gh',amount:OWNER_AMOUNT*100,currency:'GHS',
- callback:function(r){alert('Payment success Ref:'+r.reference+' GHS 299 to 0507074240 - YEARLY ACTIVE!');},
- onClose:function(){alert('Closed - Pay 299 to 0507074240');}});h.openIframe();
+ callback:function(r){
+   let d=new Date();d.setFullYear(d.getFullYear()+1);expiry=d.toDateString();save();
+   alert('Payment success! Ref:'+r.reference+' 299 to 0507074240 - Active till '+expiry);
+ },onClose:function(){}});h.openIframe();
 }
 function addFakeReferral(){
- refCount+=1;wallet+=45;save();
- alert('Added 1 referral: 50-10%=45 NET added. Total refs: '+refCount+'. Balance GHS '+wallet.toFixed(2));
- if(refCount>=100){alert('CONGRATS! 100 refs reached! You WON 2K Bonus (1800 NET after 10%). Withdraw 500 every FRIDAY x4 weeks!');}
+ refCount+=1;wallet+=45;save();updateUI();
+ alert('Added 1 referral: 45 NET! Total: '+refCount);
+ if(refCount==100){alert('🏆 CONGRATS! 100 refs! You WON 2K Bonus (1800 NET) + FREE YEARLY RENEWAL worth 299! Total benefit 2099 GHS!');}
 }
-function updateWinner(){
- let s=document.getElementById('winnerStatus');
- if(refCount>=100){let left=1800-bonusClaimed;s.innerText='WINNER! Bonus 1800 NET | Claimed '+bonusClaimed+' | Left '+left+' | Withdraw 500 FRIDAY only';}
- else{s.innerText='Not Winner Yet - Need '+(100-refCount)+' more refs for 2K bonus';}
-}updateWinner();
-
 function requestWithdraw(){
  if(wallet<20 && refCount<100){alert('Min 20 GHS. Balance '+wallet.toFixed(2));return;}
  let day=new Date().getDay();
  if(refCount>=100){
-  if(day!==5){alert('WINNER RULE: Withdraw ONLY FRIDAY! Today not Friday. You can withdraw 500 GHS per Friday. Need 4 weeks for full 1800 NET. Bonus claimed: '+bonusClaimed+'/1800');return;}
-  if(bonusClaimed>=1800){alert('Bonus fully withdrawn! 1800 NET done.');return;}
-  let withdrawAmt=Math.min(500,1800-bonusClaimed);
-  bonusClaimed+=withdrawAmt;wallet+=withdrawAmt;save();
-  alert('FRIDAY WINNER Withdraw: GHS '+withdrawAmt+' to 0507074240! Claimed '+bonusClaimed+'/1800 NET. Left '+(1800-bonusClaimed)+' - Next Friday again!');
+  if(day!==5){alert('WINNER RULE: Withdraw ONLY FRIDAY! Bonus: '+bonusClaimed+'/1800 Claimed. FREE RENEWAL Active till '+expiry);return;}
+  if(bonusClaimed>=1800){alert('Bonus fully withdrawn 1800 NET! But FREE RENEWAL still active till '+expiry);return;}
+  let amt=Math.min(500,1800-bonusClaimed);bonusClaimed+=amt;wallet+=amt;save();updateUI();
+  alert('FRIDAY WINNER: 500 GHS to 0507074240! Claimed '+bonusClaimed+'/1800. FREE RENEWAL till '+expiry);
  }else{
-  if(wallet>=500){alert('Large amount? If you are winner (100 refs) you can only withdraw 500 FRIDAY. Normal users min 20 GHS.');}
-  alert('Withdrawal GHS '+wallet.toFixed(2)+' to 0507074240 submitted! Min 20 GHS rule met.');
-  wallet=0;save();
+  alert('Withdrawal GHS '+wallet.toFixed(2)+' to 0507074240 submitted!');
+  wallet=0;save();updateUI();
  }
 }
 </script>
