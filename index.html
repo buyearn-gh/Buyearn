@@ -3,107 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuyEarn - Earn Daily by Liking Products</title>
+<title>BuyEarn Ghana - Shop & Earn</title>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
-body{background:#f5f7fb}
-.header{background:#0a0f1f;color:#fff;padding:16px;text-align:center;position:sticky;top:0;z-index:100}
-.hero{background:linear-gradient(135deg,#00c853,#0091ea);color:#fff;padding:28px 18px;text-align:center}
-.pay-btn{background:#000;color:#fff;border:none;padding:16px 28px;border-radius:12px;font-size:18px;font-weight:800;width:100%;max-width:340px;cursor:pointer}
-.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+*{padding:0;margin:0;box-sizing:border-box;font-family:system-ui}
+body{background:#f5f5f5}
+.header{background:#00c853;color:#fff;padding:16px;text-align:center;position:sticky;top:0;z-index:10}
+.hero{background:linear-gradient(135deg,#00c853,#009624);color:#fff;padding:28px 16px;text-align:center}
+.pay-btn{background:#000;color:#fff;border:none;padding:16px 28px;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;width:90%;max-width:400px;margin:16px auto;display:block}
+.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px #0001}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
-.product img{width:100%;height:140px;object-fit:cover;border-radius:10px}
-.product h4{font-size:14px;margin:8px 0 4px;height:36px;overflow:hidden}
-.product .price{font-weight:800;color:#00c853;font-size:13px}
-.like-btn{width:100%;margin-top:8px;background:#111;color:#fff;border:none;padding:10px;border-radius:8px;font-weight:700}
-.like-btn:disabled{background:#ccc}
-.stats{display:flex;gap:10px;padding:12px;overflow:auto}
-.stat{min-width:110px;background:#fff;padding:12px;border-radius:12px;text-align:center;flex:1}
-.stat b{font-size:20px;display:block;color:#00c853}
-.dash{padding:12px;display:none}
-.dash.active{display:block}
-.ref-box{background:#111;color:#fff;padding:14px;border-radius:12px;margin:12px 0;word-break:break-all}
-.badge{background:#ffea00;color:#000;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800}
-#adminModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:10000;justify-content:center;align-items:center;padding:15px}
-.admin-inner{background:#fff;padding:22px;border-radius:16px;width:100%;max-width:420px}
-.admin-inner input{width:100%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:8px}
+.prod-img{width:100%;height:150px;object-fit:cover;border-radius:10px;background:#eee}
+.like-btn{width:100%;padding:10px;border:none;border-radius:8px;margin-top:8px;font-weight:700;cursor:pointer;background:#eee}
+.like-btn.liked{background:#00c853;color:#fff}
+.admin-overlay{display:none;position:fixed;inset:0;background:#0008;z-index:100;padding:20px;overflow:auto}
+.admin-inner{background:#fff;max-width:450px;margin:auto;padding:20px;border-radius:16px}
+.admin-inner input{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-size:16px}
+.upload-box{border:2px dashed #00c853;padding:20px;text-align:center;border-radius:12px;margin:8px 0;background:#f9fff9;cursor:pointer}
+.preview-img{width:100%;height:200px;object-fit:cover;border-radius:10px;display:none;margin-top:10px}
 </style>
 </head>
 <body>
-<div class="header"><h1>🛒 BuyEarn Ghana</h1><p>Pay 299 → Earn 1 GHS Daily + 45 NET Per Referral</p></div>
-<div id="landing">
-<div class="hero">
-<h2>Turn Phone Into Daily Cash Machine</h2>
-<p>✅ Pay GHS 299 Once (to 0507074240)<br>✅ Like 5 Products = 1 GHS<br>✅ Refer = 45 NET Instant<br>✅ 100 Referrals = 1800 NET + FREE Renewal<br>✅ Withdraw 500 x4 Every Friday</p>
-<button class="pay-btn" onclick="payWithPaystack()">🔒 PAY GHS 299 & START</button>
-<p style="margin-top:12px;font-size:12px;">Secured by Paystack</p>
-</div>
-<div style="padding:12px"><div class="card"><b>🎁 How It Works:</b><br>1. Pay 299 → Paystack to 0507074240<br>2. Dashboard instantly<br>3. Like 5 = 0.20x5=1 GHS/day<br>4. Share referral link<br>5. Withdraw Friday</div>
-<h3 style="padding:10px 4px;">🔥 Hot Products</h3><div class="grid" id="previewGrid"></div></div>
-</div>
-<div id="dashboard" class="dash">
-<div class="stats">
-<div class="stat"><b id="sBalance">0.00</b><small>Balance</small></div>
-<div class="stat"><b id="sLikes">0/5</b><small>Today Likes</small></div>
-<div class="stat"><b id="sRef">0</b><small>Referrals</small></div>
-<div class="stat"><b id="sNet">0</b><small>NET</small></div>
-</div>
-<div class="card"><b>🔗 Your Referral Link:</b><div class="ref-box" id="refLink"></div><button onclick="copyRef()" style="width:100%;padding:12px;background:#00c853;color:#fff;border:none;border-radius:8px;font-weight:800">Copy Link & Share</button></div>
-<div class="card" style="background:#e8f5e9"><b>💰 Withdraw:</b><br>• Min: 500 NET • Friday x4 • MTN MoMo</div>
-<h3 style="padding:8px;">👍 Like 5 Products Today</h3><div class="grid" id="productGrid"></div>
-</div>
-<button onclick="openAdmin()" style="background:#000;color:#fff;padding:10px 20px;border-radius:8px;position:fixed;bottom:20px;right:20px;z-index:9999;border:none;font-weight:800;">⚙️ Admin</button>
-<div id="adminModal"><div class="admin-inner">
-<h2 style="text-align:center;">⚙️ Admin Upload</h2>
-<input id="pName" placeholder="Product Name">
-<input id="pPrice" placeholder="Price (GHS 899)">
-<input id="pImage" placeholder="Image Link (Google image address)">
-<button onclick="saveProduct()" style="width:100%;background:#00c853;color:white;padding:14px;border:none;border-radius:10px;font-weight:bold;margin-top:10px;">✅ SAVE PRODUCT</button>
-<button onclick="closeAdmin()" style="width:100%;background:#eee;padding:10px;border:none;border-radius:10px;margin-top:8px;">Close</button>
-<div id="adminList" style="margin-top:12px;font-size:12px;max-height:200px;overflow:auto;"></div>
-</div></div>
+<div class="header"><h2>BuyEarn Ghana 🇬🇭</h2><p style="font-size:13px">Shop & Earn Daily</p></div>
+<div class="hero"><h1>Earn Daily by Liking Products</h1><p style="margin-top:8px">Like 5 products = GHS 5 • Pay GHS 299 once to start</p><button class="pay-btn" onclick="payWithPaystack()">💳 Pay GHS 299 to Activate - Paystack</button><p id="payStatus" style="margin-top:10px;font-weight:700"></p></div>
+<div style="padding:12px"><h3 style="padding:8px;">🔥 Like 5 Products Today</h3><div class="grid" id="productGrid"></div><p style="text-align:center;margin-top:10px">Liked today: <span id="likedCount">0</span>/5 - Earned: GHS <span id="earned">0</span></p></div>
+<button onclick="openAdmin()" style="background:#000;color:#fff;padding:10px 20px;border:none;border-radius:20px;position:fixed;bottom:20px;right:20px;z-index:50">⚙️ Admin</button>
+<div id="adminModal" class="admin-overlay"><div class="admin-inner"><h2 style="text-align:center;">⚙️ Admin Upload</h2><p style="text-align:center;font-size:12px;color:#666;margin-bottom:10px">Upload from your phone gallery</p><input id="adminPass" type="password" placeholder="Admin Password"><input id="pName" placeholder="Product Name"><input id="pPrice" placeholder="Price (e.g. GHS 899)" value="GHS "><div class="upload-box" onclick="document.getElementById('pFile').click()"><span style="font-size:30px">📸</span><br><b>Click to Upload from Gallery</b><br><span style="font-size:12px;color:#666">Choose photo from phone</span><input type="file" id="pFile" accept="image/*" style="display:none" onchange="previewFile()"></div><img id="preview" class="preview-img"><input id="pImage" placeholder="OR paste Image Link (optional)"><button onclick="saveProduct()" style="width:100%;background:#00c853;color:white;padding:14px;border:none;border-radius:10px;font-weight:700;font-size:16px;margin-top:10px;cursor:pointer">💾 Save Product</button><button onclick="closeAdmin()" style="width:100%;background:#eee;padding:10px;border:none;border-radius:10px;margin-top:8px;cursor:pointer">Close</button><div id="adminList" style="margin-top:12px;font-size:12px;max-height:200px;overflow:auto"></div></div></div>
 <script>
-const PAYSTACK_KEY = "pk_live_0f37f02ac63223a809256075ba4fcb3315400869";
+const PAYSTACK_KEY = "pk_live_0f37f02ac63223a809256075ba4fcb3315400867";
 const PAY_AMOUNT = 29900;
 const ADMIN_PASS = "buyearn2024";
-let defaultProducts = [
-{name:"Nike Air Max 270",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",price:"GHS 899",reward:0.20},
-{name:"iPhone 15 Pro Max",image:"https://images.unsplash.com/photo-1592899677977-9bb10ba128a5?w=400",price:"GHS 18500",reward:0.20},
-{name:"Rolex Watch",image:"https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400",price:"GHS 12000",reward:0.20},
-{name:"Gucci Bag",image:"https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400",price:"GHS 2500",reward:0.20},
-{name:"Adidas Hoodie",image:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400",price:"GHS 450",reward:0.20},
-{name:"Sony Headset",image:"https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400",price:"GHS 1800",reward:0.20},
-{name:"MacBook Pro M3",image:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400",price:"GHS 25000",reward:0.20},
-{name:"Jordan 4",image:"https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400",price:"GHS 1200",reward:0.20},
-{name:"Dior Perfume",image:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=400",price:"GHS 850",reward:0.20},
-{name:"Samsung QLED TV",image:"https://images.unsplash.com/photo-1593359677879-a4bb92f367d8?w=400",price:"GHS 9500",reward:0.20},
-{name:"LV Sneakers",image:"https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400",price:"GHS 1500",reward:0.20},
-{name:"Apple Watch Ultra",image:"https://images.unsplash.com/photo-1555421689-3f034debb7a6?w=400",price:"GHS 4200",reward:0.20},
-{name:"Puma RS-X",image:"https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400",price:"GHS 750",reward:0.20},
-{name:"Zara Jacket",image:"https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400",price:"GHS 380",reward:0.20},
-{name:"Canon Camera",image:"https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=400",price:"GHS 15000",reward:0.20},
-{name:"Yeezy Boost",image:"https://images.unsplash.com/photo-1603808033587-9359428479d6?w=400",price:"GHS 1100",reward:0.20},
-{name:"Prada Sunglasses",image:"https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400",price:"GHS 650",reward:0.20},
-{name:"PlayStation 5",image:"https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400",price:"GHS 5500",reward:0.20},
-{name:"Nike Tech Fleece",image:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=400",price:"GHS 520",reward:0.20},
-{name:"Hublot Watch",image:"https://images.unsplash.com/photo-1548169874-53e85f753f1e?w=400",price:"GHS 22000",reward:0.20}
-];
-let products=[...defaultProducts];
-let saved=JSON.parse(localStorage.getItem('buyearn_products')||'[]');
-if(saved.length>0) products=[...products,...saved];
-function renderPreview(){let g=document.getElementById('previewGrid');g.innerHTML=products.slice(0,6).map(p=>`<div class="card product"><img src="${p.image}"><h4>${p.name}</h4><div class="price">${p.price}</div></div>`).join('');}
-function renderProducts(){let g=document.getElementById('productGrid');let liked=JSON.parse(localStorage.getItem('liked_today')||'[]');let today=new Date().toDateString();let last=localStorage.getItem('last_day');if(last!==today){liked=[];localStorage.setItem('liked_today','[]');localStorage.setItem('last_day',today);}g.innerHTML=products.slice(0,50).map((p,i)=>`<div class="card product"><img src="${p.image}"><h4>${p.name}</h4><div class="price">${p.price} <span class="badge">+0.20</span></div><button class="like-btn" id="btn${i}" onclick="likeProduct(${i})" ${liked.includes(i)?'disabled':''}>${liked.includes(i)?'✅ Liked':'👍 Like'}</button></div>`).join('');updateStats();}
-function likeProduct(i){let liked=JSON.parse(localStorage.getItem('liked_today')||'[]');if(liked.length>=5){alert("5 likes done today!");return;}liked.push(i);localStorage.setItem('liked_today',JSON.stringify(liked));let bal=parseFloat(localStorage.getItem('balance')||'0')+0.20;localStorage.setItem('balance',bal);document.getElementById('btn'+i).innerText='✅ Liked';document.getElementById('btn'+i).disabled=true;updateStats();if(liked.length===5){alert("🎉 1 GHS earned today!");}}
-function updateStats(){let liked=JSON.parse(localStorage.getItem('liked_today')||'[]');let bal=localStorage.getItem('balance')||'0';let refs=localStorage.getItem('referrals')||'0';let net=localStorage.getItem('net')||'0';document.getElementById('sBalance').innerText=parseFloat(bal).toFixed(2);document.getElementById('sLikes').innerText=liked.length+"/5";document.getElementById('sRef').innerText=refs;document.getElementById('sNet').innerText=net;}
-function payWithPaystack(){if(PAYSTACK_KEY.includes("REPLACE")||PAYSTACK_KEY.length<20){openDashboard();return;}let email=prompt("Enter email:","user@gmail.com");if(!email) return;let handler=PaystackPop.setup({key:PAYSTACK_KEY,email:email,amount:PAY_AMOUNT,currency:"GHS",ref:"BUYEARN_"+Math.floor(Math.random()*1000000000),callback:function(r){alert("✅ Success! Ref:"+r.reference+" Money to 0507074240");localStorage.setItem('paid','yes');localStorage.setItem('balance','0');openDashboard();},onClose:function(){alert("Closed. Try again!");}});handler.openIframe();}
-function openDashboard(){document.getElementById('landing').style.display='none';document.getElementById('dashboard').classList.add('active');let uid=localStorage.getItem('uid')||"USER"+Math.floor(Math.random()*10000);localStorage.setItem('uid',uid);document.getElementById('refLink').innerText="https://buyearn-live.netlify.app?ref="+uid;renderProducts();}
-function copyRef(){let t=document.getElementById('refLink').innerText;navigator.clipboard.writeText(t);alert("✅ Copied!");}
-function openAdmin(){let p=prompt("Admin Password:");if(p===ADMIN_PASS){document.getElementById('adminModal').style.display='flex';showAdminList();}else{alert("Wrong!");}}
+let defaultProducts = [{name:"Nike Air Max 270",price:"GHS 899",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"},{name:"Adidas Sneakers",price:"GHS 750",image:"https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=500"},{name:"Puma Runner",price:"GHS 650",image:"https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500"},{name:"iPhone 14 Pro",price:"GHS 12000",image:"https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500"},{name:"Samsung Galaxy",price:"GHS 8500",image:"https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500"},{name:"Laptop HP",price:"GHS 5500",image:"https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500"}];
+let products = JSON.parse(localStorage.getItem('buyearn_products') || 'null') || defaultProducts;
+let likedToday = JSON.parse(localStorage.getItem('buyearn_liked') || '[]');
+let imageBase64 = "";
+function previewFile(){const file=document.getElementById('pFile').files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){imageBase64=e.target.result;document.getElementById('preview').src=imageBase64;document.getElementById('preview').style.display='block';};reader.readAsDataURL(file);}
+function renderProducts(){const grid=document.getElementById('productGrid');grid.innerHTML="";products.forEach((p,i)=>{const isLiked=likedToday.includes(i);grid.innerHTML+=`<div class="card"><img src="${p.image}" class="prod-img"><h4 style="margin-top:8px;font-size:14px">${p.name}</h4><p style="color:#00c853;font-weight:700">${p.price}</p><button class="like-btn ${isLiked?'liked':''}" onclick="likeProduct(${i})">${isLiked?'❤️ Liked':'🤍 Like'}</button></div>`;});document.getElementById('likedCount').innerText=likedToday.length;document.getElementById('earned').innerText=likedToday.length*1;renderAdminList();}
+function likeProduct(i){if(likedToday.includes(i))return alert("Already liked today!");if(likedToday.length>=5)return alert("You liked 5 today! Come tomorrow");likedToday.push(i);localStorage.setItem('buyearn_liked',JSON.stringify(likedToday));renderProducts();}
+function openAdmin(){document.getElementById('adminModal').style.display='block';}
 function closeAdmin(){document.getElementById('adminModal').style.display='none';}
-function saveProduct(){let n=document.getElementById('pName').value.trim();let pr=document.getElementById('pPrice').value.trim();let im=document.getElementById('pImage').value.trim();if(!n||!pr||!im){alert("Fill all!");return;}let s=JSON.parse(localStorage.getItem('buyearn_products')||'[]');s.push({name:n,price:pr,image:im,reward:0.20});localStorage.setItem('buyearn_products',JSON.stringify(s));alert("✅ Added:"+n);document.getElementById('pName').value='';document.getElementById('pPrice').value='';document.getElementById('pImage').value='';showAdminList();renderPreview();renderProducts();}
-function showAdminList(){let s=JSON.parse(localStorage.getItem('buyearn_products')||'[]');document.getElementById('adminList').innerHTML="<b>Custom:"+s.length+" | All:"+(products.length)+"</b><br>"+s.map(p=>"• "+p.name).join("<br>");}
-if(localStorage.getItem('paid')==='yes'){openDashboard();}renderPreview();
+function saveProduct(){const pass=document.getElementById('adminPass').value;if(pass!==ADMIN_PASS)return alert("Wrong password!");const name=document.getElementById('pName').value.trim();const price=document.getElementById('pPrice').value.trim();const link=document.getElementById('pImage').value.trim();let finalImage="";if(imageBase64)finalImage=imageBase64;else if(link)finalImage=link;else return alert("Please upload photo from gallery or paste link!");if(!name)return alert("Enter product name!");products.unshift({name,price,image:finalImage});localStorage.setItem('buyearn_products',JSON.stringify(products));document.getElementById('pName').value="";document.getElementById('pPrice').value="GHS ";document.getElementById('pImage').value="";document.getElementById('pFile').value="";imageBase64="";document.getElementById('preview').style.display='none';renderProducts();alert("✅ Product Added!");}
+function renderAdminList(){const list=document.getElementById('adminList');list.innerHTML="<b>Current Products ("+products.length+"):</b><br>";products.forEach((p,i)=>{list.innerHTML+=`<div style="display:flex;gap:8px;margin-top:8px;align-items:center"><img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:6px"><span>${p.name}</span><button onclick="deleteProduct(${i})" style="margin-left:auto;color:red;border:none;background:#fee;padding:4px 8px;border-radius:6px">Delete</button></div>`;});}
+function deleteProduct(i){if(!confirm("Delete this product?"))return;products.splice(i,1);localStorage.setItem('buyearn_products',JSON.stringify(products));renderProducts();}
+function payWithPaystack(){let handler=PaystackPop.setup({key:PAYSTACK_KEY,email:"customer@buyearn.com",amount:PAY_AMOUNT*100,currency:"GHS",callback:function(response){document.getElementById('payStatus').innerText="✅ Payment Successful! ID: "+response.reference;alert("Payment success! You can now earn daily!");localStorage.setItem('buyearn_paid','true');},onClose:function(){document.getElementById('payStatus').innerText="Payment window closed";}});handler.openIframe();}
+renderProducts();
 </script>
 </body>
 </html>
