@@ -3,57 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuyEarn Ghana - 299</title>
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<title>BuyEarn Ghana - FIXED 299</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <style>
-body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:15px}
+body{font-family:Arial;background:#f5f5f5;margin:0;padding:15px}
 .card{background:#fff;padding:20px;border-radius:10px;margin-bottom:15px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
-.wallet{background:#e8f5e9;padding:10px;border-radius:10px;text-align:center}
-.live{background:#e3f2fd;border:2px solid #2196f3;padding:8px;border-radius:10px;text-align:center;font-weight:bold;color:#0d47a1;margin:8px 0}
-.momo{background:#fff3e0;border:2px dashed #ff9800;padding:10px;border-radius:10px;text-align:center;font-weight:bold;color:#e65100;margin:8px 0}
 .btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:bold;margin-top:8px;cursor:pointer}
 .btn-p{background:#00c853;color:#fff}
 .btn-d{background:#111;color:#fff}
-.btn-b{background:#2196f3;color:#fff}
-.product{background:#fafafa;border:1px solid #ddd;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}
-.small{font-size:11px;color:#666}
 input{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px;box-sizing:border-box}
-.header{background:#111;color:#fff;padding:15px;border-radius:10px;margin-bottom:10px}
+.small{font-size:12px;color:#666}
+.live{background:#e3f2fd;border:2px solid #2196f3;padding:8px;border-radius:10px;text-align:center;font-weight:bold;color:#0d47a1;margin:8px 0}
 </style>
 </head>
 <body>
-
 <div id="authBox" class="card">
-<h2>BuyEarn 299 - LOGIN TO SYNC</h2>
-<p class="small">Same wallet LIVE on phone & laptop!</p>
-<input id="email" type="email" placeholder="Email - e.g. Issakaosman94@gmail.com">
-<input id="password" type="password" placeholder="Password (6+ chars)">
+<h2>BuyEarn 299 - LOGIN FIXED</h2>
+<input id="email" type="email" placeholder="Email e.g. Issakaosman94@gmail.com">
+<input id="password" type="password" placeholder="Password 6+ chars">
 <button class="btn btn-p" onclick="login()">LOGIN - Sync Phone & Laptop</button>
 <button class="btn btn-d" onclick="register()">REGISTER NEW ACCOUNT</button>
-<div class="live">After login you will see Dashboard</div>
+<div class="live">Auth is now ENABLED in Firebase!</div>
 <p class="small" id="msg"></p>
 </div>
-
-<div id="mainBox" style="display:none">
-<div class="card header">
-<h2>BuyEarn Ghana 29</h2>
-<p class="small">Logged as <span id="userEmail"></span> | <span id="liveBadge">Connecting...</span> 
-<button onclick="logout()" style="background:#fff;color:#000;border-radius:12px;padding:4px 8px;font-size:11px;border:none">Logout</button></p>
-<div class="momo">MEMBERSHIP: GHS 299 YEAR</div>
+<div id="mainBox" class="card" style="display:none">
+<h2>Welcome <span id="userEmail"></span></h2>
+<p>Wallet: GHS <span id="wallet">0</span> - LIVE SYNCED!</p>
+<button class="btn btn-d" onclick="logout()">Logout</button>
 </div>
-<div class="card wallet">
-<p>Wallet: GHS <span id="wallet">0</span></p>
-<button class="btn btn-b" onclick="buy()">Buy Product with Paystack</button>
-</div>
-<div class="card">
-<h3>Products</h3>
-<div id="products">Loading...</div>
-</div>
-</div>
-
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyAqLK43cuGSOyujMMAxLDa-KjWQ7hS7Oa8",
@@ -67,65 +46,40 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
-
-function $(id){ return document.getElementById(id); }
-
+function $(id){return document.getElementById(id);}
 function login(){
-  const email = $("email").value.trim();
-  const password = $("password").value.trim();
-  const msg = $("msg");
-  if(!email){ msg.innerText="Type Email!"; alert("Type Email!"); return; }
-  if(!email.includes("@") || !email.includes(".")){ msg.innerText="Invalid email"; alert("Email must be like Issakaosman94@gmail.com - must have @ and .com"); return; }
-  if(!password){ msg.innerText="Type Password!"; return; }
-  if(password.length < 6){ alert("Password must be 6+ chars"); return; }
+  const email=$("email").value.trim();
+  const password=$("password").value.trim();
+  const msg=$("msg");
+  if(!email){alert("Type Email!");return;}
+  if(!email.includes("@")){alert("Email must have @");return;}
+  if(password.length<6){alert("Password 6+ chars");return;}
   msg.innerText="Logging in...";
-  auth.signInWithEmailAndPassword(email, password)
-  .then(()=>{ msg.innerText="Login SUCCESS!"; alert("Login SUCCESS!"); })
-  .catch((err)=>{ msg.innerText=err.message; alert(err.code+" - "+err.message); });
+  auth.signInWithEmailAndPassword(email,password).then(()=>{msg.innerText="SUCCESS";alert("LOGIN SUCCESS - Synced!");}).catch(e=>{msg.innerText=e.message;alert(e.code+" - "+e.message);});
 }
-
 function register(){
-  const email = $("email").value.trim();
-  const password = $("password").value.trim();
-  const msg = $("msg");
-  if(!email){ alert("Type Email!"); return; }
-  if(!email.includes("@")){ alert("Email must have @"); return; }
-  if(password.length < 6){ alert("Password must be 6+ letters!"); return; }
-  msg.innerText="Registering...";
-  auth.createUserWithEmailAndPassword(email, password)
-  .then((cred)=>{
-    msg.innerText="Registered! Now click LOGIN";
+  const email=$("email").value.trim();
+  const password=$("password").value.trim();
+  if(!email){alert("Type Email");return;}
+  if(password.length<6){alert("Password 6+");return;}
+  $("msg").innerText="Registering...";
+  auth.createUserWithEmailAndPassword(email,password).then(c=>{
     alert("REGISTER SUCCESS! Now click LOGIN!");
-    db.ref("users/"+cred.user.uid).set({email:email,wallet:0,joined:Date.now()});
-  })
-  .catch((err)=>{ msg.innerText=err.message; alert(err.code+" - "+err.message); });
+    db.ref("users/"+c.user.uid).set({email:email,wallet:0,joined:Date.now()});
+  }).catch(e=>alert(e.code+" - "+e.message));
 }
-
-function logout(){ auth.signOut().then(()=>{ location.reload(); }); }
-
-auth.onAuthStateChanged((user)=>{
-  if(user){
+function logout(){auth.signOut().then(()=>location.reload());}
+auth.onAuthStateChanged(u=>{
+  if(u){
     $("authBox").style.display="none";
     $("mainBox").style.display="block";
-    $("userEmail").innerText=user.email;
-    $("liveBadge").innerText="LIVE - Synced";
-    $("liveBadge").style.color="#00c853";
-    loadData(user.uid);
-  } else {
+    $("userEmail").innerText=u.email;
+    db.ref("users/"+u.uid).on("value",s=>{const d=s.val();if(d)$("wallet").innerText=d.wallet||0;});
+  }else{
     $("authBox").style.display="block";
     $("mainBox").style.display="none";
   }
 });
-
-function loadData(uid){
-  db.ref("users/"+uid).on("value",(snap)=>{
-    const data=snap.val();
-    if(data){ $("wallet").innerText=data.wallet||0; }
-  });
-  $("products").innerHTML='<div class="product"><span>Sample Product 1 - GHS 50</span><button class="btn btn-p" style="width:auto">Buy</button></div>';
-}
-
-function buy(){ alert("Paystack here - connect your Paystack key"); }
 </script>
 </body>
 </html>
