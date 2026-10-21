@@ -12,7 +12,6 @@ body{background:#f5f5f5}
 .container{max-width:520px;margin:auto;padding:10px}
 .card{background:#fff;border-radius:12px;padding:15px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .btn{background:#111;color:#fff;border:none;padding:12px 20px;border-radius:8px;width:100%;font-weight:bold;cursor:pointer;margin-top:8px}
-.btn:disabled{background:#999;cursor:not-allowed}
 .btn-green{background:#00a651}
 .btn-yellow{background:#ffe600;color:#111}
 .input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin:6px 0}
@@ -30,24 +29,24 @@ body{background:#f5f5f5}
 <body>
 <div class="header">
 <h1>BUYEARN GHANA</h1>
-<div class="small" style="color:#ffe600">Fake Products Task - 20p x5/day | 50 per ref -10% | 100 ref=2K Bonus</div>
+<div class="small" style="color:#ffe600">Shop & Earn - Like Products Daily | Refer & Earn GHS 45</div>
 </div>
 <div class="container">
 
 <div id="regCard" class="card">
-<h3>Step 1: Correct Registration (Required)</h3>
-<p class="small">Fill correct details. MoMo must be correct for cashout.</p>
+<h3>Join BuyEarn Ghana</h3>
+<p class="small">Correct details required for withdrawal to MoMo.</p>
 <input id="rName" class="input" placeholder="Full Name (as on MoMo)">
 <input id="rPhone" class="input" placeholder="Phone Number (10 digits)">
 <input id="rMomo" class="input" placeholder="MoMo Number">
 <input id="rMomoName" class="input" placeholder="MoMo Name">
 <input id="rPassword" class="input" type="password" placeholder="Create Password">
 <div id="refFromUrlBox" class="hidden" style="background:#ffe600;padding:8px;border-radius:6px">
-Referral Code from Link: <b id="refFromUrlText"></b>
+You were invited! Referral Code: <b id="refFromUrlText"></b>
 </div>
-<button class="btn" onclick="doRegister()">Save Registration & Continue</button>
+<button class="btn" onclick="doRegister()">Register & Continue</button>
 <div id="regMsg" class="small" style="color:red;margin-top:5px"></div>
-<p class="small" style="margin-top:8px">Already registered? <a href="#" onclick="showLogin()">Login here</a></p>
+<p class="small" style="margin-top:8px">Already member? <a href="#" onclick="showLogin()">Login here</a></p>
 </div>
 
 <div id="loginCard" class="card hidden">
@@ -59,76 +58,69 @@ Referral Code from Link: <b id="refFromUrlText"></b>
 </div>
 
 <div id="payCard" class="card hidden">
-<h3>Step 2: Pay Membership GHS 299</h3>
+<h3>Activate Membership - GHS 299 / Year</h3>
 <div id="userInfo" class="small" style="background:#f9f9f9;padding:8px;border-radius:6px"></div>
-<p class="small">Renewal every year. 2K Bonus Winners get FREE renewal.</p>
+<p class="small">Earn daily by liking products + referral bonus. Free renewal if you win 2K bonus.</p>
 <button class="btn btn-green" onclick="payWithPaystack()">Pay GHS 299 with Paystack</button>
 <button class="btn" onclick="logout()">Logout</button>
 </div>
 
 <div id="dashCard" class="card hidden">
-<h3>Dashboard (PRIVATE)</h3>
+<h3>Dashboard</h3>
 <div style="background:#111;color:#fff;padding:12px;border-radius:8px">
-<p>Like Earnings (0.20 x5/day): GHS <b id="likeBal">0.00</b> <span class="badge" id="likeMinBadge">Need 20 to cashout</span></p>
-<p>Referral Earnings (50-10%=45): GHS <b id="refBal">0.00</b> | Refs: <b id="refCount">0</b>/100</p>
+<p>Like Earnings: GHS <b id="likeBal">0.00</b> <span class="badge" id="likeMinBadge">Need 20 to withdraw</span></p>
+<p>Referral Earnings: GHS <b id="refBal">0.00</b> | Referrals: <b id="refCount">0</b>/100</p>
 <p>Bonus: GHS <b id="bonusBal">0.00</b></p>
 <p><b>Total: GHS <span id="totalBal">0.00</span></b></p>
-<p class="small" style="color:#ffe600">Withdrawal ONLY FRIDAY. Bonus 500/week x4</p>
+<p class="small" style="color:#ffe600">Withdrawal: Friday only. Bonus 500/week x4</p>
 </div>
-
-<h4 style="margin-top:12px">Your Referral Link - Earn GHS 45 net per person</h4>
+<h4 style="margin-top:12px">Your Referral Link - Earn GHS 45 per person</h4>
 <div style="display:flex;gap:5px">
 <input id="myRefLink" class="input" readonly>
 <button class="btn" style="width:70px" onclick="copyRef()">Copy</button>
 </div>
 <button class="btn btn-yellow" onclick="shareWhatsApp()">Share on WhatsApp</button>
-
 <div id="bonusWinBox" class="hidden" style="background:#ffe600;padding:10px;border-radius:8px;margin-top:10px">
-<b>🎉 YOU WON GHS 2000 BONUS! (1800 net after 10%)</b><br>
-<span class="small">Free Renewal! Withdraw 500 per Friday x4 weeks.</span><br>
+<b>🎉 YOU WON GHS 2000 BONUS!</b><br>
+<span class="small">Free Renewal Next Year! Withdraw 500 per Friday for 4 weeks.</span><br>
 <p>Withdrawn: GHS <span id="bonusWithdrawn">0</span> / 1800</p>
 </div>
-
 <div style="margin-top:12px;background:#f9f9f9;padding:10px;border-radius:8px">
-<h4>People You Referred (You CAN see who you referred, NOT their balance)</h4>
+<h4>People You Referred</h4>
 <div id="myRefsList"></div>
 <p id="noRefsMsg" class="small">No referrals yet. Share your link!</p>
 </div>
-
 <button class="btn btn-green" onclick="requestWithdrawal()">Request Withdrawal (Friday Only)</button>
 <div id="withMsg" class="small" style="margin-top:6px;font-weight:bold"></div>
 <button class="btn" onclick="logout()">Logout</button>
-
-<h4 style="margin-top:15px">Daily Task: Like 5 Fake Products = 0.20 each</h4>
+<h4 style="margin-top:15px">Today's Task: Like 5 Products = GHS 0.20 each</h4>
 <p class="small">Likes today: <span id="todayLikes">0</span>/5</p>
 </div>
 
 <div class="card">
-<h3>Fake Products - For Like Task (Gallery Upload)</h3>
+<h3>🔥 Hot Products - Like to Earn GHS 0.20</h3>
+<p class="small">Like 5 products daily to earn. Real products from our shop partners.</p>
 <div id="prodGrid" class="grid"></div>
 </div>
 
-<div class="card">
-<h3>Admin (Owner)</h3>
-<button class="btn" onclick="openAdmin()">Open Admin - Upload From Gallery</button>
-<div id="adminBox" class="hidden">
+<div id="adminCard" class="card hidden">
+<h3>Admin - Owner Only</h3>
 <div class="uploadBox" onclick="document.getElementById('fileIn').click()">
 <span id="uploadText">📸 Click - Choose From Gallery</span>
 <img id="preview" class="hidden">
 </div>
 <input type="file" id="fileIn" accept="image/*" class="hidden" onchange="handleFile(this)">
-<input id="pName" class="input" placeholder="Product Name (fake)">
-<input id="pPrice" class="input" type="number" placeholder="Price GHS (fake)">
-<button class="btn btn-green" onclick="addProduct()">Add Fake Product</button>
+<input id="pName" class="input" placeholder="Product Name">
+<input id="pPrice" class="input" type="number" placeholder="Price GHS">
+<button class="btn btn-green" onclick="addProduct()">Add Product</button>
 <div id="adminList" style="margin-top:10px"></div>
 </div>
-</div>
-</div>
 
+</div>
 <script>
-const DB_KEY='buyearn_products_v6';
-const USERS_DB='buyearn_all_users_v6';
-const CURR_KEY='buyearn_current_user_v6';
+const DB_KEY='buyearn_products_v7';
+const USERS_DB='buyearn_all_users_v7';
+const CURR_KEY='buyearn_current_user_v7';
 let products=JSON.parse(localStorage.getItem(DB_KEY)||'[]');
 let allUsers=JSON.parse(localStorage.getItem(USERS_DB)||'[]');
 let currentUser=JSON.parse(localStorage.getItem(CURR_KEY)||'null');
@@ -136,7 +128,9 @@ let selectedBase64='';
 function saveAll(){localStorage.setItem(DB_KEY,JSON.stringify(products));localStorage.setItem(USERS_DB,JSON.stringify(allUsers));localStorage.setItem(CURR_KEY,JSON.stringify(currentUser));}
 if(products.length===0){products=[{id:1,name:'Orange Slippers',price:150,img:'https://via.placeholder.com/300?text=Slippers'},{id:2,name:'Converse Box',price:750,img:'https://via.placeholder.com/300?text=Converse'}];saveAll();}
 let refFromUrl=new URLSearchParams(window.location.search).get('ref');
+let adminParam=new URLSearchParams(window.location.search).get('admin');
 if(refFromUrl){document.getElementById('refFromUrlBox').classList.remove('hidden');document.getElementById('refFromUrlText').innerText=refFromUrl;}
+if(adminParam==='buyearn2024'){document.getElementById('adminCard').classList.remove('hidden');}
 function doRegister(){
  const name=document.getElementById('rName').value.trim();
  const phone=document.getElementById('rPhone').value.trim();
@@ -163,25 +157,25 @@ function doLogin(){
 }
 function showPay(){
  document.getElementById('regCard').classList.add('hidden');document.getElementById('loginCard').classList.add('hidden');document.getElementById('payCard').classList.remove('hidden');document.getElementById('dashCard').classList.add('hidden');
- document.getElementById('userInfo').innerHTML=`Name: ${currentUser.name}<br>Phone: ${currentUser.phone}<br>MoMo: ${currentUser.momo} (${currentUser.momoName})<br>Your Code: <b>${currentUser.referralCode}</b><br>Referred By: ${currentUser.referredBy||'None'}<br>Renewal Free: ${currentUser.renewalFree?'YES':'No'}`;
+ document.getElementById('userInfo').innerHTML=`Name: ${currentUser.name}<br>Phone: ${currentUser.phone}<br>MoMo: ${currentUser.momo} (${currentUser.momoName})<br>Your Code: <b>${currentUser.referralCode}</b><br>Referred By: ${currentUser.referredBy||'None'}`;
  renderProducts();
 }
 function showDash(){
  document.getElementById('regCard').classList.add('hidden');document.getElementById('loginCard').classList.add('hidden');document.getElementById('payCard').classList.add('hidden');document.getElementById('dashCard').classList.remove('hidden');
- document.getElementById('dashName').innerText=currentUser.name;document.getElementById('dashPhone').innerText=currentUser.phone;
+ document.getElementById('dashName')?document.getElementById('dashName').innerText=currentUser.name:null;
  document.getElementById('myRefLink').value=window.location.origin+window.location.pathname+'?ref='+currentUser.referralCode;
  updateBal();renderMyRefs();if(currentUser.isBonusWinner){document.getElementById('bonusWinBox').classList.remove('hidden');}renderProducts();
 }
 function logout(){currentUser=null;localStorage.removeItem(CURR_KEY);location.reload();}
 function payWithPaystack(){
- if(currentUser.renewalFree){currentUser.paid=true;const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();alert('Free Renewal - You won 2K!');showDash();return;}
+ if(currentUser.renewalFree){currentUser.paid=true;const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();alert('Free Renewal!');showDash();return;}
  let handler=PaystackPop.setup({
   key:'pk_live_0f37f02ac63223a809256075ba4fcb3315400869',
   email:currentUser.phone+'@buyearn.com',
   amount:299*100,currency:'GHS',
   ref:'BUY'+Math.floor(Math.random()*1000000000),
   callback:function(res){
-   currentUser.paid=true;currentUser.joinDate=new Date().toISOString();
+   currentUser.paid=true;
    if(currentUser.referredBy){const referrer=allUsers.find(u=>u.referralCode===currentUser.referredBy);if(referrer){const r=referrer.referrals.find(x=>x.phone===currentUser.phone);if(r)r.paid=true;}}
    const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();alert('Payment Successful '+res.reference);showDash();
   },
@@ -205,7 +199,6 @@ function updateBal(){
  document.getElementById('todayLikes').innerText=currentUser.todayLikes;
  document.getElementById('totalBal').innerText=(currentUser.likeBalance+currentUser.refBalance+currentUser.bonusBalance).toFixed(2);
  document.getElementById('bonusWithdrawn').innerText=currentUser.bonusWithdrawn||0;
- if(currentUser.likeBalance>=20){document.getElementById('likeMinBadge').innerText='Ready to cashout';}
 }
 function renderMyRefs(){
  const container=document.getElementById('myRefsList');
@@ -240,13 +233,12 @@ function renderProducts(){
  const grid=document.getElementById('prodGrid');grid.innerHTML='';
  products.forEach(p=>{
   const d=document.createElement('div');d.className='prod';
-  d.innerHTML=`<img src="${p.img}"><p><b>${p.name}</b></p><p class="small">GHS ${p.price} (fake)</p><button class="btn" onclick="likeProd(${p.id})">Like ❤️ 0.20</button>`;
+  d.innerHTML=`<img src="${p.img}"><p><b>${p.name}</b></p><p class="small">GHS ${p.price}</p><button class="btn" onclick="likeProd(${p.id})">Like ❤️ 0.20</button>`;
   grid.appendChild(d);
  });
  const list=document.getElementById('adminList');
  if(list){list.innerHTML='';products.forEach(p=>{const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:5px;border-bottom:1px solid #eee';row.innerHTML=`<span>${p.name}</span><button onclick="delProd(${p.id})">Delete</button>`;list.appendChild(row);});}
 }
-function openAdmin(){const pw=prompt('Admin Password:');if(pw!=='buyearn2024'){alert('Wrong');return;}document.getElementById('adminBox').classList.remove('hidden');}
 function handleFile(inp){
  const file=inp.files[0];if(!file)return;
  const r=new FileReader();r.onload=function(e){selectedBase64=e.target.result;document.getElementById('preview').src=selectedBase64;document.getElementById('preview').classList.remove('hidden');document.getElementById('uploadText').classList.add('hidden');};r.readAsDataURL(file);
@@ -258,12 +250,12 @@ function addProduct(){
  if(!name){alert('Name');return;}
  products.unshift({id:Date.now(),name,price:price||0,img:selectedBase64});
  selectedBase64='';document.getElementById('pName').value='';document.getElementById('pPrice').value='';document.getElementById('preview').classList.add('hidden');document.getElementById('uploadText').classList.remove('hidden');document.getElementById('fileIn').value='';
- saveAll();renderProducts();alert('Added from gallery!');
+ saveAll();renderProducts();alert('Added!');
 }
 function delProd(id){if(!confirm('Delete?'))return;products=products.filter(p=>p.id!==id);saveAll();renderProducts();}
 function copyRef(){const el=document.getElementById('myRefLink');el.select();document.execCommand('copy');alert('Copied!');}
 function shareWhatsApp(){const link=document.getElementById('myRefLink').value;window.open('https://wa.me/?text='+encodeURIComponent('Join BuyEarn Ghana! My link: '+link),'_blank');}
-(function(){if(currentUser){if(!currentUser.paid)showPay();else showDash();}renderProducts();window.openAdmin=openAdmin;window.likeProd=likeProd;window.delProd=delProd;})();
+(function(){if(currentUser){if(!currentUser.paid)showPay();else showDash();}renderProducts();})();
 </script>
 </body>
 </html>
