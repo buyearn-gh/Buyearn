@@ -1,127 +1,109 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuyEarn 299 - FREE RENEWAL FOR WINNERS</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuyEarn - Earn Daily by Liking Products</title>
 <script src="https://js.paystack.co/v1/inline.js"></script>
-<style>body{font-family:Arial;background:#f4f6f8;padding:12px}.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px}.header{background:#000;color:#fff;text-align:center}.wallet{background:#e8f5e9;padding:12px;border-radius:10px;text-align:center;font-weight:bold;font-size:18px}.btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:bold;margin:5px 0;cursor:pointer}.btn-p{background:#00c853;color:#fff}.btn-d{background:#111;color:#fff}.btn-o{background:#fff;border:2px solid #00c853;color:#00c853}.momo{background:#fff3e0;border:2px dashed #ff9800;padding:10px;border-radius:10px;text-align:center;font-weight:bold;color:#e65100}.product{background:#fafafa;border:1px solid #ddd;padding:10px;border-radius:10px;margin:5px 0;display:flex;justify-content:space-between;align-items:center}.small{font-size:11px;color:#555}.winner-badge{background:gold;color:#000;padding:8px;border-radius:20px;font-weight:bold;text-align:center;margin:5px 0}</style>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#f5f7fb}
+.header{background:#0a0f1f;color:#fff;padding:16px;text-align:center;position:sticky;top:0;z-index:100}
+.hero{background:linear-gradient(135deg,#00c853,#0091ea);color:#fff;padding:28px 18px;text-align:center}
+.pay-btn{background:#000;color:#fff;border:none;padding:16px 28px;border-radius:12px;font-size:18px;font-weight:800;width:100%;max-width:340px;cursor:pointer}
+.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.product img{width:100%;height:140px;object-fit:cover;border-radius:10px}
+.product h4{font-size:14px;margin:8px 0 4px;height:36px;overflow:hidden}
+.product .price{font-weight:800;color:#00c853;font-size:13px}
+.like-btn{width:100%;margin-top:8px;background:#111;color:#fff;border:none;padding:10px;border-radius:8px;font-weight:700}
+.like-btn:disabled{background:#ccc}
+.stats{display:flex;gap:10px;padding:12px;overflow:auto}
+.stat{min-width:110px;background:#fff;padding:12px;border-radius:12px;text-align:center;flex:1}
+.stat b{font-size:20px;display:block;color:#00c853}
+.dash{padding:12px;display:none}
+.dash.active{display:block}
+.ref-box{background:#111;color:#fff;padding:14px;border-radius:12px;margin:12px 0;word-break:break-all}
+.badge{background:#ffea00;color:#000;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800}
+#adminModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:10000;justify-content:center;align-items:center;padding:15px}
+.admin-inner{background:#fff;padding:22px;border-radius:16px;width:100%;max-width:420px}
+.admin-inner input{width:100%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:8px}
+</style>
 </head>
 <body>
-
-<div class="card header">
-<h2>BuyEarn Ghana - 299 YEARLY</h2>
-<div class="momo">MEMBERSHIP: GHS 299<br>PAY TO: 0507074240 via Paystack</div>
-<div class="wallet">Wallet: GHS <span id="walletBal">0.00</span> | Referrals: <span id="refCount">0</span>/100</div>
-<div id="freeRenewalBadge"></div>
-<p class="small" style="color:#fff">20p x5=1GHS/day | Min 20GHS | Refer 50-10%=45 | 100 refs=2K (1.8K NET) + FREE YEARLY RENEWAL | Winners FRIDAY 500x4</p>
+<div class="header"><h1>🛒 BuyEarn Ghana</h1><p>Pay 299 → Earn 1 GHS Daily + 45 NET Per Referral</p></div>
+<div id="landing">
+<div class="hero">
+<h2>Turn Phone Into Daily Cash Machine</h2>
+<p>✅ Pay GHS 299 Once (to 0507074240)<br>✅ Like 5 Products = 1 GHS<br>✅ Refer = 45 NET Instant<br>✅ 100 Referrals = 1800 NET + FREE Renewal<br>✅ Withdraw 500 x4 Every Friday</p>
+<button class="pay-btn" onclick="payWithPaystack()">🔒 PAY GHS 299 & START</button>
+<p style="margin-top:12px;font-size:12px;">Secured by Paystack</p>
 </div>
-
-<div class="card">
-<h3>FAKE PRODUCTS - Like to Earn 20p (Not Real Sale)</h3>
-<div id="products"></div>
-<p id="likeInfo" style="font-weight:bold;color:#00c853">Likes today: 0/5</p>
+<div style="padding:12px"><div class="card"><b>🎁 How It Works:</b><br>1. Pay 299 → Paystack to 0507074240<br>2. Dashboard instantly<br>3. Like 5 = 0.20x5=1 GHS/day<br>4. Share referral link<br>5. Withdraw Friday</div>
+<h3 style="padding:10px 4px;">🔥 Hot Products</h3><div class="grid" id="previewGrid"></div></div>
 </div>
-
-<div class="card">
-<h3>Referral + FREE RENEWAL</h3>
-<div class="momo">Earn 45 NET per ref | 100 refs = 1800 NET Bonus + FREE 1 YEAR RENEWAL (Save 299)</div>
-<input id="refCode" style="width:100%;padding:12px;border:2px solid #ddd;border-radius:10px;box-sizing:border-box" placeholder="Your Code e.g. EARN123">
-<button class="btn btn-d" onclick="copyRef()">Copy Referral Link</button>
-<button class="btn btn-p" id="payBtn" onclick="payReferralActivation()">PAY GHS 299 TO 0507074240 - ACTIVATE</button>
-<button class="btn btn-o" onclick="addFakeReferral()">[TEST] Add 1 Fake Referral (45 NET)</button>
-<p class="small">Membership Expiry: <span id="expiryDate">Not Active</span></p>
+<div id="dashboard" class="dash">
+<div class="stats">
+<div class="stat"><b id="sBalance">0.00</b><small>Balance</small></div>
+<div class="stat"><b id="sLikes">0/5</b><small>Today Likes</small></div>
+<div class="stat"><b id="sRef">0</b><small>Referrals</small></div>
+<div class="stat"><b id="sNet">0</b><small>NET</small></div>
 </div>
-
-<div class="card">
-<h3>Withdrawal - WINNER RULE</h3>
-<button class="btn btn-p" onclick="requestWithdraw()">Withdraw / Claim Winner Bonus</button>
-<p class="small">Status: <span id="winnerStatus"></span></p>
+<div class="card"><b>🔗 Your Referral Link:</b><div class="ref-box" id="refLink"></div><button onclick="copyRef()" style="width:100%;padding:12px;background:#00c853;color:#fff;border:none;border-radius:8px;font-weight:800">Copy Link & Share</button></div>
+<div class="card" style="background:#e8f5e9"><b>💰 Withdraw:</b><br>• Min: 500 NET • Friday x4 • MTN MoMo</div>
+<h3 style="padding:8px;">👍 Like 5 Products Today</h3><div class="grid" id="productGrid"></div>
 </div>
-
+<button onclick="openAdmin()" style="background:#000;color:#fff;padding:10px 20px;border-radius:8px;position:fixed;bottom:20px;right:20px;z-index:9999;border:none;font-weight:800;">⚙️ Admin</button>
+<div id="adminModal"><div class="admin-inner">
+<h2 style="text-align:center;">⚙️ Admin Upload</h2>
+<input id="pName" placeholder="Product Name">
+<input id="pPrice" placeholder="Price (GHS 899)">
+<input id="pImage" placeholder="Image Link (Google image address)">
+<button onclick="saveProduct()" style="width:100%;background:#00c853;color:white;padding:14px;border:none;border-radius:10px;font-weight:bold;margin-top:10px;">✅ SAVE PRODUCT</button>
+<button onclick="closeAdmin()" style="width:100%;background:#eee;padding:10px;border:none;border-radius:10px;margin-top:8px;">Close</button>
+<div id="adminList" style="margin-top:12px;font-size:12px;max-height:200px;overflow:auto;"></div>
+</div></div>
 <script>
-const PAYSTACK_PUBLIC_KEY='pk_live_0f37f02ac63223a809256075ba4fcb3315400869';
-const OWNER_NUMBER='0507074240';
-const OWNER_AMOUNT=299;
-
-let wallet=parseFloat(localStorage.getItem('b_wallet299')||'0');
-let likesToday=parseInt(localStorage.getItem('b_likes299')||'0');
-let lastDate=localStorage.getItem('b_date299')||'';
-let refCount=parseInt(localStorage.getItem('b_refCount299')||'0');
-let bonusClaimed=parseFloat(localStorage.getItem('b_bonusClaimed299')||'0');
-let expiry=localStorage.getItem('b_expiry299')||'';
-let freeRenewed=localStorage.getItem('b_freeRenewed299')==='true';
-
-function save(){localStorage.setItem('b_wallet299',wallet);localStorage.setItem('b_refCount299',refCount);localStorage.setItem('b_bonusClaimed299',bonusClaimed);localStorage.setItem('b_expiry299',expiry);localStorage.setItem('b_freeRenewed299',freeRenewed);updateUI();}
-function saveLikes(){localStorage.setItem('b_likes299',likesToday);localStorage.setItem('b_date299',new Date().toDateString());}
-function checkDay(){let t=new Date().toDateString();if(lastDate!==t){likesToday=0;saveLikes();}}
-function updateUI(){
- document.getElementById('walletBal').innerText=wallet.toFixed(2);
- document.getElementById('refCount').innerText=refCount;
- document.getElementById('expiryDate').innerText=expiry||'Not Active';
- let badge=document.getElementById('freeRenewalBadge');
- let payBtn=document.getElementById('payBtn');
- if(refCount>=100){
-   if(!freeRenewed){
-     let nextYear=new Date();nextYear.setFullYear(nextYear.getFullYear()+1);
-     expiry=nextYear.toDateString();freeRenewed=true;save();
-   }
-   badge.innerHTML='<div class="winner-badge">🏆 WINNER! FREE YEARLY RENEWAL ACTIVATED! Expiry: '+expiry+' - You saved 299 GHS!</div>';
-   payBtn.innerText='✅ FREE RENEWAL ACTIVE - NO NEED TO PAY 299 AGAIN';
-   payBtn.style.background='gold';payBtn.style.color='#000';
-   payBtn.onclick=function(){alert('You are WINNER! You have FREE yearly renewal! No need to pay 299 again. Your membership extended to '+expiry);};
- }else{
-   badge.innerHTML='';
-   payBtn.innerText='PAY GHS 299 TO 0507074240 - ACTIVATE';
-   payBtn.style.background='#00c853';payBtn.style.color='#fff';
-   payBtn.onclick=payReferralActivation;
- }
- let left=1800-bonusClaimed;
- document.getElementById('winnerStatus').innerText=refCount>=100?'WINNER! 1800 NET Bonus + FREE RENEWAL | Claimed '+bonusClaimed+' | Left '+left+' | 500 every FRIDAY x4':'Need '+(100-refCount)+' more refs for 2K Bonus + FREE RENEWAL';
- document.getElementById('likeInfo').innerText='Likes today: '+likesToday+'/5';
-}
-checkDay();updateUI();
-
-function renderProducts(){
- let prods=[{name:'iPhone 15 Pro (DEMO)'},{name:'Nike Air (DEMO)'},{name:'Samsung TV (DEMO)'},{name:'Gucci Bag (DEMO)'},{name:'Laptop HP (DEMO)'}];
- let html='';prods.forEach(p=>{html+=`<div class="product"><span>${p.name} - FAKE</span><button class="btn btn-o" style="width:auto;padding:8px 15px" onclick="likeEarn()">Like +20p</button></div>`});
- document.getElementById('products').innerHTML=html;
-}renderProducts();
-
-function likeEarn(){
- checkDay();if(likesToday>=5){alert('Max 5/day done!');return;}
- wallet+=0.20;likesToday+=1;save();saveLikes();updateUI();alert('20p added! Balance '+wallet.toFixed(2));
-}
-function copyRef(){
- let c=document.getElementById('refCode').value||'BUYEARN123';
- let l='https://buyearn-live.netlify.app/?ref='+c;navigator.clipboard.writeText(l);
- alert('Link copied! Earn 45 NET per 299 to 0507074240');
-}
-function payReferralActivation(){
- if(refCount>=100){alert('You already have FREE RENEWAL! No need to pay!');return;}
- var h=PaystackPop.setup({key:PAYSTACK_PUBLIC_KEY,email:'customer@buyearn.com.gh',amount:OWNER_AMOUNT*100,currency:'GHS',
- callback:function(r){
-   let d=new Date();d.setFullYear(d.getFullYear()+1);expiry=d.toDateString();save();
-   alert('Payment success! Ref:'+r.reference+' 299 to 0507074240 - Active till '+expiry);
- },onClose:function(){}});h.openIframe();
-}
-function addFakeReferral(){
- refCount+=1;wallet+=45;save();updateUI();
- alert('Added 1 referral: 45 NET! Total: '+refCount);
- if(refCount==100){alert('🏆 CONGRATS! 100 refs! You WON 2K Bonus (1800 NET) + FREE YEARLY RENEWAL worth 299! Total benefit 2099 GHS!');}
-}
-function requestWithdraw(){
- if(wallet<20 && refCount<100){alert('Min 20 GHS. Balance '+wallet.toFixed(2));return;}
- let day=new Date().getDay();
- if(refCount>=100){
-  if(day!==5){alert('WINNER RULE: Withdraw ONLY FRIDAY! Bonus: '+bonusClaimed+'/1800 Claimed. FREE RENEWAL Active till '+expiry);return;}
-  if(bonusClaimed>=1800){alert('Bonus fully withdrawn 1800 NET! But FREE RENEWAL still active till '+expiry);return;}
-  let amt=Math.min(500,1800-bonusClaimed);bonusClaimed+=amt;wallet+=amt;save();updateUI();
-  alert('FRIDAY WINNER: 500 GHS to 0507074240! Claimed '+bonusClaimed+'/1800. FREE RENEWAL till '+expiry);
- }else{
-  alert('Withdrawal GHS '+wallet.toFixed(2)+' to 0507074240 submitted!');
-  wallet=0;save();updateUI();
- }
-}
+const PAYSTACK_KEY = "pk_live_0f37f02ac63223a809256075ba4fcb3315400869";
+const PAY_AMOUNT = 29900;
+const ADMIN_PASS = "buyearn2024";
+let defaultProducts = [
+{name:"Nike Air Max 270",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",price:"GHS 899",reward:0.20},
+{name:"iPhone 15 Pro Max",image:"https://images.unsplash.com/photo-1592899677977-9bb10ba128a5?w=400",price:"GHS 18500",reward:0.20},
+{name:"Rolex Watch",image:"https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=400",price:"GHS 12000",reward:0.20},
+{name:"Gucci Bag",image:"https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400",price:"GHS 2500",reward:0.20},
+{name:"Adidas Hoodie",image:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400",price:"GHS 450",reward:0.20},
+{name:"Sony Headset",image:"https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400",price:"GHS 1800",reward:0.20},
+{name:"MacBook Pro M3",image:"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400",price:"GHS 25000",reward:0.20},
+{name:"Jordan 4",image:"https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400",price:"GHS 1200",reward:0.20},
+{name:"Dior Perfume",image:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=400",price:"GHS 850",reward:0.20},
+{name:"Samsung QLED TV",image:"https://images.unsplash.com/photo-1593359677879-a4bb92f367d8?w=400",price:"GHS 9500",reward:0.20},
+{name:"LV Sneakers",image:"https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400",price:"GHS 1500",reward:0.20},
+{name:"Apple Watch Ultra",image:"https://images.unsplash.com/photo-1555421689-3f034debb7a6?w=400",price:"GHS 4200",reward:0.20},
+{name:"Puma RS-X",image:"https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400",price:"GHS 750",reward:0.20},
+{name:"Zara Jacket",image:"https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400",price:"GHS 380",reward:0.20},
+{name:"Canon Camera",image:"https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=400",price:"GHS 15000",reward:0.20},
+{name:"Yeezy Boost",image:"https://images.unsplash.com/photo-1603808033587-9359428479d6?w=400",price:"GHS 1100",reward:0.20},
+{name:"Prada Sunglasses",image:"https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400",price:"GHS 650",reward:0.20},
+{name:"PlayStation 5",image:"https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400",price:"GHS 5500",reward:0.20},
+{name:"Nike Tech Fleece",image:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=400",price:"GHS 520",reward:0.20},
+{name:"Hublot Watch",image:"https://images.unsplash.com/photo-1548169874-53e85f753f1e?w=400",price:"GHS 22000",reward:0.20}
+];
+let products=[...defaultProducts];
+let saved=JSON.parse(localStorage.getItem('buyearn_products')||'[]');
+if(saved.length>0) products=[...products,...saved];
+function renderPreview(){let g=document.getElementById('previewGrid');g.innerHTML=products.slice(0,6).map(p=>`<div class="card product"><img src="${p.image}"><h4>${p.name}</h4><div class="price">${p.price}</div></div>`).join('');}
+function renderProducts(){let g=document.getElementById('productGrid');let liked=JSON.parse(localStorage.getItem('liked_today')||'[]');let today=new Date().toDateString();let last=localStorage.getItem('last_day');if(last!==today){liked=[];localStorage.setItem('liked_today','[]');localStorage.setItem('last_day',today);}g.innerHTML=products.slice(0,50).map((p,i)=>`<div class="card product"><img src="${p.image}"><h4>${p.name}</h4><div class="price">${p.price} <span class="badge">+0.20</span></div><button class="like-btn" id="btn${i}" onclick="likeProduct(${i})" ${liked.includes(i)?'disabled':''}>${liked.includes(i)?'✅ Liked':'👍 Like'}</button></div>`).join('');updateStats();}
+function likeProduct(i){let liked=JSON.parse(localStorage.getItem('liked_today')||'[]');if(liked.length>=5){alert("5 likes done today!");return;}liked.push(i);localStorage.setItem('liked_today',JSON.stringify(liked));let bal=parseFloat(localStorage.getItem('balance')||'0')+0.20;localStorage.setItem('balance',bal);document.getElementById('btn'+i).innerText='✅ Liked';document.getElementById('btn'+i).disabled=true;updateStats();if(liked.length===5){alert("🎉 1 GHS earned today!");}}
+function updateStats(){let liked=JSON.parse(localStorage.getItem('liked_today')||'[]');let bal=localStorage.getItem('balance')||'0';let refs=localStorage.getItem('referrals')||'0';let net=localStorage.getItem('net')||'0';document.getElementById('sBalance').innerText=parseFloat(bal).toFixed(2);document.getElementById('sLikes').innerText=liked.length+"/5";document.getElementById('sRef').innerText=refs;document.getElementById('sNet').innerText=net;}
+function payWithPaystack(){if(PAYSTACK_KEY.includes("REPLACE")||PAYSTACK_KEY.length<20){openDashboard();return;}let email=prompt("Enter email:","user@gmail.com");if(!email) return;let handler=PaystackPop.setup({key:PAYSTACK_KEY,email:email,amount:PAY_AMOUNT,currency:"GHS",ref:"BUYEARN_"+Math.floor(Math.random()*1000000000),callback:function(r){alert("✅ Success! Ref:"+r.reference+" Money to 0507074240");localStorage.setItem('paid','yes');localStorage.setItem('balance','0');openDashboard();},onClose:function(){alert("Closed. Try again!");}});handler.openIframe();}
+function openDashboard(){document.getElementById('landing').style.display='none';document.getElementById('dashboard').classList.add('active');let uid=localStorage.getItem('uid')||"USER"+Math.floor(Math.random()*10000);localStorage.setItem('uid',uid);document.getElementById('refLink').innerText="https://buyearn-live.netlify.app?ref="+uid;renderProducts();}
+function copyRef(){let t=document.getElementById('refLink').innerText;navigator.clipboard.writeText(t);alert("✅ Copied!");}
+function openAdmin(){let p=prompt("Admin Password:");if(p===ADMIN_PASS){document.getElementById('adminModal').style.display='flex';showAdminList();}else{alert("Wrong!");}}
+function closeAdmin(){document.getElementById('adminModal').style.display='none';}
+function saveProduct(){let n=document.getElementById('pName').value.trim();let pr=document.getElementById('pPrice').value.trim();let im=document.getElementById('pImage').value.trim();if(!n||!pr||!im){alert("Fill all!");return;}let s=JSON.parse(localStorage.getItem('buyearn_products')||'[]');s.push({name:n,price:pr,image:im,reward:0.20});localStorage.setItem('buyearn_products',JSON.stringify(s));alert("✅ Added:"+n);document.getElementById('pName').value='';document.getElementById('pPrice').value='';document.getElementById('pImage').value='';showAdminList();renderPreview();renderProducts();}
+function showAdminList(){let s=JSON.parse(localStorage.getItem('buyearn_products')||'[]');document.getElementById('adminList').innerHTML="<b>Custom:"+s.length+" | All:"+(products.length)+"</b><br>"+s.map(p=>"• "+p.name).join("<br>");}
+if(localStorage.getItem('paid')==='yes'){openDashboard();}renderPreview();
 </script>
 </body>
 </html>
