@@ -1,34 +1,166 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuyEarn 299 LIVE - Paystack Live + Firebase Sync</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuyEarn Ghana - 299</title>
 <script src="https://js.paystack.co/v1/inline.js"></script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, updateDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-const firebaseConfig = { apiKey: "AIzaSyAqLK43cuGSOyujMMAxLDa-KjWQ7hS7Oa8", authDomain: "buyearn-4f226.firebaseapp.com", projectId: "buyearn-4f226", storageBucket: "buyearn-4f226.firebasestorage.app", messagingSenderId: "580921744825", appId: "1:580921744825:web:faaa41515119c7c3e2ea68" };
-const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
-const PAYSTACK_LIVE_KEY='pk_live_0f37f02ac63223a809256075ba4fcb3315400869';
-let currentUser=null;let userData=null;
-onAuthStateChanged(auth, async(user)=>{
- if(user){currentUser=user;document.getElementById('authBox').style.display='none';document.getElementById('mainBox').style.display='block';document.getElementById('userEmail').innerText=user.email;
- const userRef=doc(db,"users",user.uid);onSnapshot(userRef,(snap)=>{if(snap.exists()){userData=snap.data();updateUI();}else{setDoc(userRef,{email:user.email,wallet:0,refCount:0,bonusClaimed:0,likesToday:0,lastDate:'',isMember:false,createdAt:serverTimestamp()});}});}
- else{currentUser=null;document.getElementById('authBox').style.display='block';document.getElementById('mainBox').style.display='none';}
-});
-function updateUI(){if(!userData)return;document.getElementById('walletBal').innerText=(userData.wallet||0).toFixed(2);document.getElementById('refCount').innerText=userData.refCount||0;document.getElementById('isMember').innerText=userData.isMember?'ACTIVE - 299 Paid to 0507074240':'NOT ACTIVE - Pay 299 LIVE';document.getElementById('likeInfo').innerText=`Likes today: ${userData.likesToday||0}/5`;let left=1800-(userData.bonusClaimed||0);document.getElementById('winnerStatus').innerText=(userData.refCount||0)>=100?`WINNER! Bonus 1800 NET | Claimed ${userData.bonusClaimed||0} | Left ${left} | FRIDAY 500/week`:`Need ${100-(userData.refCount||0)} more for 2K Bonus (1800 NET)`;document.getElementById('liveBadge').innerText='LIVE SYNC ON - Phone & Laptop Same! Paystack LIVE Active!';}
-window.register=async()=>{let e=document.getElementById('email').value;let p=document.getElementById('password').value;try{await createUserWithEmailAndPassword(auth,e,p);alert('Registered! Wallet syncs phone+laptop!');}catch(err){alert(err.message);}}
-window.login=async()=>{let e=document.getElementById('email').value;let p=document.getElementById('password').value;try{await signInWithEmailAndPassword(auth,e,p);}catch(err){alert(err.message);}}
-window.logout=()=>signOut(auth);
-window.payMembership=()=>{
- if(!currentUser){alert('Login first!');return;}
- var handler=PaystackPop.setup({key:PAYSTACK_LIVE_KEY,email:currentUser.email,amount:299*100,currency:'GHS',ref:'BuyEarn299_'+Math.floor(Math.random()*1000000000),callback:function(response){const userRef=doc(db,"users",currentUser.uid);updateDoc(userRef,{isMember:true});alert('✅ PAYMENT SUCCESS! GHS 299 paid LIVE to 0507074240! Ref: '+response.reference);},onClose:function(){alert('Closed - Pay 299 to activate!');}});handler.openIframe();
+<!-- Firebase Compat SDK - STABLE -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:15px}
+.card{background:#fff;padding:20px;border-radius:10px;margin-bottom:15px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+.wallet{background:#e8f5e9;padding:10px;border-radius:10px;text-align:center}
+.live{background:#e3f2fd;border:2px solid #2196f3;padding:8px;border-radius:10px;text-align:center;font-weight:bold;color:#0d47a1;margin:8px 0}
+.momo{background:#fff3e0;border:2px dashed #ff9800;padding:10px;border-radius:10px;text-align:center;font-weight:bold;color:#e65100;margin:8px 0}
+.btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:bold;margin-top:8px;cursor:pointer}
+.btn-p{background:#00c853;color:#fff}
+.btn-d{background:#111;color:#fff}
+.btn-o{background:#00c853;color:#00c853}
+.btn-b{background:#2196f3;color:#fff}
+.product{background:#fafafa;border:1px solid #ddd;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}
+.small{font-size:11px;color:#666}
+input{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px;box-sizing:border-box}
+.header{background:#111;color:#fff;padding:15px;border-radius:10px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN BOX - MUST BE FIRST -->
+<div id="authBox" class="card">
+<h2>BuyEarn 299 - LOGIN TO SYNC</h2>
+<p class="small">Same wallet LIVE!</p>
+<input id="email" type="email" placeholder="Email - e.g. Issakaosman94@gmail.com">
+<input id="password" type="password" placeholder="Password">
+<button class="btn btn-p" onclick="login()">LOGIN - Sync Phone & Laptop</button>
+<button class="btn btn-d" onclick="register()">REGISTER</button>
+<div class="live">After login you will see Dashboard</div>
+<p class="small" id="msg"></p>
+</div>
+
+<!-- DASHBOARD - HIDDEN UNTIL LOGIN -->
+<div id="mainBox" style="display:none">
+<div class="card header">
+<h2>BuyEarn Ghana 29</h2>
+<p class="small">Logged as <span id="userEmail"></span> | <span id="liveBadge">Connecting...</span> 
+<button onclick="logout()" style="background:#fff;color:#000;border-radius:12px;padding:4px 8px;font-size:11px;border:none">Logout</button></p>
+<div class="momo">MEMBERSHIP: GHS 299 YEAR</div>
+</div>
+
+<div class="card wallet">
+<p>Wallet: GHS <span id="wallet">0</span></p>
+<button class="btn btn-b" onclick="buy()">Buy Product with Paystack</button>
+</div>
+
+<div class="card">
+<h3>Products</h3>
+<div id="products">Loading...</div>
+</div>
+</div>
+
+<!-- SCRIPT MUST BE AT BOTTOM - THIS FIXES invalid-email BUG -->
+<script>
+// ========== REPLACE WITH YOUR FIREBASE CONFIG ==========
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+// =======================================================
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+function $(id){ return document.getElementById(id); }
+
+function login(){
+  const email = $("email").value.trim();
+  const password = $("password").value.trim();
+  const msg = $("msg");
+  
+  if(!email){ msg.innerText="Type Email first!"; alert("Type Email!"); return; }
+  if(!email.includes("@") || !email.includes(".")){ msg.innerText="Invalid email - need @ and ."; alert("Email must be like Issakaosman94@gmail.com - must have @ and .com"); return; }
+  if(!password){ msg.innerText="Type Password!"; alert("Type Password!"); return; }
+  if(password.length < 6){ alert("Password must be 6+ chars"); return; }
+  
+  console.log("Login trying:", email);
+  msg.innerText="Logging in...";
+  
+  auth.signInWithEmailAndPassword(email, password)
+  .then((cred)=>{
+    msg.innerText="Login SUCCESS!";
+    alert("Login SUCCESS! Syncing...");
+  })
+  .catch((err)=>{
+    console.error(err);
+    msg.innerText=err.message;
+    alert("Login error: " + err.code + " - " + err.message);
+  });
 }
-window.likeEarn=async()=>{if(!userData.isMember){alert('Pay 299 LIVE first!');return;}let today=new Date().toDateString();let l=userData.likesToday||0;let last=userData.lastDate||'';if(last!==today)l=0;if(l>=5){alert('Max 5/day!');return;}const r=doc(db,"users",currentUser.uid);await updateDoc(r,{wallet:(userData.wallet||0)+0.20,likesToday:l+1,lastDate:today});}
-window.addFakeReferral=async()=>{if(!userData.isMember){alert('Pay 299 LIVE first!');return;}const r=doc(db,"users",currentUser.uid);let nr=(userData.refCount||0)+1;let nw=(userData.wallet||0)+45;await updateDoc(r,{refCount:nr,wallet:nw});if(nr===100)alert('100 refs! WON 2K=1800 NET!');else alert('Referral LIVE SYNC! +45 NET Total:'+nr);}
-window.requestWithdraw=async()=>{if((userData.wallet||0)<20&&(userData.refCount||0)<100){alert('Min 20 GHS');return;}let day=new Date().getDay();if((userData.refCount||0)>=100){if(day!==5){alert('WINNER: Only FRIDAY 500/week! Claimed '+(userData.bonusClaimed||0)+'/1800');return;}if((userData.bonusClaimed||0)>=1800){alert('Bonus done!');return;}let amt=Math.min(500,1800-(userData.bonusClaimed||0));const r=doc(db,"users",currentUser.uid);await updateDoc(r,{wallet:(userData.wallet||0)+amt,bonusClaimed:(userData.bonusClaimed||0)+amt});alert('FRIDAY Withdraw GHS '+amt);}else{const r=doc(db,"users",currentUser.uid);alert('Withdraw GHS '+(userData.wallet||0).toFixed(2)+' submitted!');await updateDoc(r,{wallet:0});}}
+
+function register(){
+  const email = $("email").value.trim();
+  const password = $("password").value.trim();
+  const msg = $("msg");
+  
+  if(!email){ alert("Type Email!"); return; }
+  if(!email.includes("@")){ alert("Email must have @ - e.g. Issakaosman94@gmail.com"); return; }
+  if(password.length < 6){ alert("Password must be 6+ letters!"); return; }
+  
+  console.log("Register trying:", email);
+  msg.innerText="Registering...";
+  
+  auth.createUserWithEmailAndPassword(email, password)
+  .then((cred)=>{
+    msg.innerText="Registered! Now click LOGIN";
+    alert("REGISTER SUCCESS! Now click LOGIN button!");
+    // Save to DB
+    db.ref("users/"+cred.user.uid).set({email:email,wallet:0,joined:Date.now()});
+  })
+  .catch((err)=>{
+    console.error(err);
+    msg.innerText=err.message;
+    alert("Register error: " + err.code + " - " + err.message);
+  });
+}
+
+function logout(){
+  auth.signOut().then(()=>{ location.reload(); });
+}
+
+// Keep login synced phone & laptop
+auth.onAuthStateChanged((user)=>{
+  if(user){
+    $("authBox").style.display="none";
+    $("mainBox").style.display="block";
+    $("userEmail").innerText=user.email;
+    $("liveBadge").innerText="LIVE - Synced";
+    $("liveBadge").style.color="#00c853";
+    loadData(user.uid);
+  } else {
+    $("authBox").style.display="block";
+    $("mainBox").style.display="none";
+  }
+});
+
+function loadData(uid){
+  db.ref("users/"+uid).on("value",(snap)=>{
+    const data=snap.val();
+    if(data){ $("wallet").innerText=data.wallet||0; }
+  });
+  $("products").innerHTML='<div class="product"><span>Sample Product 1 - GHS 50</span><button class="btn btn-p" style="width:auto">Buy</button></div>';
+}
+
+function buy(){
+  // Paystack sample
+  alert("Paystack here - connect your Paystack key");
+}
 </script>
-<style>body{font-family:Arial;background:#f4f6f8;padding:10px;margin:0}.card{background:#fff;padding:14px;border-radius:12px;margin:10px auto;max-width:520px}.header{background:#000;color:#fff;text-align:center}.wallet{background:#e8f5e9;padding:10px;border-radius:10px;text-align:center;font-weight:bold}.live{background:#e3f2fd;border:2px solid #2196f3;padding:8px;border-radius:10px;text-align:center;font-weight:bold;color:#0d47a1;margin:8px 0}.momo{background:#fff3e0;border:2px dashed #ff9800;padding:10px;border-radius:10px;text-align:center;font-weight:bold;color:#e65100;margin:8px 0}.btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer}.btn-p{background:#00c853;color:#fff}.btn-d{background:#111;color:#fff}.btn-o{background:#fff;border:2px solid #00c853;color:#00c853}.btn-b{background:#2196f3;color:#fff}.product{background:#fafafa;border:1px solid #ddd;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}.small{font-size:11px;color:#666}input{width:100%;padding:12px;margin:6px 0;border:1.5px solid #ddd;border-radius:10px;box-sizing:border-box}</style>
-</head><body>
-<div id="authBox" class="card"><h2>BuyEarn 299 - LOGIN TO SYNC LIVE</h2><p class="small">Same email on phone + laptop = Same wallet LIVE! Paystack LIVE active!</p><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button class="btn btn-b" onclick="login()">LOGIN - Phone & Laptop Same</button><button class="btn btn-d" onclick="register()">REGISTER</button><div class="live">After login, balance syncs LIVE!</div></div>
-<div id="mainBox" style="display:none"><div class="card header"><h2>BuyEarn Ghana 299 LIVE SYNC 🇬🇭</h2><p class="small">Logged as <span id="userEmail"></span> | <span id="liveBadge">Connecting LIVE...</span> <button onclick="logout()" style="background:#fff;color:#000;border-radius:12px;padding:4px 10px;font-size:11px;border:none">Logout</button></p><div class="momo">MEMBERSHIP: GHS 299 YEARLY LIVE PAY<br>PAY TO: 0507074240 via Paystack LIVE</div><div class="wallet">Wallet: GHS <span id="walletBal">0.00</span> | Referrals: <span id="refCount">0</span>/100<br><span id="isMember">Checking...</span></div></div><div class="card"><h3>FAKE PRODUCTS - Like 20p LIVE SYNC</h3><div class="product"><span>iPhone 15 Pro (DEMO)</span><button class="btn-o" style="width:auto;padding:8px 12px" onclick="likeEarn()">Like +20p</button></div><div class="product"><span>Nike Air (DEMO)</span><button class="btn-o" style="width:auto;padding:8px 12px" onclick="likeEarn()">Like +20p</button></div><div class="product"><span>Samsung TV (DEMO)</span><button class="btn-o" style="width:auto;padding:8px 12px" onclick="likeEarn()">Like +20p</button></div><p id="likeInfo" style="font-weight:bold;color:#00c853">Likes today: 0/5</p></div><div class="card"><h3>Step 1: Pay 299 LIVE with Paystack</h3><button class="btn btn-p" onclick="payMembership()">PAY GHS 299 LIVE TO 0507074240 - ACTIVATE NOW (LIVE KEY)</button></div><div class="card"><h3>Step 2: Referral 50-10%=45 NET LIVE SYNC</h3><button class="btn btn-d" onclick="addFakeReferral()">[TEST] Add 1 Referral +45 NET</button><p id="winnerStatus" class="small" style="font-weight:bold"></p></div><div class="card"><h3>Step 3: Withdraw - FRIDAY 500/week</h3><button class="btn btn-p" onclick="requestWithdraw()">Withdraw / Friday 500 LIVE</button></div></div>
-</body></html>
+</body>
+</html>
