@@ -1,261 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuyEarn Ghana - Shop & Earn</title>
-<script src="https://js.paystack.co/v1/inline.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#f5f5f5}
-.header{background:#111;color:#fff;padding:15px;text-align:center;position:sticky;top:0;z-index:10}
-.container{max-width:520px;margin:auto;padding:10px}
-.card{background:#fff;border-radius:12px;padding:15px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.btn{background:#111;color:#fff;border:none;padding:12px 20px;border-radius:8px;width:100%;font-weight:bold;cursor:pointer;margin-top:8px}
-.btn-green{background:#00a651}
-.btn-yellow{background:#ffe600;color:#111}
-.input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin:6px 0}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.prod{border:1px solid #eee;border-radius:10px;padding:8px;text-align:center;background:#fff}
-.prod img{width:100%;height:115px;object-fit:cover;border-radius:8px;background:#eee}
-.badge{background:#ffe600;color:#111;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:bold}
-.small{font-size:12px;color:#666;line-height:1.4}
-.hidden{display:none}
-.uploadBox{width:100%;height:135px;border:2px dashed #111;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fafafa;overflow:hidden}
-.uploadBox img{width:100%;height:100%;object-fit:cover}
-.refItem{border:1px solid #eee;padding:8px;border-radius:8px;margin:5px 0;display:flex;justify-content:space-between;font-size:13px}
-</style>
-</head>
-<body>
-<div class="header">
-<h1>BUYEARN GHANA</h1>
-<div class="small" style="color:#ffe600">Shop & Earn - Like Products Daily | Refer & Earn GHS 45</div>
-</div>
-<div class="container">
-
-<div id="regCard" class="card">
-<h3>Join BuyEarn Ghana</h3>
-<p class="small">Correct details required for withdrawal to MoMo.</p>
-<input id="rName" class="input" placeholder="Full Name (as on MoMo)">
-<input id="rPhone" class="input" placeholder="Phone Number (10 digits)">
-<input id="rMomo" class="input" placeholder="MoMo Number">
-<input id="rMomoName" class="input" placeholder="MoMo Name">
-<input id="rPassword" class="input" type="password" placeholder="Create Password">
-<div id="refFromUrlBox" class="hidden" style="background:#ffe600;padding:8px;border-radius:6px">
-You were invited! Referral Code: <b id="refFromUrlText"></b>
-</div>
-<button class="btn" onclick="doRegister()">Register & Continue</button>
-<div id="regMsg" class="small" style="color:red;margin-top:5px"></div>
-<p class="small" style="margin-top:8px">Already member? <a href="#" onclick="showLogin()">Login here</a></p>
-</div>
-
-<div id="loginCard" class="card hidden">
-<h3>Login</h3>
-<input id="lPhone" class="input" placeholder="Phone Number">
-<input id="lPass" class="input" type="password" placeholder="Password">
-<button class="btn" onclick="doLogin()">Login</button>
-<div id="loginMsg" class="small"></div>
-</div>
-
-<div id="payCard" class="card hidden">
-<h3>Activate Membership - GHS 299 / Year</h3>
-<div id="userInfo" class="small" style="background:#f9f9f9;padding:8px;border-radius:6px"></div>
-<p class="small">Earn daily by liking products + referral bonus. Free renewal if you win 2K bonus.</p>
-<button class="btn btn-green" onclick="payWithPaystack()">Pay GHS 299 with Paystack</button>
-<button class="btn" onclick="logout()">Logout</button>
-</div>
-
-<div id="dashCard" class="card hidden">
-<h3>Dashboard</h3>
-<div style="background:#111;color:#fff;padding:12px;border-radius:8px">
-<p>Like Earnings: GHS <b id="likeBal">0.00</b> <span class="badge" id="likeMinBadge">Need 20 to withdraw</span></p>
-<p>Referral Earnings: GHS <b id="refBal">0.00</b> | Referrals: <b id="refCount">0</b>/100</p>
-<p>Bonus: GHS <b id="bonusBal">0.00</b></p>
-<p><b>Total: GHS <span id="totalBal">0.00</span></b></p>
-<p class="small" style="color:#ffe600">Withdrawal: Friday only. Bonus 500/week x4</p>
-</div>
-<h4 style="margin-top:12px">Your Referral Link - Earn GHS 45 per person</h4>
-<div style="display:flex;gap:5px">
-<input id="myRefLink" class="input" readonly>
-<button class="btn" style="width:70px" onclick="copyRef()">Copy</button>
-</div>
-<button class="btn btn-yellow" onclick="shareWhatsApp()">Share on WhatsApp</button>
-<div id="bonusWinBox" class="hidden" style="background:#ffe600;padding:10px;border-radius:8px;margin-top:10px">
-<b>🎉 YOU WON GHS 2000 BONUS!</b><br>
-<span class="small">Free Renewal Next Year! Withdraw 500 per Friday for 4 weeks.</span><br>
-<p>Withdrawn: GHS <span id="bonusWithdrawn">0</span> / 1800</p>
-</div>
-<div style="margin-top:12px;background:#f9f9f9;padding:10px;border-radius:8px">
-<h4>People You Referred</h4>
-<div id="myRefsList"></div>
-<p id="noRefsMsg" class="small">No referrals yet. Share your link!</p>
-</div>
-<button class="btn btn-green" onclick="requestWithdrawal()">Request Withdrawal (Friday Only)</button>
-<div id="withMsg" class="small" style="margin-top:6px;font-weight:bold"></div>
-<button class="btn" onclick="logout()">Logout</button>
-<h4 style="margin-top:15px">Today's Task: Like 5 Products = GHS 0.20 each</h4>
-<p class="small">Likes today: <span id="todayLikes">0</span>/5</p>
-</div>
-
-<div class="card">
-<h3>🔥 Hot Products - Like to Earn GHS 0.20</h3>
-<p class="small">Like 5 products daily to earn. Real products from our shop partners.</p>
-<div id="prodGrid" class="grid"></div>
-</div>
-
-<div id="adminCard" class="card hidden">
-<h3>Admin - Owner Only</h3>
-<div class="uploadBox" onclick="document.getElementById('fileIn').click()">
-<span id="uploadText">📸 Click - Choose From Gallery</span>
-<img id="preview" class="hidden">
-</div>
-<input type="file" id="fileIn" accept="image/*" class="hidden" onchange="handleFile(this)">
-<input id="pName" class="input" placeholder="Product Name">
-<input id="pPrice" class="input" type="number" placeholder="Price GHS">
-<button class="btn btn-green" onclick="addProduct()">Add Product</button>
-<div id="adminList" style="margin-top:10px"></div>
-</div>
-
-</div>
-<script>
-const DB_KEY='buyearn_products_v7';
-const USERS_DB='buyearn_all_users_v7';
-const CURR_KEY='buyearn_current_user_v7';
-let products=JSON.parse(localStorage.getItem(DB_KEY)||'[]');
-let allUsers=JSON.parse(localStorage.getItem(USERS_DB)||'[]');
-let currentUser=JSON.parse(localStorage.getItem(CURR_KEY)||'null');
-let selectedBase64='';
-function saveAll(){localStorage.setItem(DB_KEY,JSON.stringify(products));localStorage.setItem(USERS_DB,JSON.stringify(allUsers));localStorage.setItem(CURR_KEY,JSON.stringify(currentUser));}
-if(products.length===0){products=[{id:1,name:'Orange Slippers',price:150,img:'https://via.placeholder.com/300?text=Slippers'},{id:2,name:'Converse Box',price:750,img:'https://via.placeholder.com/300?text=Converse'}];saveAll();}
-let refFromUrl=new URLSearchParams(window.location.search).get('ref');
-let adminParam=new URLSearchParams(window.location.search).get('admin');
-if(refFromUrl){document.getElementById('refFromUrlBox').classList.remove('hidden');document.getElementById('refFromUrlText').innerText=refFromUrl;}
-if(adminParam==='buyearn2024'){document.getElementById('adminCard').classList.remove('hidden');}
-function doRegister(){
- const name=document.getElementById('rName').value.trim();
- const phone=document.getElementById('rPhone').value.trim();
- const momo=document.getElementById('rMomo').value.trim();
- const momoName=document.getElementById('rMomoName').value.trim();
- const pass=document.getElementById('rPassword').value.trim();
- if(!name||!phone||!momo||!momoName||!pass){document.getElementById('regMsg').innerText='Fill all fields!';return;}
- if(allUsers.find(u=>u.phone===phone)){document.getElementById('regMsg').innerText='Phone already registered, login';return;}
- const referralCode='BUY'+Math.floor(10000+Math.random()*90000);
- const newUser={id:Date.now(),name,phone,momo,momoName,password:pass,registered:true,paid:false,likeBalance:0,refBalance:0,bonusBalance:0,bonusGross:0,bonusWithdrawn:0,referralCode,referredBy:refFromUrl||'',refCount:0,referrals:[],todayLikes:0,lastLikeDate:'',joinDate:new Date().toISOString(),isBonusWinner:false,renewalFree:false,renewalDue:new Date(new Date().setFullYear(new Date().getFullYear()+1)).toISOString()};
- if(refFromUrl){
-  const referrer=allUsers.find(u=>u.referralCode===refFromUrl);
-  if(referrer){referrer.refCount++;referrer.refBalance+=45;referrer.referrals.push({name:newUser.name,phone:newUser.phone,date:new Date().toLocaleDateString(),paid:false});if(referrer.refCount>=100&&!referrer.isBonusWinner){referrer.isBonusWinner=true;referrer.bonusGross=2000;referrer.bonusBalance=1800;referrer.renewalFree=true;}}
- }
- allUsers.push(newUser);currentUser=newUser;saveAll();showPay();
-}
-function showLogin(){document.getElementById('regCard').classList.add('hidden');document.getElementById('loginCard').classList.remove('hidden');}
-function doLogin(){
- const phone=document.getElementById('lPhone').value.trim();
- const pass=document.getElementById('lPass').value.trim();
- const found=allUsers.find(u=>u.phone===phone&&u.password===pass);
- if(!found){document.getElementById('loginMsg').innerText='Wrong phone or password';return;}
- currentUser=found;saveAll();if(!currentUser.paid)showPay();else showDash();
-}
-function showPay(){
- document.getElementById('regCard').classList.add('hidden');document.getElementById('loginCard').classList.add('hidden');document.getElementById('payCard').classList.remove('hidden');document.getElementById('dashCard').classList.add('hidden');
- document.getElementById('userInfo').innerHTML=`Name: ${currentUser.name}<br>Phone: ${currentUser.phone}<br>MoMo: ${currentUser.momo} (${currentUser.momoName})<br>Your Code: <b>${currentUser.referralCode}</b><br>Referred By: ${currentUser.referredBy||'None'}`;
- renderProducts();
-}
-function showDash(){
- document.getElementById('regCard').classList.add('hidden');document.getElementById('loginCard').classList.add('hidden');document.getElementById('payCard').classList.add('hidden');document.getElementById('dashCard').classList.remove('hidden');
- document.getElementById('dashName')?document.getElementById('dashName').innerText=currentUser.name:null;
- document.getElementById('myRefLink').value=window.location.origin+window.location.pathname+'?ref='+currentUser.referralCode;
- updateBal();renderMyRefs();if(currentUser.isBonusWinner){document.getElementById('bonusWinBox').classList.remove('hidden');}renderProducts();
-}
-function logout(){currentUser=null;localStorage.removeItem(CURR_KEY);location.reload();}
-function payWithPaystack(){
- if(currentUser.renewalFree){currentUser.paid=true;const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();alert('Free Renewal!');showDash();return;}
- let handler=PaystackPop.setup({
-  key:'pk_live_0f37f02ac63223a809256075ba4fcb3315400869',
-  email:currentUser.phone+'@buyearn.com',
-  amount:299*100,currency:'GHS',
-  ref:'BUY'+Math.floor(Math.random()*1000000000),
-  callback:function(res){
-   currentUser.paid=true;
-   if(currentUser.referredBy){const referrer=allUsers.find(u=>u.referralCode===currentUser.referredBy);if(referrer){const r=referrer.referrals.find(x=>x.phone===currentUser.phone);if(r)r.paid=true;}}
-   const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();alert('Payment Successful '+res.reference);showDash();
-  },
-  onClose:function(){alert('Payment closed');}
- });handler.openIframe();
-}
-function likeProd(id){
- if(!currentUser||!currentUser.paid){alert('Pay 299 first');return;}
- const today=new Date().toDateString();
- if(currentUser.lastLikeDate!==today){currentUser.todayLikes=0;currentUser.lastLikeDate=today;}
- if(currentUser.todayLikes>=5){alert('5 likes max today');return;}
- currentUser.todayLikes++;currentUser.likeBalance=+(currentUser.likeBalance+0.20).toFixed(2);
- const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();updateBal();alert('Liked! +0.20');
-}
-function updateBal(){
- if(!currentUser)return;
- document.getElementById('likeBal').innerText=currentUser.likeBalance.toFixed(2);
- document.getElementById('refBal').innerText=currentUser.refBalance.toFixed(2);
- document.getElementById('bonusBal').innerText=currentUser.bonusBalance.toFixed(2);
- document.getElementById('refCount').innerText=currentUser.refCount;
- document.getElementById('todayLikes').innerText=currentUser.todayLikes;
- document.getElementById('totalBal').innerText=(currentUser.likeBalance+currentUser.refBalance+currentUser.bonusBalance).toFixed(2);
- document.getElementById('bonusWithdrawn').innerText=currentUser.bonusWithdrawn||0;
-}
-function renderMyRefs(){
- const container=document.getElementById('myRefsList');
- const noMsg=document.getElementById('noRefsMsg');
- container.innerHTML='';
- if(!currentUser.referrals||currentUser.referrals.length===0){noMsg.classList.remove('hidden');return;}
- noMsg.classList.add('hidden');
- currentUser.referrals.forEach((r,i)=>{
-  const div=document.createElement('div');div.className='refItem';
-  div.innerHTML=`<span><b>${i+1}. ${r.name}</b><br>${r.phone} | ${r.date}</span><span>${r.paid?'Paid ✅':'Registered'}</span>`;
-  container.appendChild(div);
- });
-}
-function requestWithdrawal(){
- if(!currentUser||!currentUser.paid){alert('Join first');return;}
- const day=new Date().getDay();
- if(day!==5){document.getElementById('withMsg').innerText='❌ Withdrawal ONLY FRIDAY. Today is '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][day]+'. Come Friday.';return;}
- const total=currentUser.likeBalance+currentUser.refBalance+currentUser.bonusBalance;
- if(currentUser.likeBalance>0&&currentUser.likeBalance<20){document.getElementById('withMsg').innerText='Need GHS 20 minimum from likes. Your likes: '+currentUser.likeBalance;return;}
- if(total<1){document.getElementById('withMsg').innerText='No balance';return;}
- if(currentUser.isBonusWinner&&currentUser.bonusBalance>0){
-  const toWithdraw=currentUser.bonusBalance>=500?500:currentUser.bonusBalance;
-  currentUser.bonusBalance-=toWithdraw;currentUser.bonusWithdrawn=(currentUser.bonusWithdrawn||0)+toWithdraw;
-  const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();updateBal();
-  document.getElementById('withMsg').innerText=`✅ Friday Bonus: GHS ${toWithdraw} to MoMo ${currentUser.momo} - Week ${currentUser.bonusWithdrawn/500}/4`;return;
- }
- document.getElementById('withMsg').innerText=`✅ Friday Withdrawal: GHS ${total.toFixed(2)} to MoMo ${currentUser.momo}`;
- currentUser.likeBalance=0;currentUser.refBalance=0;
- const idx=allUsers.findIndex(u=>u.id===currentUser.id);if(idx>=0)allUsers[idx]=currentUser;saveAll();updateBal();
-}
-function renderProducts(){
- const grid=document.getElementById('prodGrid');grid.innerHTML='';
- products.forEach(p=>{
-  const d=document.createElement('div');d.className='prod';
-  d.innerHTML=`<img src="${p.img}"><p><b>${p.name}</b></p><p class="small">GHS ${p.price}</p><button class="btn" onclick="likeProd(${p.id})">Like ❤️ 0.20</button>`;
-  grid.appendChild(d);
- });
- const list=document.getElementById('adminList');
- if(list){list.innerHTML='';products.forEach(p=>{const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;padding:5px;border-bottom:1px solid #eee';row.innerHTML=`<span>${p.name}</span><button onclick="delProd(${p.id})">Delete</button>`;list.appendChild(row);});}
-}
-function handleFile(inp){
- const file=inp.files[0];if(!file)return;
- const r=new FileReader();r.onload=function(e){selectedBase64=e.target.result;document.getElementById('preview').src=selectedBase64;document.getElementById('preview').classList.remove('hidden');document.getElementById('uploadText').classList.add('hidden');};r.readAsDataURL(file);
-}
-function addProduct(){
- const name=document.getElementById('pName').value.trim();
- const price=document.getElementById('pPrice').value.trim();
- if(!selectedBase64){alert('Choose from gallery');return;}
- if(!name){alert('Name');return;}
- products.unshift({id:Date.now(),name,price:price||0,img:selectedBase64});
- selectedBase64='';document.getElementById('pName').value='';document.getElementById('pPrice').value='';document.getElementById('preview').classList.add('hidden');document.getElementById('uploadText').classList.remove('hidden');document.getElementById('fileIn').value='';
- saveAll();renderProducts();alert('Added!');
-}
-function delProd(id){if(!confirm('Delete?'))return;products=products.filter(p=>p.id!==id);saveAll();renderProducts();}
-function copyRef(){const el=document.getElementById('myRefLink');el.select();document.execCommand('copy');alert('Copied!');}
-function shareWhatsApp(){const link=document.getElementById('myRefLink').value;window.open('https://wa.me/?text='+encodeURIComponent('Join BuyEarn Ghana! My link: '+link),'_blank');}
-(function(){if(currentUser){if(!currentUser.paid)showPay();else showDash();}renderProducts();})();
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuyEarn 299 LIVE SYNC</title>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, updateDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+const firebaseConfig = { apiKey: "AIzaSyAqLK43cuGSOyujMMAxLDa-KjWQ7hS7Oa8", authDomain: "buyearn-4f226.firebaseapp.com", projectId: "buyearn-4f226", storageBucket: "buyearn-4f226.firebasestorage.app", messagingSenderId: "580921744825", appId: "1:580921744825:web:faaa41515119c7c3e2ea68" };
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
+let currentUser=null;let userData=null;
+onAuthStateChanged(auth, async(user)=>{
+ if(user){currentUser=user;document.getElementById('authBox').style.display='none';document.getElementById('mainBox').style.display='block';document.getElementById('userEmail').innerText=user.email;
+ const userRef=doc(db,"users",user.uid);onSnapshot(userRef,(snap)=>{if(snap.exists()){userData=snap.data();updateUI();}else{setDoc(userRef,{email:user.email,wallet:0,refCount:0,bonusClaimed:0,likesToday:0,lastDate:'',isMember:false,createdAt:serverTimestamp()});}});}
+ else{currentUser=null;document.getElementById('authBox').style.display='block';document.getElementById('mainBox').style.display='none';}
+});
+function updateUI(){if(!userData)return;document.getElementById('walletBal').innerText=(userData.wallet||0).toFixed(2);document.getElementById('refCount').innerText=userData.refCount||0;document.getElementById('isMember').innerText=userData.isMember?'ACTIVE - 299 Paid':'NOT ACTIVE - Pay 299';document.getElementById('likeInfo').innerText=`Likes today: ${userData.likesToday||0}/5`;let left=1800-(userData.bonusClaimed||0);document.getElementById('winnerStatus').innerText=(userData.refCount||0)>=100?`WINNER! Bonus 1800 NET | Claimed ${userData.bonusClaimed||0} | Left ${left} | FRIDAY 500/week`:`Need ${100-(userData.refCount||0)} more for 2K Bonus`;document.getElementById('liveBadge').innerText='LIVE SYNC ON - Phone & Laptop Same!';}
+window.register=async()=>{let e=document.getElementById('email').value;let p=document.getElementById('password').value;try{await createUserWithEmailAndPassword(auth,e,p);alert('Registered! Wallet syncs phone+laptop!');}catch(err){alert(err.message);}}
+window.login=async()=>{let e=document.getElementById('email').value;let p=document.getElementById('password').value;try{await signInWithEmailAndPassword(auth,e,p);}catch(err){alert(err.message);}}
+window.logout=()=>signOut(auth);
+window.activateMember=async()=>{const r=doc(db,"users",currentUser.uid);await updateDoc(r,{isMember:true});alert('ACTIVE 299!');}
+window.likeEarn=async()=>{if(!userData.isMember){alert('Pay 299 first!');return;}let today=new Date().toDateString();let l=userData.likesToday||0;let last=userData.lastDate||'';if(last!==today)l=0;if(l>=5){alert('Max 5/day!');return;}const r=doc(db,"users",currentUser.uid);await updateDoc(r,{wallet:(userData.wallet||0)+0.20,likesToday:l+1,lastDate:today});}
+window.addFakeReferral=async()=>{if(!userData.isMember){alert('Activate 299 first!');return;}const r=doc(db,"users",currentUser.uid);let nr=(userData.refCount||0)+1;let nw=(userData.wallet||0)+45;await updateDoc(r,{refCount:nr,wallet:nw});if(nr===100)alert('100 refs! WON 2K=1800 NET!');}
+window.requestWithdraw=async()=>{if((userData.wallet||0)<20&&(userData.refCount||0)<100){alert('Min 20 GHS');return;}let day=new Date().getDay();if((userData.refCount||0)>=100){if(day!==5){alert('WINNER: Only FRIDAY 500/week! Today not Friday. Claimed '+(userData.bonusClaimed||0)+'/1800');return;}if((userData.bonusClaimed||0)>=1800){alert('Bonus done 1800!');return;}let amt=Math.min(500,1800-(userData.bonusClaimed||0));const r=doc(db,"users",currentUser.uid);await updateDoc(r,{wallet:(userData.wallet||0)+amt,bonusClaimed:(userData.bonusClaimed||0)+amt});alert('FRIDAY Withdraw GHS '+amt);}else{const r=doc(db,"users",currentUser.uid);alert('Withdraw GHS '+(userData.wallet||0).toFixed(2)+' submitted!');await updateDoc(r,{wallet:0});}}
 </script>
-</body>
-</html>
+<style>body{font-family:Arial;background:#f4f6f8;padding:10px;margin:0}.card{background:#fff;padding:14px;border-radius:12px;margin:10px auto;max-width:520px}.header{background:#000;color:#fff;text-align:center}.wallet{background:#e8f5e9;padding:10px;border-radius:10px;text-align:center;font-weight:bold}.live{background:#e3f2fd;border:2px solid #2196f3;padding:8px;border-radius:10px;text-align:center;font-weight:bold;color:#0d47a1;margin:8px 0}.momo{background:#fff3e0;border:2px dashed #ff9800;padding:10px;border-radius:10px;text-align:center;font-weight:bold;color:#e65100;margin:8px 0}.btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer}.btn-p{background:#00c853;color:#fff}.btn-d{background:#111;color:#fff}.btn-o{background:#fff;border:2px solid #00c853;color:#00c853}.btn-b{background:#2196f3;color:#fff}.product{background:#fafafa;border:1px solid #ddd;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center}.small{font-size:11px;color:#666}input{width:100%;padding:12px;margin:6px 0;border:1.5px solid #ddd;border-radius:10px;box-sizing:border-box}</style>
+</head><body>
+<div id="authBox" class="card"><h2>BuyEarn 299 - LOGIN TO SYNC</h2><p class="small">Same email on phone + laptop = Same wallet LIVE!</p><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button class="btn btn-b" onclick="login()">LOGIN - Sync Phone & Laptop</button><button class="btn btn-d" onclick="register()">REGISTER</button><div class="live">After login, balance syncs LIVE!</div></div>
+<div id="mainBox" style="display:none"><div class="card header"><h2>BuyEarn Ghana 299 LIVE SYNC 🇬🇭</h2><p class="small">Logged as <span id="userEmail"></span> | <span id="liveBadge">Connecting LIVE...</span> <button onclick="logout()" style="background:#fff;color:#000;border-radius:12px;padding:4px 10px;font-size:11px;border:none">Logout</button></p><div class="momo">MEMBERSHIP: GHS 299 YEARLY<br>PAY TO: 0507074240</div><div class="wallet">Wallet: GHS <span id="walletBal">0.00</span> | Referrals: <span id="refCount">0</span>/100<br><span id="isMember">Checking...</span></div></div><div class="card"><h3>FAKE PRODUCTS - Like 20p LIVE SYNC</h3><div class="product"><span>iPhone 15 Pro (DEMO)</span><button class="btn-o" style="width:auto;padding:8px 12px" onclick="likeEarn()">Like +20p</button></div><div class="product"><span>Nike Air (DEMO)</span><button class="btn-o" style="width:auto;padding:8px 12px" onclick="likeEarn()">Like +20p</button></div><div class="product"><span>Samsung TV (DEMO)</span><button class="btn-o" style="width:auto;padding:8px 12px" onclick="likeEarn()">Like +20p</button></div><p id="likeInfo" style="font-weight:bold;color:#00c853">Likes today: 0/5</p></div><div class="card"><button class="btn btn-p" onclick="activateMember()">I PAID 299 TO 0507074240 - ACTIVATE</button></div><div class="card"><h3>Referral 50-10%=45 NET</h3><button class="btn btn-d" onclick="addFakeReferral()">[TEST] Add 1 Referral +45 NET (Shows on Phone+Laptop)</button><p id="winnerStatus" class="small" style="font-weight:bold"></p></div><div class="card"><button class="btn btn-p" onclick="requestWithdraw()">Withdraw / Friday 500</button></div></div>
+</body></html>
