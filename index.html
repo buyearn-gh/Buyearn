@@ -1,100 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
+ <!DOCTYPE html>
+<html>
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuyEarn Ghana - LIVE 299 PRIVATE</title>
+<title>BuyEarn LIVE</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <script src="https://js.paystack.co/v1/inline.js"></script>
-<style>
-body{font-family:Arial;background:#f0f2f5;padding:10px;margin:0}
-.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
-.header{background:#000;color:#fff;text-align:center}
-.wallet{background:#e8f5e9;padding:12px;border-radius:10px;text-align:center;font-weight:bold;margin:10px 0;font-size:16px}
-.momo{background:#fff3e0;border:2px dashed #ff9800;padding:10px;border-radius:10px;text-align:center;font-weight:bold;color:#e65100;margin:8px 0}
-.btn{width:100%;padding:13px;border:none;border-radius:10px;font-weight:bold;margin:6px 0;cursor:pointer}
-.btn-p{background:#00c853;color:#fff}.btn-b{background:#2962ff;color:#fff}.btn-d{background:#111;color:#fff}.btn-o{background:#fff;border:2px solid #00c853;color:#00c853}
-.product{background:#fafafa;border:1px solid #ddd;padding:10px;border-radius:10px;margin:7px 0;display:flex;justify-content:space-between;align-items:center}
-.small{font-size:11px;color:#666}
-input{width:100%;padding:12px;margin:5px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
-</style>
 </head>
 <body>
-<div class="card header">
-<h2>BuyEarn Ghana 299 YEARLY - LIVE</h2>
-<div id="userInfo" class="small" style="color:#00ff88"></div>
-<div class="momo">MEMBERSHIP: GHS 299 YEAR - PAY TO: 0507074240 - LIVE PAYSTACK</div>
-<div class="wallet">Wallet: GHS <span id="walletBal">0.00</span> | Referrals: <span id="refCount">0</span>/100 | Likes: <span id="likeInfo">0/5</span></div>
-<p class="small" style="color:#fff">20p x5=1GHS/day | Min 20GHS | Refer 45 NET | 100 refs=1800 NET Bonus | FRIDAY 500x4</p>
-<button id="logoutBtn" class="btn btn-d" style="display:none" onclick="logout()">Logout</button>
-</div>
-
-<div class="card" id="authDiv">
-<h3>Login - PRIVATE WALLET</h3>
-<input id="email" type="email" placeholder="Email e.g. razak@gmail.com">
-<input id="password" type="password" placeholder="Password">
-<button class="btn btn-b" onclick="login()">LOGIN / REGISTER - PRIVATE</button>
-<p class="small">Private: User A cannot see User B balance! But can see his own referrals!</p>
-</div>
-
-<div class="card" id="mainDiv" style="display:none">
-<h3>FAKE PRODUCTS - Like +20p - Not Real Sale</h3>
-<div id="products"></div>
-</div>
-
-<div class="card" id="refDiv" style="display:none">
-<h3>Referral - 50-10%=45 NET - PRIVATE LIST</h3>
-<input id="refCode" placeholder="Your Code e.g. RAZAK123">
-<button class="btn btn-d" onclick="copyRef()">Copy My Referral Link</button>
-<p style="font-weight:bold;margin-top:12px">👥 My People Referred (<span id="myRefListCount">0</span>) - ONLY YOU SEE:</p>
-<div id="myRefList" style="background:#f9f9f9;padding:10px;border-radius:8px;min-height:40px;border:1px solid #eee" class="small">No referrals yet</div>
-<button class="btn btn-p" onclick="payMembership()" style="margin-top:10px">PAY GHS 299 LIVE - 0507074240</button>
-<button class="btn btn-o" onclick="addFakeReferral()">[TEST] Add 1 Referral (45 NET)</button>
-</div>
-
-<div class="card" id="withdrawDiv" style="display:none">
-<h3>Withdrawal - A to Z Rules</h3>
-<p class="small">Normal: Min 20GHS | Winner 100 refs: 1800 NET - FRIDAY 500x4 weeks</p>
-<p class="small">Status: <b><span id="winnerStatus">Not Winner</span></b></p>
-<button class="btn btn-p" onclick="requestWithdraw()">Withdraw / Claim 500</button>
-</div>
-
+<h2>BUYEARN LIVE - 299 GHS</h2>
+<p>Role: <span id="role">GUEST</span></p>
+<p id="balance">Balance: 0.00 GHS</p>
+<p id="likes">Likes Today: 0/5 | 1 LIKE = 0.20 GHS</p>
+<p>FRIDAY ONLY | 20 Gross = 18 Net</p>
+<div id="tasks"></div>
+<button onclick="pay299()">Pay 299 GHS LIVE</button>
+<button onclick="requestCashout()">Cashout Friday</button>
+<button onclick="showReferrals()">Referrals</button>
 <script>
-const PAYSTACK_LIVE_KEY = 'pk_live_0f37f02ac63223a809256075ba4fcb3315400869';
-let currentUser = localStorage.getItem('b_currentUser') || null;
-let allWallets = JSON.parse(localStorage.getItem('b_allWallets')||'{}');
-let allRefs = JSON.parse(localStorage.getItem('b_allRefs')||'{}');
-let allMyRefList = JSON.parse(localStorage.getItem('b_allMyRefList')||'{}');
-let allLikes = JSON.parse(localStorage.getItem('b_allLikes')||'{}');
-let allBonus = JSON.parse(localStorage.getItem('b_allBonus')||'{}');
-function getUserData(){
- if(!currentUser) return {wallet:0, refCount:0, likes:0, bonus:0, myList:[]};
- return {wallet: allWallets[currentUser]||0, refCount: allRefs[currentUser]||0, likes: allLikes[currentUser]?.count||0, bonus: allBonus[currentUser]||0, myList: allMyRefList[currentUser]||[]};
+const PK_LIVE = 'pk_live_0f37f02ac63223a809256075ba4fcb3315400869';
+let user = {balance:0, likesToday:0, role:'GUEST'};
+function pay299(){
+ let email = prompt('Email:');
+ PaystackPop.setup({
+  key: PK_LIVE, email: email, amount: 29900, currency: 'GHS',
+  callback: function(res){
+   user.role='USER';
+   document.getElementById('role').innerText='USER';
+   alert('Success Ref: ' + res.reference);
+  }
+ }).openIframe();
 }
-let userData = getUserData();
-function saveAll(){
- if(!currentUser) return;
- allWallets[currentUser]=userData.wallet; allRefs[currentUser]=userData.refCount; allBonus[currentUser]=userData.bonus; allMyRefList[currentUser]=userData.myList;
- localStorage.setItem('b_allWallets', JSON.stringify(allWallets)); localStorage.setItem('b_allRefs', JSON.stringify(allRefs)); localStorage.setItem('b_allMyRefList', JSON.stringify(allMyRefList)); localStorage.setItem('b_allBonus', JSON.stringify(allBonus)); localStorage.setItem('b_currentUser', currentUser); updateUI();
+function loadTasks(){
+ let tasks=['Shoe','Bag','Phone','Dress','Watch','Car'];
+ let div=document.getElementById('tasks');
+ for(let i=0;i<tasks.length;i++){
+  div.innerHTML+='<div>'+tasks[i]+' Pic <button onclick="likeTask('+i+')" id="btn'+i+'">LIKE 0.20</button></div>';
+ }
 }
-function saveLikes(){ if(!currentUser) return; allLikes[currentUser]={count:userData.likes, date:new Date().toDateString()}; localStorage.setItem('b_allLikes', JSON.stringify(allLikes));}
-function checkDay(){ if(!currentUser) return; let t=new Date().toDateString(); if((allLikes[currentUser]?.date||'')!==t){userData.likes=0; saveLikes();}}
-function updateUI(){
- if(!currentUser) return;
- document.getElementById('walletBal').innerText=userData.wallet.toFixed(2); document.getElementById('refCount').innerText=userData.refCount; document.getElementById('likeInfo').innerText=userData.likes+'/5';
- let s=document.getElementById('winnerStatus'); if(userData.refCount>=100){let left=1800-userData.bonus; s.innerText='WINNER! 1800 NET Claimed '+userData.bonus+' Left '+left+' FRIDAY 500 only';} else{s.innerText='Not Winner - Need '+(100-userData.refCount)+' more';}
- document.getElementById('myRefListCount').innerText=userData.myList.length;
- if(userData.myList.length===0){document.getElementById('myRefList').innerHTML='No referrals yet';} else{let html='';userData.myList.forEach(r=>{html+=`<div style="padding:6px;border-bottom:1px solid #eee">👤 ${r.name} - ${r.date} - 45 NET</div>`;});document.getElementById('myRefList').innerHTML=html;}
+function likeTask(id){
+ if(user.role!=='USER'){ alert('Pay 299 first!'); return; }
+ if(user.likesToday>=5){ alert('Max 5 today!'); return; }
+ user.likesToday++; user.balance+=0.20;
+ document.getElementById('balance').innerText='Balance: ' + user.balance.toFixed(2) + ' GHS';
+ document.getElementById('likes').innerText='Likes Today: ' + user.likesToday + '/5';
+ document.getElementById('btn'+id).disabled=true;
 }
-function renderProducts(){let prods=['iPhone 15 Pro (DEMO)','Nike Air Max (DEMO)','Samsung 55 TV (DEMO)','Gucci Bag (DEMO)','HP Laptop (DEMO)'];let html='';prods.forEach(p=>{html+=`<div class="product"><span>${p}</span><button class="btn btn-o" style="width:auto;padding:8px 14px" onclick="likeEarn()">Like +20p</button></div>`});document.getElementById('products').innerHTML=html;}
-renderProducts();
-function login(){let e=document.getElementById('email').value.trim().toLowerCase(); let p=document.getElementById('password').value.trim(); if(!e||!p){alert('Enter email and password');return;} currentUser=e; userData=getUserData(); localStorage.setItem('b_currentUser',currentUser); checkDay(); showApp(); alert('Welcome '+currentUser+'! PRIVATE wallet: GHS '+userData.wallet.toFixed(2));}
-function logout(){localStorage.removeItem('b_currentUser');currentUser=null;document.getElementById('authDiv').style.display='block';document.getElementById('mainDiv').style.display='none';document.getElementById('refDiv').style.display='none';document.getElementById('withdrawDiv').style.display='none';document.getElementById('logoutBtn').style.display='none';document.getElementById('userInfo').innerText='';}
-function showApp(){if(!currentUser) return;document.getElementById('userInfo').innerText='Logged as '+currentUser+' | PRIVATE WALLET | LIVE KEY ACTIVE';document.getElementById('authDiv').style.display='none';document.getElementById('mainDiv').style.display='block';document.getElementById('refDiv').style.display='block';document.getElementById('withdrawDiv').style.display='block';document.getElementById('logoutBtn').style.display='block';updateUI();}
-if(currentUser){showApp();}
-function likeEarn(){checkDay();if(userData.likes>=5){alert('Max 5/day done!');return;}userData.wallet+=0.20;userData.likes+=1;saveAll();saveLikes();alert('20p! Balance GHS '+userData.wallet.toFixed(2)+' | '+userData.likes+'/5');}
-function copyRef(){let c=document.getElementById('refCode').value||currentUser.split('@')[0].toUpperCase();let l='https://buyearn-live.netlify.app/?ref='+c;navigator.clipboard.writeText(l);alert('Copied: '+l);}
-function payMembership(){var h=PaystackPop.setup({key:PAYSTACK_LIVE_KEY,email:currentUser||'customer@buyearn.com.gh',amount:299*100,currency:'GHS',callback:function(r){alert('LIVE Payment Success Ref:'+r.reference+' GHS 299 to 0507074240 - YEARLY ACTIVE!');},onClose:function(){alert('Paystack closed');}});h.openIframe();}
-function addFakeReferral(){userData.refCount+=1;userData.wallet+=45;let newRef={name:'User'+(userData.myList.length+1)+'@gmail.com',date:new Date().toLocaleDateString()};userData.myList.push(newRef);saveAll();alert('Added '+newRef.name+' 45 NET to YOUR private wallet!'); if(userData.refCount>=100){alert('WINNER! 100 refs = 1800 NET bonus! Friday 500x4!');}}
-function requestWithdraw(){if(userData.wallet<20&&userData.refCount<100){alert('Min 20 GHS. Balance GHS '+userData.wallet.toFixed(2));return;}let day=new Date().getDay();if(userData.refCount>=100){if(day!==5){alert('WINNER: FRIDAY ONLY! Claimed '+userData.bonus+'/1800');return;}if(userData.bonus>=1800){alert('Bonus done!');return;}let amt=Math.min(500,1800-userData.bonus);userData.bonus+=amt;userData.wallet=0;saveAll();alert('FRIDAY Withdraw GHS '+amt+' to 0507074240! Left '+(1800-userData.bonus));}else{alert('Withdraw GHS '+userData.wallet.toFixed(2)+' to 0507074240 submitted!');userData.wallet=0;saveAll();}}
+function requestCashout(){
+ let day = new Date().getDay();
+ if(day!==5){ alert('FRIDAY ONLY! Today not Friday'); return; }
+ if(user.balance<20){ alert('Need 20 GHS Min. You have ' + user.balance.toFixed(2) + ' GHS'); return; }
+ let gross = parseFloat(prompt('You have ' + user.balance.toFixed(2) + ' GHS. Amount? Min 20'));
+ if(!gross || gross<20 || gross>user.balance){ alert('Invalid'); return; }
+ let net = gross*0.9; let fee = gross*0.1;
+ if(confirm('CONFIRM:\nGross: ' + gross + ' GHS\nFee 10%: ' + fee + ' GHS\nNet to MoMo: ' + net + ' GHS')){
+  alert('Requesting auto transfer: ' + net + ' GHS to MoMo...');
+  user.balance-=gross;
+  document.getElementById('balance').innerText='Balance: ' + user.balance.toFixed(2) + ' GHS';
+ }
+}
+function showReferrals(){
+ alert('REFERRAL: 1 Ref = 50 Gross -> 45 Net AUTO\n100 Refs = 2000 Gross -> 1800 Net + FREE Renewal\nBonus WD: 500 Gross -> 450 Net per Friday x4');
+}
+loadTasks();
 </script>
 </body>
 </html>
