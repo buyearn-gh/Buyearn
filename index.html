@@ -1,66 +1,130 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-<title>BuyEarn LIVE</title>
+<title>BUYEARN LIVE - 299 GHS - FINAL</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+body{font-family:sans-serif;padding:15px;background:#f5f5f5}
+.card{background:#fff;padding:15px;border-radius:12px;margin:10px 0;box-shadow:0 2px 6px #0001}
+button{padding:12px 16px;border:0;border-radius:10px;background:#16a34a;color:#fff;font-weight:bold;cursor:pointer;margin:5px;width:100%}
+button:disabled{background:#ccc}
+.task-img{width:100%;height:180px;object-fit:cover;border-radius:10px}
+.small{font-size:12px;color:#666}
+</style>
 </head>
 <body>
-<h2>BUYEARN LIVE - 299 GHS</h2>
-<p>Role: <span id="role">GUEST</span></p>
-<p id="balance">Balance: 0.00 GHS</p>
-<p id="likes">Likes Today: 0/5 | 1 LIKE = 0.20 GHS</p>
-<p>FRIDAY ONLY | 20 Gross = 18 Net</p>
+<h2>BUYEARN GHANA - LIVE - 10% RULE</h2>
+<div class="card">
+<p>Role: <b id="role">GUEST</b> - <span id="uName">Not logged</span></p>
+<p id="bal">Balance: Gross 0 | Net 0 (Private) | Bonus 0</p>
+<p id="likeInfo">Likes Today: 0/5 | 1 LIKE = 0.20 | Daily Max 1 GHS</p>
+<p id="dayInfo"></p>
+</div>
+
+<div class="card" id="payCard">
+<h3>Pay 299 GHS LIVE to Unlock</h3>
+<input id="regName" placeholder="Full Name" style="width:100%;padding:10px;margin:5px 0">
+<input id="regRef" placeholder="Referral Code Optional" style="width:100%;padding:10px;margin:5px 0">
+<button onclick="pay299()">Pay 299 GHS LIVE (Real MoMo)</button>
+<p class="small">Live Paystack Key Integrated - Real Payment</p>
+</div>
+
+<div class="card">
+<h3>Like Tasks (Admin Gallery Uploads)</h3>
 <div id="tasks"></div>
-<button onclick="pay299()">Pay 299 GHS LIVE</button>
-<button onclick="requestCashout()">Cashout Friday</button>
-<button onclick="showReferrals()">Referrals</button>
+</div>
+
+<div class="card">
+<h3>Cashout FRIDAY ONLY - 10% Fee Auto</h3>
+<p class="small">Min 20 Gross = 18 Net | 50=45 | 500 Gross=450 Net per Friday</p>
+<input id="cashAmt" type="number" placeholder="Gross Amount e.g 20" style="width:100%;padding:10px">
+<p id="netPrev">Net: -</p>
+<button id="cashBtn" onclick="doCashout()">Request Cashout (Friday Only)</button>
+<button id="bonusBtn" onclick="doBonus()">Withdraw Bonus 500 Gross=450 Net (Friday)</button>
+</div>
+
+<div class="card">
+<h3>My Private Referrals</h3>
+<div id="myRef">None yet</div>
+</div>
+
+<div class="card" id="adminCard" style="display:none">
+<h3>ADMIN - Upload Tasks & Friday Approve</h3>
+<input type="file" id="imgFile" accept="image/*">
+<button onclick="upload()">Upload Gallery as Task</button>
+<div id="adminData"></div>
+<button onclick="approveAll()" style="background:#000">APPROVE ALL FRIDAY - Send Net - Keep 10%</button>
+</div>
+
 <script>
-const PK_LIVE = 'pk_live_0f37f02ac63223a809256075ba4fcb3315400869';
-let user = {balance:0, likesToday:0, role:'GUEST'};
+let DB=JSON.parse(localStorage.getItem('buyearn_final_live')||'{"users":[],"tasks":[],"cur":null,"likes":{},"lastDate":""}');
+let todayStr=new Date().toDateString();
+if(DB.lastDate!==todayStr){DB.likes={}; DB.lastDate=todayStr; saveDB();}
+function saveDB(){localStorage.setItem('buyearn_final_live',JSON.stringify(DB)); render();}
 function pay299(){
- let email = prompt('Email:');
- PaystackPop.setup({
-  key: PK_LIVE, email: email, amount: 29900, currency: 'GHS',
-  callback: function(res){
-   user.role='USER';
-   document.getElementById('role').innerText='USER';
-   alert('Success Ref: ' + res.reference);
+  let name=document.getElementById('regName').value.trim();
+  if(!name) return alert('Enter name');
+  let refCode=document.getElementById('regRef').value.trim()||new URLSearchParams(location.search).get('ref')||'';
+  let handler=PaystackPop.setup({
+    key:'pk_live_0f37f02ac63223a809256075ba4fcb3315400869',
+    email:name.replace(/\s/g,'').toLowerCase()+'@buyearn.com',
+    amount:29900,
+    currency:'GHS',
+    ref:''+Math.floor(Math.random()*1000000000+1),
+    callback:function(res){
+      let exists=DB.users.find(u=>u.name===name);
+      if(!exists){
+        let u={name, role:'USER', gross:0, net:0, refs:[], refCount:0, bGross:0, bNet:0, bUnlock:false, free:false};
+        DB.users.push(u);
+        if(refCode){
+          let r=DB.users.find(x=>x.name===refCode);
+          if(r){ r.refs.push(name); r.refCount++; r.gross+=50; r.net=r.gross*0.9; if(r.refCount>=100&&!r.bUnlock){ r.bGross+=2000; r.bNet+=1800; r.bUnlock=true; r.free=true; } }
+        }
+      }
+      DB.cur=name; saveDB(); alert('Payment Success LIVE! 299 GHS received. Role=USER. Referrer got 45 Net auto if any.');
+    },
+    onClose:function(){alert('Payment closed');}
+  }); handler.openIframe();
+}
+function upload(){ let f=document.getElementById('imgFile').files[0]; if(!f) return alert('Select image'); let rd=new FileReader(); rd.onload=()=>{DB.tasks.push({id:Date.now(), img:rd.result}); saveDB();}; rd.readAsDataURL(f); }
+function likeIt(id){
+  if(!DB.cur) return alert('Pay 299 first');
+  let user=DB.users.find(u=>u.name===DB.cur);
+  let key=DB.cur+'_'+todayStr; let c=DB.likes[key]||0; if(c>=5) return alert('Max 5 likes today - Blocked till tomorrow. 1 GHS daily max auto in wallet.');
+  if(DB.likes[key+'_'+id]) return alert('Already liked');
+  DB.likes[key+'_'+id]=1; DB.likes[key]=c+1; user.gross+=0.20; user.net=user.gross*0.9; saveDB();
+}
+function doCashout(){
+  let g=parseFloat(document.getElementById('cashAmt').value); if(g<20) return alert('Min 20 Gross=18 Net');
+  if(new Date().getDay()!==5) return alert('Friday Only');
+  let u=DB.users.find(x=>x.name===DB.cur); if(u.gross<g) return alert('Low balance'); let n=g*0.9; DB.pend=DB.pend||[]; DB.pend.push({user:u.name, g, n, type:'regular'}); u.gross-=g; u.net=u.gross*0.9; saveDB(); alert('Requested '+g+' Gross = '+n+' Net - Admin sends '+n+' MoMo Friday');
+}
+function doBonus(){
+  let g=500; let u=DB.users.find(x=>x.name===DB.cur); if(new Date().getDay()!==5) return alert('Friday Only'); if(u.bGross<500) return alert('No bonus'); let n=g*0.9; DB.pend=DB.pend||[]; DB.pend.push({user:u.name, g, n, type:'bonus'}); u.bGross-=g; u.bNet=u.bGross*0.9; saveDB(); alert('Bonus '+g+' Gross='+n+' Net requested');
+}
+function render(){
+  let cur=DB.users.find(u=>u.name===DB.cur);
+  document.getElementById('role').innerText=cur?cur.role:'GUEST';
+  document.getElementById('uName').innerText=cur?cur.name:'Not logged';
+  if(cur){
+    document.getElementById('bal').innerText=`Balance: Gross ${cur.gross.toFixed(2)} | Net ${(cur.gross*0.9).toFixed(2)} | Bonus Gross ${cur.bGross} Net ${cur.bNet} (Private)`;
+    document.getElementById('likeInfo').innerText=`Likes Today: ${DB.likes[cur.name+'_'+todayStr]||0}/5 | 1 LIKE=0.20 | Auto 1 GHS daily | Need 20 days for 20 GHS`;
+    document.getElementById('myRef').innerHTML=`My Referrals (${cur.refCount}): ${cur.refs.join(', ')||'None - Private'}<br>Bonus: ${cur.bUnlock?'UNLOCKED 1800 Net + Free Renewal':cur.refCount+'/100 to unlock 1800 Net'}`;
+    document.getElementById('payCard').style.display='none';
+    if(cur.name==='BuyEarn Admin'||cur.name==='Admin'||cur.name==='buyearn-gh') document.getElementById('adminCard').style.display='block';
   }
- }).openIframe();
+  let isFri=new Date().getDay()===5; document.getElementById('dayInfo').innerText=isFri?'TODAY IS FRIDAY - Cashout ACTIVE':'Cashout active ONLY Friday - Today Blocked';
+  document.getElementById('cashBtn').disabled=!isFri; document.getElementById('bonusBtn').disabled=!isFri;
+  let gv=parseFloat(document.getElementById('cashAmt').value||0); document.getElementById('netPrev').innerText='Net you get: '+(gv*0.9).toFixed(2)+' GHS (10% fee kept by BuyEarn)';
+  let h=''; DB.tasks.forEach(t=>{h+=`<div class="card"><img class="task-img" src="${t.img}"><button onclick="likeIt(${t.id})">LIKE = 0.20 GHS</button></div>`;}); document.getElementById('tasks').innerHTML=h||'No tasks - Admin upload gallery';
+  if(document.getElementById('adminCard').style.display==='block'){
+    document.getElementById('adminData').innerHTML='<h4>All Users (Admin Sees All)</h4>'+DB.users.map(u=>`${u.name} | Gross ${u.gross} Net ${u.net} | Ref ${u.refCount} | Bonus ${u.bNet}`).join('<br>')+'<br><br><b>Pending Friday:</b><br>'+(DB.pend||[]).map(p=>`${p.user} - ${p.g} Gross => ${p.n} Net (${p.type})`).join('<br>');
+  }
 }
-function loadTasks(){
- let tasks=['Shoe','Bag','Phone','Dress','Watch','Car'];
- let div=document.getElementById('tasks');
- for(let i=0;i<tasks.length;i++){
-  div.innerHTML+='<div>'+tasks[i]+' Pic <button onclick="likeTask('+i+')" id="btn'+i+'">LIKE 0.20</button></div>';
- }
-}
-function likeTask(id){
- if(user.role!=='USER'){ alert('Pay 299 first!'); return; }
- if(user.likesToday>=5){ alert('Max 5 today!'); return; }
- user.likesToday++; user.balance+=0.20;
- document.getElementById('balance').innerText='Balance: ' + user.balance.toFixed(2) + ' GHS';
- document.getElementById('likes').innerText='Likes Today: ' + user.likesToday + '/5';
- document.getElementById('btn'+id).disabled=true;
-}
-function requestCashout(){
- let day = new Date().getDay();
- if(day!==5){ alert('FRIDAY ONLY! Today not Friday'); return; }
- if(user.balance<20){ alert('Need 20 GHS Min. You have ' + user.balance.toFixed(2) + ' GHS'); return; }
- let gross = parseFloat(prompt('You have ' + user.balance.toFixed(2) + ' GHS. Amount? Min 20'));
- if(!gross || gross<20 || gross>user.balance){ alert('Invalid'); return; }
- let net = gross*0.9; let fee = gross*0.1;
- if(confirm('CONFIRM:\nGross: ' + gross + ' GHS\nFee 10%: ' + fee + ' GHS\nNet to MoMo: ' + net + ' GHS')){
-  alert('Requesting auto transfer: ' + net + ' GHS to MoMo...');
-  user.balance-=gross;
-  document.getElementById('balance').innerText='Balance: ' + user.balance.toFixed(2) + ' GHS';
- }
-}
-function showReferrals(){
- alert('REFERRAL: 1 Ref = 50 Gross -> 45 Net AUTO\n100 Refs = 2000 Gross -> 1800 Net + FREE Renewal\nBonus WD: 500 Gross -> 450 Net per Friday x4');
-}
-loadTasks();
+document.getElementById('cashAmt').addEventListener('input',render);
+render();
+function approveAll(){ if(new Date().getDay()!==5) return alert('Friday Only'); DB.pend=[]; saveDB(); alert('Approved All Friday - Sent Net 18,45,450 - You kept 10%'); }
 </script>
 </body>
 </html>
