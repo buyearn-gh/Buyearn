@@ -1,0 +1,37 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>Admin - Buyearn</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#0a1931;color:white;padding:20px}
+.card{background:white;color:#333;padding:20px;border-radius:12px;margin:15px 0}
+input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin:8px 0}
+.btn{background:#ffc107;padding:12px;border:none;border-radius:8px;font-weight:bold;width:100%;cursor:pointer}
+#login{max-width:400px;margin:100px auto;background:white;padding:30px;border-radius:15px;color:#333}
+.hide{display:none}
+</style></head><body>
+<div id="login">
+<h2>Admin Login</h2>
+<input type="password" id="pass" placeholder="Password">
+<button class="btn" onclick="login()">Login</button>
+<p id="lmsg"></p>
+</div>
+<div id="main" class="hide">
+<h1>BUYEARN ADMIN 🇬🇭</h1>
+<div class="card">
+<h3>Change Daily Tasks (5 images)</h3>
+<p>Enter image links:</p>
+<input id="i1" placeholder="Image 1 link"><input id="i2" placeholder="Image 2">
+<input id="i3" placeholder="Image 3"><input id="i4" placeholder="Image 4"><input id="i5" placeholder="Image 5">
+<button class="btn" onclick="save()">Save Tasks</button>
+<p id="smsg"></p>
+</div>
+<div class="card">
+<h3>Cashout Requests (Friday)</h3>
+<p>Check Paystack Dashboard > Transactions for paid users. For cashout, pay manually via MoMo.</p>
+<p>Current pending requests will show here when you add backend.</p>
+</div>
+</div>
+<script>
+function login(){if(document.getElementById('pass').value=='BUYEARN2025'){document.getElementById('login').classList.add('hide');document.getElementById('main').classList.remove('hide');}else{document.getElementById('lmsg').innerText='Wrong password';}}
+function save(){let d=[{id:1,img:document.getElementById('i1').value||'https://picsum.photos/200?1'},{id:2,img:document.getElementById('i2').value},{id:3,img:document.getElementById('i3').value},{id:4,img:document.getElementById('i4').value},{id:5,img:document.getElementById('i5').value}];localStorage.setItem('td',JSON.stringify(d));document.getElementById('smsg').innerText='Saved! Tasks updated for all users';}
+</script></body></html>
