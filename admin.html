@@ -1,37 +1,26 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<title>Admin - Buyearn</title>
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#0a1931;color:white;padding:20px}
-.card{background:white;color:#333;padding:20px;border-radius:12px;margin:15px 0}
-input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin:8px 0}
-.btn{background:#ffc107;padding:12px;border:none;border-radius:8px;font-weight:bold;width:100%;cursor:pointer}
-#login{max-width:400px;margin:100px auto;background:white;padding:30px;border-radius:15px;color:#333}
-.hide{display:none}
-</style></head><body>
-<div id="login">
-<h2>Admin Login</h2>
-<input type="password" id="pass" placeholder="Password">
-<button class="btn" onclick="login()">Login</button>
-<p id="lmsg"></p>
-</div>
-<div id="main" class="hide">
-<h1>BUYEARN ADMIN 🇬🇭</h1>
-<div class="card">
-<h3>Change Daily Tasks (5 images)</h3>
-<p>Enter image links:</p>
-<input id="i1" placeholder="Image 1 link"><input id="i2" placeholder="Image 2">
-<input id="i3" placeholder="Image 3"><input id="i4" placeholder="Image 4"><input id="i5" placeholder="Image 5">
-<button class="btn" onclick="save()">Save Tasks</button>
-<p id="smsg"></p>
-</div>
-<div class="card">
-<h3>Cashout Requests (Friday)</h3>
-<p>Check Paystack Dashboard > Transactions for paid users. For cashout, pay manually via MoMo.</p>
-<p>Current pending requests will show here when you add backend.</p>
-</div>
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin - Buyearn LIVE FINAL 10%</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}body{background:#0a1931;color:white;padding:16px}.card{background:white;color:#333;border-radius:12px;padding:16px;margin:10px 0}.btn{padding:12px 18px;border:0;border-radius:10px;font-weight:700;cursor:pointer}.btn-blue{background:#0a7cff;color:white}.btn-green{background:#00c853;color:white}.hide{display:none}input{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #ddd}.small{font-size:12px;color:#666}.fee{background:#fff3e0;border:1px dashed #ff9800;padding:10px;border-radius:8px}</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+</head><body>
+<div id="login"><h2>Admin Login</h2><div class="card"><input id="email" placeholder="admin@buyearn.gh"><input id="pass" type="password" placeholder="Password"><button class="btn btn-blue" onclick="login()">Login</button><p id="msg" class="small"></p></div></div>
+<div id="panel" class="hide">
+<h2>ADMIN - FRIDAY BATCH 10% FEE</h2>
+<div class="card"><div class="fee">20→18 profit 2 | 50→45 profit 5 | 500→450 profit 50 | 2000→1800 profit 200</div></div>
+<div class="card"><h3>Add Gallery (Like Only)</h3><input id="imgUrl" placeholder="Image URL"><input id="imgTitle" placeholder="Title"><button class="btn btn-blue" onclick="addProd()">Add Gallery</button></div>
+<div class="card"><h3>All Users</h3><button class="btn btn-blue" onclick="loadUsers()">Load Users</button><div id="usersList"></div></div>
+<div class="card"><h3>Pending Cashouts - Pay NET</h3><button class="btn btn-green" onclick="loadCashouts()">Load</button><div id="cashouts"></div><button class="btn btn-green" onclick="approveAll()">APPROVE FRIDAY BATCH</button></div>
+<div class="card"><h3>Yearly Bonus 100 Refs = 2000→1800 + Free Renewal</h3><div id="yearly"></div><button class="btn btn-blue" onclick="loadYearly()">Check Bonus</button></div>
 </div>
 <script>
-function login(){if(document.getElementById('pass').value=='BUYEARN2025'){document.getElementById('login').classList.add('hide');document.getElementById('main').classList.remove('hide');}else{document.getElementById('lmsg').innerText='Wrong password';}}
-function save(){let d=[{id:1,img:document.getElementById('i1').value||'https://picsum.photos/200?1'},{id:2,img:document.getElementById('i2').value},{id:3,img:document.getElementById('i3').value},{id:4,img:document.getElementById('i4').value},{id:5,img:document.getElementById('i5').value}];localStorage.setItem('td',JSON.stringify(d));document.getElementById('smsg').innerText='Saved! Tasks updated for all users';}
+const firebaseConfig = {apiKey: "AIzaSyCE_j2lcAniMzXhZkyj5WTYvSAkCw5", authDomain: "buyearn-gh.firebaseapp.com", projectId: "buyearn-gh", storageBucket: "buyearn-gh.appspot.com", messagingSenderId: "556320136820", appId: "1:556320136820:web:84ac398833d7f0e8a9b1c2"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore(); const auth=firebase.auth();
+async function login(){try{await auth.signInWithEmailAndPassword(document.getElementById('email').value,document.getElementById('pass').value);}catch(e){document.getElementById('msg').innerText=e.message;}}
+auth.onAuthStateChanged(async u=>{if(u){const d=await db.collection('users').doc(u.uid).get();if(d.exists && (d.data().isAdmin || u.email==='admin@buyearn.gh')){document.getElementById('login').classList.add('hide');document.getElementById('panel').classList.remove('hide');}else{document.getElementById('msg').innerText='Not admin';}}});
+async function loadUsers(){const s=await db.collection('users').get();document.getElementById('usersList').innerHTML=s.docs.map(doc=>{const x=doc.data();const net=Math.floor((x.balanceGross||0)*0.9);return `<div style='border-bottom:1px solid #eee;padding:6px'>${x.email} | Gross:${x.balanceGross||0} -> Net:${net} | Refs:${x.referrals||0}</div>`}).join('');}
+async function loadCashouts(){const s=await db.collection('cashouts').where('status','==','pending').get();document.getElementById('cashouts').innerHTML=s.docs.map(d=>{const x=d.data();return `<div style='border-bottom:1px solid #eee;padding:8px'><b>${x.email}</b> - Gross ${x.gross} -> SEND NET ${x.net} (Fee ${x.fee})</div>`}).join('')||'No pending';}
+async function approveAll(){const s=await db.collection('cashouts').where('status','==','pending').get();for(const doc of s.docs){await doc.ref.update({status:'approved'});}alert('Approved! Send NET via MoMo');loadCashouts();}
+async function addProd(){const url=document.getElementById('imgUrl').value;const title=document.getElementById('imgTitle').value;if(!url)return;await db.collection('gallery').add({img:url,title});alert('Added');}
+async function loadYearly(){const s=await db.collection('users').where('referrals','>=',100).get();document.getElementById('yearly').innerHTML=s.docs.map(d=>{const x=d.data();return `<div>${x.email} - ${x.referrals} refs -> 2000->1800 + Free Renewal</div>`}).join('')||'None yet';}
 </script></body></html>
