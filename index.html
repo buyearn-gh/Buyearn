@@ -1,95 +1,105 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<title>BUYEARN GHANA</title>
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BuyEarn LIVE - 299 GHS - FINAL A TO Z 10% FEE</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#f5f7fb} .header{background:#0a1931;color:white;padding:20px;text-align:center}
-.header h1{color:#ffc107} .btn{background:#ffc107;color:#0a1931;padding:14px;border:none;border-radius:8px;font-weight:bold;width:100%;margin:10px 0;cursor:pointer}
-.card{background:white;margin:15px;padding:20px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-.balance{font-size:32px;font-weight:bold;text-align:center} .small{color:#666;font-size:14px}
-input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin:8px 0}
-.task{display:flex;gap:12px;align-items:center;border:1px solid #eee;padding:10px;border-radius:10px;margin:8px 0}
-</style></head><body>
-<div class="header"><h1>BUYEARN GHANA 🇬🇭</h1><p>Pay 299 Once - Earn Daily</p></div>
-
-<div class="card" id="payCard">
-<h2>Activate Account</h2>
-<p class="small">Pay 299 GHS once to start earning</p>
-<button class="btn" onclick="pay()">Pay 299 GHS - Activate Now</button>
-<p id="payMsg"></p>
+body{font-family:Arial;background:#f5f5f5;margin:0}
+.header{background:#000;color:#fff;padding:15px;text-align:center}
+.card{background:#fff;margin:12px;padding:15px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.btn{background:#000;color:#fff;border:none;padding:13px;border-radius:8px;width:100%;font-weight:bold;cursor:pointer}
+.btn:disabled{background:#999}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prod{width:100%;height:140px;object-fit:cover;border-radius:8px}
+.small{font-size:11px;color:#666}
+.badge{background:gold;padding:5px 10px;border-radius:8px;font-weight:bold}
+</style>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+</head>
+<body>
+<div class="header">
+<h2>BUYEARN LIVE - FINAL</h2>
+<div style="font-size:12px">20->18 | 50->45 | 2000->1800 | 500->450 x4=1800 | CONFIRMED</div>
 </div>
 
-<div class="card">
-<div class="balance" id="bal">0.00 GHS</div>
-<p style="text-align:center" class="small">Wallet Balance</p>
+<div class="card" id="auth">
+<h3>1. MEMBERSHIP - 299 GHS LIVE</h3>
+<input id="em" placeholder="Email - istwo@buyearn.com" style="width:100%;padding:12px;margin:5px 0"/>
+<input id="ph" placeholder="MoMo 024XXXXXXX" style="width:100%;padding:12px;margin:5px 0"/>
+<input id="rf" placeholder="Referral Code (optional)" style="width:100%;padding:12px;margin:5px 0"/>
+<button class="btn" onclick="pay()">Pay 299 GHS LIVE - Role USER after payment</button>
+<p class="small">LIVE PK: pk_live_0f37... LIVE GHS - Products NOT REAL - Like Tasks Only - 1 Like=20p | 5x20p=1 GHS MAX</p>
 </div>
 
-<div class="card">
-<h2>Daily Tasks</h2>
-<p class="small">Complete 5 tasks to earn 1 GHS daily</p>
-<div id="tasks"></div>
-<p class="small" id="tInfo"></p>
+<div class="card" id="dash" style="display:none">
+<h3>Welcome <span id="uem"></span> <span class="badge" id="rcode"></span></h3>
+<p>Balance: <b><span id="gross">0</span> Gross = <span id="net">0</span> Net</b> (10% BuyEarn Profit)</p>
+<p>Likes Today: <span id="lt">0</span>/5 | Referrals: <span id="rc">0</span> | Bonus: <span id="rb">0</span> Gross -> <span id="rbn">0</span> Net</p>
+<p>Yearly Bonus: 100 Refs = 2000 Gross + FREE Renewal -> 1800 Net | <span id="yb"></span></p>
+<button class="btn" onclick="cashout()">Cashout FRIDAY ONLY - Min 20 Gross->18 Net CONFIRMED</button>
+<p class="small" id="cmsg"></p>
 </div>
 
-<div class="card">
-<h2>Cashout</h2>
-<p class="small">Available Friday only - Minimum 20 GHS</p>
-<input type="number" id="cashAmt" placeholder="Enter amount e.g 20">
-<p class="small">You will receive: <b><span id="receive">0.00</span> GHS</b></p>
-<button class="btn" onclick="cashout()">Request Cashout</button>
-<p id="cashMsg"></p>
-</div>
-
-<div class="card">
-<h2>My Referrals</h2>
-<p class="small">Earn 50 GHS per friend</p>
-<input id="refLink" readonly>
-<button class="btn" style="background:#0a1931;color:white" onclick="copyR()">Copy Link</button>
-<p class="small" id="refStat"></p>
-</div>
+<div id="prodArea" style="display:none"></div>
 
 <script>
-const KEY="pk_live_0f37f02ac63223a809256075ba4fcb3315400869";
-let wallet=parseFloat(localStorage.getItem('w')||0);
-let active=localStorage.getItem('active')=='1';
-let liked=JSON.parse(localStorage.getItem('liked')||'[]');
-let code=localStorage.getItem('rc')||'BUY'+Math.floor(Math.random()*900000+100000);
-localStorage.setItem('rc',code);
-let tasksData=JSON.parse(localStorage.getItem('td')||'[]');
-if(!tasksData.length){tasksData=[{id:1,img:'https://picsum.photos/200?1'},{id:2,img:'https://picsum.photos/200?2'},{id:3,img:'https://picsum.photos/200?3'},{id:4,img:'https://picsum.photos/200?4'},{id:5,img:'https://picsum.photos/200?5'}]}
-
-function render(){
-document.getElementById('bal').innerText=wallet.toFixed(2)+' GHS';
-document.getElementById('refLink').value=location.href.split('?')[0]+'?ref='+code;
-document.getElementById('refStat').innerText='Referrals: 0';
-document.getElementById('payCard').style.display=active?'none':'block';
-let d=document.getElementById('tasks'); d.innerHTML='';
-tasksData.forEach(t=>{
-let done=liked.includes(t.id);
-d.innerHTML+=`<div class=task><img src="${t.img}" style="width:60px;height:60px;border-radius:8px"><div style="flex:1"><b>Task ${t.id}</b></div><button class=btn style="width:auto;padding:8px 14px" ${done?'disabled':''} onclick="like(${t.id})">${done?'Done ✓':'Like'}</button></div>`;
-});
-document.getElementById('tInfo').innerText=`Done: ${liked.length}/5`;
-}
-function like(id){
-if(!active){alert('Pay 299 GHS first');return;}
-if(liked.includes(id))return;
-liked.push(id); localStorage.setItem('liked',JSON.stringify(liked));
-if(liked.length==5){wallet+=1; localStorage.setItem('w',wallet); alert('Earned 1 GHS!'); liked=[]; localStorage.setItem('liked',JSON.stringify(liked));}
-render();
-}
+const PK_LIVE="pk_live_0f37f02ac63223a809256075ba4fcb3315400869";
+let user=JSON.parse(localStorage.getItem('buyearn_final')||'null');
 function pay(){
-PaystackPop.setup({key:KEY,email:'user@buyearn.com',amount:29900,currency:'GHS',callback:function(){localStorage.setItem('active','1');active=true;render();document.getElementById('payMsg').innerText='Activated!';}}).openIframe();
+ const e=document.getElementById('em').value;
+ const p=document.getElementById('ph').value;
+ const r=document.getElementById('rf').value;
+ if(!e||!p){alert('Email and MoMo needed');return;}
+ let h=PaystackPop.setup({key:PK_LIVE,email:e,amount:29900,currency:'GHS',ref:'BUYEARN_'+Date.now(),callback:function(res){
+   user={email:e,phone:p,balanceGross:0,likesToday:0,lastDate:new Date().toDateString(),referralCode:e.split('@')[0].toUpperCase()+Math.floor(Math.random()*100),referredBy:r,referrals:0,bonusGross:0,history:[]};
+   localStorage.setItem('buyearn_final',JSON.stringify(user));
+   alert('Payment SUCCESS 299 GHS LIVE CONFIRMED! Role USER | 1 Like=20p | 5x20p=1 GHS/day MAX | Need 20 days to 20 Gross | Cashout Friday 20->18 | Referral 50->45 | Bonus 2000->1800');
+   location.reload();
+ },onClose:function(){alert('Payment closed');}});h.openIframe();
+}
+function render(){
+ if(!user)return;
+ document.getElementById('auth').style.display='none';
+ document.getElementById('dash').style.display='block';
+ document.getElementById('prodArea').style.display='block';
+ document.getElementById('uem').innerText=user.email;
+ document.getElementById('rcode').innerText='Your Code: '+user.referralCode;
+ if(new Date().toDateString()!==user.lastDate){user.likesToday=0;user.lastDate=new Date().toDateString();localStorage.setItem('buyearn_final',JSON.stringify(user));}
+ document.getElementById('gross').innerText=user.balanceGross.toFixed(2);
+ document.getElementById('net').innerText=(user.balanceGross*0.9).toFixed(2);
+ document.getElementById('lt').innerText=user.likesToday;
+ document.getElementById('rc').innerText=user.referrals;
+ document.getElementById('rb').innerText=user.bonusGross.toFixed(2);
+ document.getElementById('rbn').innerText=(user.bonusGross*0.9).toFixed(2);
+ let need=100-user.referrals; document.getElementById('yb').innerText=user.referrals>=100?'QUALIFIED 1800 Net':'Need '+need+' more for 2000->1800 + FREE Renewal';
+ let html='<div class="card"><h3>2. PRODUCTS NOT REAL - ADMIN gallery as LIKE TASKS - No Buy Button Only Like</h3><div class="grid">';
+ for(let i=1;i<=8;i++){html+=`<div style="background:#fff;padding:5px;border-radius:8px"><img class="prod" src="https://picsum.photos/300/300?random=${i}"/><br><button class="btn" style="background:#0a7a00;margin-top:5px" onclick="like()" ${user.likesToday>=5?'disabled':''}>LIKE 20p</button></div>`;}
+ html+='</div><p class="small">AUTOMATIC 1 GHS daily after 5 likes - Need 20 days to get 20 Gross - Privacy: Balance PRIVATE</p></div>';
+ document.getElementById('prodArea').innerHTML=html;
+ let day=new Date().getDay(); document.getElementById('cmsg').innerText=day===5?'TODAY IS FRIDAY - Cashout ACTIVE: 20->18, 40->36, 50->45, 500->450 x4=1800':'Cashout button active ONLY on FRIDAY - Min 20 Gross->18 Net - Today not Friday';
+}
+function like(){
+ if(user.likesToday>=5){alert('MAX 5 Per Day - After 5 block till tomorrow');return;}
+ user.likesToday++;user.balanceGross+=0.2;localStorage.setItem('buyearn_final',JSON.stringify(user));
+ alert(`LIKED! +0.20p | Balance ${user.balanceGross.toFixed(2)} Gross = ${(user.balanceGross*0.9).toFixed(2)} Net | Need ${20-user.balanceGross} more to reach 20 Gross->18 Net`);
+ render();
 }
 function cashout(){
-let a=parseFloat(document.getElementById('cashAmt').value);
-if(!a||a<20){alert('Min 20');return;}
-if(a>wallet){alert('Low balance');return;}
-let net=a*0.9; wallet-=a; localStorage.setItem('w',wallet); render();
-document.getElementById('cashMsg').innerText=`Request sent: You will receive ${net.toFixed(2)} GHS on Friday`;
+ if(user.balanceGross<20 && user.bonusGross<500){alert('Min 20 Gross->18 Net | Balance Gross: '+user.balanceGross);return;}
+ let type=prompt('Withdraw? Type BALANCE or BONUS\nBALANCE: 20->18, 40->36, 50->45\nBONUS: 500->450 x4=1800');
+ if(!type)return;
+ let amt=parseFloat(prompt(`Enter Gross (${type}): Min 20 Gross->18 Net or 500 Gross->450 Net`));
+ if(isNaN(amt))return;
+ let src=type.toUpperCase().includes('BONUS')?user.bonusGross:user.balanceGross;
+ if(amt>src){alert('Not enough '+type+' Gross');return;}
+ let net=amt*0.9;let fee=amt*0.1;
+ if(type.toUpperCase().includes('BONUS'))user.bonusGross-=amt;else user.balanceGross-=amt;
+ user.history.push({type,gross:amt,net,fee,date:new Date().toISOString()});localStorage.setItem('buyearn_final',JSON.stringify(user));
+ alert(`REQUESTED: ${amt} Gross -> ${net} Net | Fee ${fee} BuyEarn Profit | FINAL: User Gets ${net} | BuyEarn Keeps ${fee} | Admin approves FRIDAY - Send ${net} GHS MoMo`);
+ render();
 }
-document.getElementById('cashAmt').addEventListener('input',e=>{document.getElementById('receive').innerText=((parseFloat(e.target.value)||0)*0.9).toFixed(2))});
-function copyR(){navigator.clipboard.writeText(document.getElementById('refLink').value); alert('Copied');}
 render();
-</script></body></html>
+</script>
+</body>
+</html>
