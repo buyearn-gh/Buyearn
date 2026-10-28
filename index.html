@@ -1,105 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>BuyEarn LIVE - 299 GHS - FINAL A TO Z 10% FEE</title>
-<style>
-body{font-family:Arial;background:#f5f5f5;margin:0}
-.header{background:#000;color:#fff;padding:15px;text-align:center}
-.card{background:#fff;margin:12px;padding:15px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.btn{background:#000;color:#fff;border:none;padding:13px;border-radius:8px;width:100%;font-weight:bold;cursor:pointer}
-.btn:disabled{background:#999}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.prod{width:100%;height:140px;object-fit:cover;border-radius:8px}
-.small{font-size:11px;color:#666}
-.badge{background:gold;padding:5px 10px;border-radius:8px;font-weight:bold}
-</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuyEarn LIVE - 299 GHS FINAL 10% FEE - 20=18 50=45</title>
 <script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+:root{--green:#0a7a42;--gold:#ffcc00;--dark:#0f172a;--gray:#f1f5f9}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Segoe UI,sans-serif}
+body{background:var(--gray);color:var(--dark)}
+header{background:var(--dark);color:white;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:99}
+.logo{font-weight:900;font-size:22px}.logo span{color:var(--gold)}
+.badge{background:var(--green);padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.container{max-width:1100px;margin:auto;padding:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.card{background:white;border-radius:16px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.06);margin-bottom:16px}
+.card h3{font-size:15px;margin-bottom:10px;color:var(--dark);border-left:4px solid var(--green);padding-left:8px}
+.btn{border:none;padding:12px 16px;border-radius:10px;font-weight:800;cursor:pointer;width:100%;transition:.2s}
+.btn-green{background:var(--green);color:white}.btn-gold{background:var(--gold);color:black}.btn-dark{background:var(--dark);color:white}.btn:disabled{opacity:.4;cursor:not-allowed}
+.stat{font-size:28px;font-weight:900;color:var(--green)}.small{font-size:12px;color:#64748b}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.product{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:white}
+.product img{width:100%;height:130px;object-fit:cover}
+.product div{padding:8px}
+.friday-only{background:#fef3c7;border:2px dashed #f59e0b;padding:10px;border-radius:10px;text-align:center;font-weight:800;margin:10px 0}
+.fee-table{width:100%;border-collapse:collapse;font-size:13px}
+.fee-table th,.fee-table td{border:1px solid #e2e8f0;padding:8px;text-align:left}
+.fee-table th{background:var(--dark);color:white}
+.admin-panel{background:#fffbeb;border:2px solid var(--gold)}
+input{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0}
+.role-switch{display:flex;gap:8px;margin-bottom:12px}
+.role-switch button{flex:1;padding:8px;border-radius:8px;border:1px solid #cbd5e1;background:white;font-weight:700;cursor:pointer}
+.role-switch .active{background:var(--dark);color:white}
+</style>
 </head>
 <body>
-<div class="header">
-<h2>BUYEARN LIVE - FINAL</h2>
-<div style="font-size:12px">20->18 | 50->45 | 2000->1800 | 500->450 x4=1800 | CONFIRMED</div>
+<header>
+<div class="logo">BUY<span>EARN</span> LIVE</div>
+<div style="display:flex;gap:8px;align-items:center">
+<div class="badge" id="roleBadge">USER</div>
+<div class="badge" style="background:var(--gold);color:black" id="dayBadge"></div>
 </div>
-
-<div class="card" id="auth">
-<h3>1. MEMBERSHIP - 299 GHS LIVE</h3>
-<input id="em" placeholder="Email - istwo@buyearn.com" style="width:100%;padding:12px;margin:5px 0"/>
-<input id="ph" placeholder="MoMo 024XXXXXXX" style="width:100%;padding:12px;margin:5px 0"/>
-<input id="rf" placeholder="Referral Code (optional)" style="width:100%;padding:12px;margin:5px 0"/>
-<button class="btn" onclick="pay()">Pay 299 GHS LIVE - Role USER after payment</button>
-<p class="small">LIVE PK: pk_live_0f37... LIVE GHS - Products NOT REAL - Like Tasks Only - 1 Like=20p | 5x20p=1 GHS MAX</p>
+</header>
+<div class="container">
+<div class="role-switch">
+<button id="userBtn" class="active" onclick="setRole('USER')">USER VIEW</button>
+<button id="adminBtn" onclick="setRole('ADMIN')">ADMIN (You)</button>
 </div>
-
-<div class="card" id="dash" style="display:none">
-<h3>Welcome <span id="uem"></span> <span class="badge" id="rcode"></span></h3>
-<p>Balance: <b><span id="gross">0</span> Gross = <span id="net">0</span> Net</b> (10% BuyEarn Profit)</p>
-<p>Likes Today: <span id="lt">0</span>/5 | Referrals: <span id="rc">0</span> | Bonus: <span id="rb">0</span> Gross -> <span id="rbn">0</span> Net</p>
-<p>Yearly Bonus: 100 Refs = 2000 Gross + FREE Renewal -> 1800 Net | <span id="yb"></span></p>
-<button class="btn" onclick="cashout()">Cashout FRIDAY ONLY - Min 20 Gross->18 Net CONFIRMED</button>
-<p class="small" id="cmsg"></p>
-</div>
-
-<div id="prodArea" style="display:none"></div>
-
-<script>
-const PK_LIVE="pk_live_0f37f02ac63223a809256075ba4fcb3315400869";
-let user=JSON.parse(localStorage.getItem('buyearn_final')||'null');
-function pay(){
- const e=document.getElementById('em').value;
- const p=document.getElementById('ph').value;
- const r=document.getElementById('rf').value;
- if(!e||!p){alert('Email and MoMo needed');return;}
- let h=PaystackPop.setup({key:PK_LIVE,email:e,amount:29900,currency:'GHS',ref:'BUYEARN_'+Date.now(),callback:function(res){
-   user={email:e,phone:p,balanceGross:0,likesToday:0,lastDate:new Date().toDateString(),referralCode:e.split('@')[0].toUpperCase()+Math.floor(Math.random()*100),referredBy:r,referrals:0,bonusGross:0,history:[]};
-   localStorage.setItem('buyearn_final',JSON.stringify(user));
-   alert('Payment SUCCESS 299 GHS LIVE CONFIRMED! Role USER | 1 Like=20p | 5x20p=1 GHS/day MAX | Need 20 days to 20 Gross | Cashout Friday 20->18 | Referral 50->45 | Bonus 2000->1800');
-   location.reload();
- },onClose:function(){alert('Payment closed');}});h.openIframe();
-}
-function render(){
- if(!user)return;
- document.getElementById('auth').style.display='none';
- document.getElementById('dash').style.display='block';
- document.getElementById('prodArea').style.display='block';
- document.getElementById('uem').innerText=user.email;
- document.getElementById('rcode').innerText='Your Code: '+user.referralCode;
- if(new Date().toDateString()!==user.lastDate){user.likesToday=0;user.lastDate=new Date().toDateString();localStorage.setItem('buyearn_final',JSON.stringify(user));}
- document.getElementById('gross').innerText=user.balanceGross.toFixed(2);
- document.getElementById('net').innerText=(user.balanceGross*0.9).toFixed(2);
- document.getElementById('lt').innerText=user.likesToday;
- document.getElementById('rc').innerText=user.referrals;
- document.getElementById('rb').innerText=user.bonusGross.toFixed(2);
- document.getElementById('rbn').innerText=(user.bonusGross*0.9).toFixed(2);
- let need=100-user.referrals; document.getElementById('yb').innerText=user.referrals>=100?'QUALIFIED 1800 Net':'Need '+need+' more for 2000->1800 + FREE Renewal';
- let html='<div class="card"><h3>2. PRODUCTS NOT REAL - ADMIN gallery as LIKE TASKS - No Buy Button Only Like</h3><div class="grid">';
- for(let i=1;i<=8;i++){html+=`<div style="background:#fff;padding:5px;border-radius:8px"><img class="prod" src="https://picsum.photos/300/300?random=${i}"/><br><button class="btn" style="background:#0a7a00;margin-top:5px" onclick="like()" ${user.likesToday>=5?'disabled':''}>LIKE 20p</button></div>`;}
- html+='</div><p class="small">AUTOMATIC 1 GHS daily after 5 likes - Need 20 days to get 20 Gross - Privacy: Balance PRIVATE</p></div>';
- document.getElementById('prodArea').innerHTML=html;
- let day=new Date().getDay(); document.getElementById('cmsg').innerText=day===5?'TODAY IS FRIDAY - Cashout ACTIVE: 20->18, 40->36, 50->45, 500->450 x4=1800':'Cashout button active ONLY on FRIDAY - Min 20 Gross->18 Net - Today not Friday';
-}
-function like(){
- if(user.likesToday>=5){alert('MAX 5 Per Day - After 5 block till tomorrow');return;}
- user.likesToday++;user.balanceGross+=0.2;localStorage.setItem('buyearn_final',JSON.stringify(user));
- alert(`LIKED! +0.20p | Balance ${user.balanceGross.toFixed(2)} Gross = ${(user.balanceGross*0.9).toFixed(2)} Net | Need ${20-user.balanceGross} more to reach 20 Gross->18 Net`);
- render();
-}
-function cashout(){
- if(user.balanceGross<20 && user.bonusGross<500){alert('Min 20 Gross->18 Net | Balance Gross: '+user.balanceGross);return;}
- let type=prompt('Withdraw? Type BALANCE or BONUS\nBALANCE: 20->18, 40->36, 50->45\nBONUS: 500->450 x4=1800');
- if(!type)return;
- let amt=parseFloat(prompt(`Enter Gross (${type}): Min 20 Gross->18 Net or 500 Gross->450 Net`));
- if(isNaN(amt))return;
- let src=type.toUpperCase().includes('BONUS')?user.bonusGross:user.balanceGross;
- if(amt>src){alert('Not enough '+type+' Gross');return;}
- let net=amt*0.9;let fee=amt*0.1;
- if(type.toUpperCase().includes('BONUS'))user.bonusGross-=amt;else user.balanceGross-=amt;
- user.history.push({type,gross:amt,net,fee,date:new Date().toISOString()});localStorage.setItem('buyearn_final',JSON.stringify(user));
- alert(`REQUESTED: ${amt} Gross -> ${net} Net | Fee ${fee} BuyEarn Profit | FINAL: User Gets ${net} | BuyEarn Keeps ${fee} | Admin approves FRIDAY - Send ${net} GHS MoMo`);
- render();
-}
-render();
-</script>
-</body>
-</html>
