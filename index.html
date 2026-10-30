@@ -6,182 +6,134 @@
 <title>BuyEarn FINAL - 10% FEE 20=18 50=45 2000=1800 500=450</title>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
-:root{--green:#0a7a42;--gold:#ffcc00;--dark:#0f172a;--gray:#f1f5f9}
+:root{--green:#0a7a42;--gold:#ffcc00;--dark:#0f172a;--gray:#f5f5f9}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Segoe UI,sans-serif}
 body{background:var(--gray);color:var(--dark)}
-header{background:var(--dark);color:white;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:99}
+header{background:var(--dark);color:white;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
 .logo{font-weight:900;font-size:22px}.logo span{color:var(--gold)}
 .badge{background:var(--green);padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
 .container{max-width:1100px;margin:auto;padding:16px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:800px){.grid{grid-template-columns:1fr}}
-.card{background:white;border-radius:16px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.06);margin-bottom:16px}
-.card h3{font-size:15px;margin-bottom:10px;color:var(--dark);border-left:4px solid var(--green);padding-left:8px}
-.btn{border:none;padding:12px 16px;border-radius:10px;font-weight:800;cursor:pointer;width:100%}
-.btn-green{background:var(--green);color:white}.btn-gold{background:var(--gold);color:black}.btn-dark{background:var(--dark);color:white}.btn:disabled{opacity:.4}
-.stat{font-size:28px;font-weight:900;color:var(--green)}.small{font-size:12px;color:#64748b}
-.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-.product{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:white}
-.product img{width:100%;height:130px;object-fit:cover}
-.product div{padding:8px}
-.friday-only{background:#fef3c7;border:2px dashed #f59e0b;padding:10px;border-radius:10px;text-align:center;font-weight:800;margin:10px 0}
-.fee-table{width:100%;border-collapse:collapse;font-size:13px}.fee-table th,.fee-table td{border:1px solid #e2e8f0;padding:8px;text-align:left}.fee-table th{background:var(--dark);color:white}
-.admin-panel{background:#fffbeb;border:2px solid var(--gold)}
-input{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0}
-.role-switch{display:flex;gap:8px;margin-bottom:12px}.role-switch button{flex:1;padding:8px;border-radius:8px;border:1px solid #cbd5e1;background:white;font-weight:700;cursor:pointer}.role-switch .active{background:var(--dark);color:white}
+.card{background:white;padding:16px;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,0.06);margin-bottom:16px}
+.btn{padding:12px 14px;border:none;border-radius:10px;font-weight:800;cursor:pointer;width:100%;margin-top:8px}
+.btn-green{background:var(--green);color:white}
+.btn-dark{background:var(--dark);color:white}
+.btn-gold{background:var(--gold);color:black}
+.input{width:100%;padding:12px;border:2px solid #ddd;border-radius:10px;margin-top:8px}
+.tag{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800}
+.tag-green{background:#dcfce7;color:#166534}
+.tag-gold{background:#fef9c3;color:#854d0e}
+img.prod{width:100%;height:220px;object-fit:cover;border-radius:12px}
+.wallet-private{border:2px solid var(--green);background:#f0fff4}
 </style>
 </head>
 <body>
 <header>
-<div class="logo">BUY<span>EARN</span> LIVE</div>
+<div class="logo">BuyEarn <span>GHANA</span></div>
 <div style="display:flex;gap:8px;align-items:center">
-<div class="badge" id="roleBadge">USER</div>
-<div class="badge" style="background:var(--gold);color:black" id="dayBadge"></div>
+<span id="userEmailBadge" class="badge">Not logged</span>
+<button onclick="logout()" style="background:#ffffff22;color:white;border:1px solid #ffffff44;padding:6px 10px;border-radius:20px;">Logout</button>
 </div>
 </header>
 <div class="container">
-<div class="role-switch">
-<button id="userBtn" class="active" onclick="setRole('USER')">USER VIEW</button>
-<button id="adminBtn" onclick="setRole('ADMIN')">ADMIN (You)</button>
+<div id="authCard" class="card">
+<h2>Login / Register - 299 GHS Membership</h2>
+<p style="font-size:13px;margin:8px 0">1 Like=20p=18p Net | MAX 5/day=1 GHS=0.90 | Referral 50=45 | Bonus 2000=1800 | Withdraw Friday Only</p>
+<input id="email" class="input" placeholder="Email e.g. buyearnghana@gmail.com (admin)" />
+<input id="name" class="input" placeholder="Full Name" />
+<button class="btn btn-green" onclick="payMembership()">Pay 299 GHS Membership with Paystack LIVE</button>
+<p style="font-size:12px;margin-top:8px">Admin Email: buyearnghana@gmail.com = Admin Access + Upload Pictures</p>
 </div>
 <div class="grid">
 <div>
-<div class="card">
-<h3>1. MEMBERSHIP - 299 GHS LIVE</h3>
-<input id="payEmail" placeholder="Your email" value="buyearnghana@gmail.com">
-<input id="paystackKey" placeholder="Paystack LIVE PK pk_live_...">
-<button class="btn btn-green" onclick="payMembership()">PAY 299 GHS WITH PAYSTACK LIVE</button>
-<p class="small" id="payStatus"></p>
-<div style="background:#ecfdf5;margin-top:12px;padding:10px;border-radius:10px">
-<b>Wallet PRIVATE</b><br>
-<div class="stat" id="walletGross">0.00 GHS Gross</div>
-<div class="stat" style="font-size:18px;color:#0f172a" id="walletNet">0.00 GHS Net You Own</div>
-<div class="small">Likes: <span id="likeCount">0</span>/5 today</div>
+<div class="card wallet-private">
+<h3>💰 Wallet PRIVATE - Only You See</h3>
+<div style="display:flex;justify-content:space-between;margin-top:10px">
+<div><small>Gross</small><h2 id="gross">0.00 GHS</h2></div>
+<div><small>Net You Own (10% Fee)</small><h2 id="net" style="color:var(--green)">0.00 GHS</h2></div>
 </div>
+<div style="margin-top:10px;display:flex;gap:10px">
+<span class="tag tag-green" id="likeCount">Likes: 0/5 today</span>
+<span class="tag tag-gold" id="maxStatus"></span>
 </div>
-<div class="card">
-<h3>3. LIKE & EARN - 1 Like = 20p - MAX 5/day = 1 GHS</h3>
-<div class="friday-only" id="likeInfo">0/5 today</div>
-<div class="product-grid" id="productGrid"></div>
+<p style="font-size:12px;margin-top:8px">Fee: 20=18 | 40=36 | 60=54 | 80=72 | 100=90</p>
+<button class="btn btn-dark" onclick="requestCashout()">Request Cashout - FRIDAY ONLY (Min 20 Gross)</button>
+<p id="cashoutMsg" style="font-size:12px;margin-top:6px;color:#b91c1c"></p>
 </div>
 <div class="card">
-<h3>4. CASHOUT FRIDAY ONLY 10% FEE 20=18 CONFIRMED</h3>
-<table class="fee-table">
-<tr><th>Gross</th><th>You Get Net</th><th>BuyEarn Keeps</th></tr>
-<tr><td>20 GHS</td><td>18 GHS</td><td>2 GHS</td></tr>
-<tr><td>50 GHS</td><td>45 GHS</td><td>5 GHS</td></tr>
-<tr><td>500 GHS</td><td>450 GHS</td><td>50 GHS</td></tr>
-</table>
-<div class="friday-only" id="cashoutDayInfo"></div>
-<input id="cashoutAmount" type="number" value="20">
-<p class="small">You will receive: <b id="cashoutPreview">18 GHS Net</b></p>
-<button class="btn btn-gold" id="cashoutBtn" onclick="requestCashout()">REQUEST CASHOUT FRIDAY ONLY</button>
-<div id="myCashouts" style="margin-top:10px"></div>
+<h3>3. LIKE & EARN - Core Rule</h3>
+<p style="font-size:12px">Gallery Pictures = Like Tasks (NOT Real Products) | 1 Like = 20p=18p Net</p>
+<div id="userGallery" style="display:grid;gap:12px;margin-top:12px"></div>
+</div>
+<div class="card">
+<h3>6. REFERRAL - 10% FEE</h3>
+<p style="font-size:12px">Your Link: <span id="refLink" style="word-break:break-all;color:var(--green);font-weight:700"></span></p>
+<p style="font-size:12px;margin-top:6px">1 Referral Pays 299 = You Get 50 Gross = 45 Net</p>
+<p style="margin-top:8px">My Referrals: <b id="myRefs">0/100</b></p>
+<button class="btn btn-gold" onclick="simulateReferral()">SIMULATE Referral Payment (Test 50=45)</button>
+</div>
+<div class="card">
+<h3>7. YEARLY BONUS - 100 Referrals</h3>
+<p style="font-size:12px">100 Refs = 2000 Gross = 1800 Net + FREE Renewal</p>
+<p>Bonus Gross: <b id="bonusGross">0</b> | Bonus Net: <b id="bonusNet" style="color:var(--green)">0</b></p>
+<div id="bonusStatus" class="tag tag-green" style="margin-top:6px">Not Qualified</div>
+<button class="btn btn-dark" onclick="requestBonusWithdraw()">Request Bonus Withdraw - FRIDAY ONLY 500=450 x4</button>
+<p id="bonusMsg" style="font-size:12px;margin-top:6px"></p>
 </div>
 </div>
 <div>
-<div class="card admin-panel" id="adminUploadCard">
-<h3>2. PRODUCTS - ADMIN Uploads LIKE TASKS</h3>
-<input type="file" id="imgUpload" accept="image/*" multiple>
-<input id="imgUrl" placeholder="Or paste image URL">
-<button class="btn btn-dark" onclick="addProduct()">UPLOAD AS LIKE TASK</button>
+<div class="card" style="border:2px solid var(--dark)">
+<h3>👑 ADMIN (You) - buyearnghana@gmail.com</h3>
+<p style="font-size:12px">Roles: Upload Pics, See ALL, Approve FRIDAY ONLY, Send Net (18,45,450)</p>
+<div id="admin-upload" style="border:3px dashed #00C851; padding:15px; margin:14px 0; background:#f0fff4; border-radius:12px;">
+<h3 style="color:#0a7a42;">📸 ADMIN - UPLOAD GALLERY PICTURE FOR LIKE TASK</h3>
+<p style="font-size:12px">Upload = Users Like = 20p Gross = 18p Net</p>
+<input type="file" id="fileInput" accept="image/*" class="input" />
+<input type="text" id="productName" placeholder="Product name e.g. Nike Shoe - Like Task" class="input" />
+<button class="btn btn-green" onclick="uploadProduct()">🚀 UPLOAD NOW - LIVE INSTANTLY</button>
+<div id="adminGallery" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;"></div>
+</div>
+<div class="card" style="background:#fffbeb">
+<h4>Pending Cashouts (Friday Only)</h4>
+<div id="adminCashouts"></div>
+</div>
+<div class="card" style="background:#f0f9ff">
+<h4>Pending Bonus Withdrawals (Friday Only - 500=450)</h4>
+<div id="adminBonus"></div>
 </div>
 <div class="card">
-<h3>6. REFERRAL 10% FEE 50=45 + 7. BONUS 100=2000=1800</h3>
-<input id="refLink" readonly>
-<button class="btn btn-green" style="padding:6px" onclick="copyRef()">COPY LINK</button>
-<p class="small">My Referrals: <span id="refCount">0</span>/100 | Gross: <span id="refEarnGross">0</span> = Net: <span id="refEarnNet">0</span></p>
-<div class="small" id="referralList"></div>
-<button class="btn btn-dark" onclick="simulateReferral()">SIMULATE 1 Referral Pays 299 (Test 45 Net)</button>
-<div style="margin-top:10px;background:#fefce8;padding:10px;border-radius:10px">
-<b>7. YEARLY BONUS - 100 = 2000 Gross = 1800 Net + FREE Renewal</b><br>
-Status: <span id="bonusStatus">Need 100 referrals</span><br>
-<progress id="bonusProgress" value="0" max="100" style="width:100%"></progress>
+<h4>All Users & Wallets (Private but Admin Sees ALL)</h4>
+<div id="allUsers" style="font-size:12px;max-height:300px;overflow:auto"></div>
 </div>
-</div>
-<div class="card">
-<h3>8. BONUS WITHDRAWAL FRIDAY ONLY 500->450 x4=1800</h3>
-<div style="background:#ecfdf5;padding:10px;border-radius:10px">
-Total Bonus Net: <b id="bonusTotal">0 GHS</b><br>
-Withdrawn: <b id="bonusWithdrawn">0 GHS</b><br>
-Remaining: <b id="bonusRemaining">0 GHS</b>
-</div>
-<button class="btn btn-gold" id="bonusBtn" onclick="withdrawBonus()">WITHDRAW 500 Gross -> 450 Net</button>
-</div>
-<div class="card admin-panel" id="adminApprovalCard">
-<h3>10. ADMIN - Approve FRIDAY ONLY - Send Net 18,45,450</h3>
-<div id="allCashouts"></div>
-<button class="btn btn-green" onclick="approveAllFriday()">APPROVE ALL FRIDAY</button>
 </div>
 </div>
 </div>
 </div>
 <script>
-let store = JSON.parse(localStorage.getItem('buyearn_final_v10')||'{}');
-if(!store.products) store.products = [{id:1,url:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300'},{id:2,url:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300'},{id:3,url:'https://images.unsplash.com/photo-1560343090-f4df9e18b80e?w=300'},{id:4,url:'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300'},{id:5,url:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=300'}];
-if(!store.walletGross) store.walletGross=0;
-if(!store.likesToday) store.likesToday=0;
-if(!store.lastLikeDate) store.lastLikeDate='';
-if(!store.likedIds) store.likedIds=[];
-if(!store.referrals) store.referrals=[];
-if(!store.cashouts) store.cashouts=[];
-if(!store.bonusGross) store.bonusGross=0;
-if(!store.bonusWithdrawnNet) store.bonusWithdrawnNet=0;
-if(!store.role) store.role='USER';
-if(!store.userId) store.userId='user_'+Math.random().toString(36).substr(2,9);
-if(!store.refCode) store.refCode=store.userId;
-function save(){localStorage.setItem('buyearn_final_v10',JSON.stringify(store)); render();}
-function setRole(r){store.role=r; save();}
-function isFriday(){return new Date().getDay()===5;}
-function todayStr(){return new Date().toISOString().split('T')[0];}
-function render(){
- document.getElementById('roleBadge').innerText=store.role;
- document.getElementById('userBtn').className=store.role==='USER'?'active':'';
- document.getElementById('adminBtn').className=store.role==='ADMIN'?'active':'';
- document.getElementById('adminUploadCard').style.display=store.role==='ADMIN'?'block':'none';
- document.getElementById('adminApprovalCard').style.display=store.role==='ADMIN'?'block':'none';
- document.getElementById('dayBadge').innerText=new Date().toLocaleDateString('en-GH',{weekday:'long'}) + (isFriday()?' - FRIDAY':' - NOT FRIDAY');
- if(store.lastLikeDate!==todayStr()){store.likesToday=0;store.likedIds=[];store.lastLikeDate=todayStr(); save();}
- let net = store.walletGross * 0.9;
- document.getElementById('walletGross').innerText=store.walletGross.toFixed(2)+' GHS Gross';
- document.getElementById('walletNet').innerText=net.toFixed(2)+' GHS Net You Own';
- document.getElementById('likeCount').innerText=store.likesToday;
- document.getElementById('likeInfo').innerText=store.likesToday>=5?'MAX 5 reached - Tomorrow':store.likesToday+'/5 likes today';
- document.getElementById('cashoutDayInfo').innerHTML=isFriday()?'<span style="color:green">TODAY FRIDAY - ACTIVE 20->18</span>':'<span style="color:red">NOT FRIDAY - DISABLED</span>';
- document.getElementById('cashoutBtn').disabled=!isFriday();
- document.getElementById('bonusBtn').disabled=!isFriday();
- let ca = parseFloat(document.getElementById('cashoutAmount').value||20);
- document.getElementById('cashoutPreview').innerText=(ca*0.9).toFixed(2)+' GHS Net';
- let grid=document.getElementById('productGrid'); grid.innerHTML='';
- store.products.forEach(p=>{
-   let liked=store.likedIds.includes(p.id);
-   grid.innerHTML+=`<div class="product"><img src="${p.url}"><div><button class="btn btn-green" ${liked||store.likesToday>=5?'disabled':''} onclick="like(${p.id})">${liked?'Liked 20p':'LIKE 20p'}</button></div></div>`;
- });
- document.getElementById('refCount').innerText=store.referrals.length;
- document.getElementById('refEarnGross').innerText=store.referrals.length*50;
- document.getElementById('refEarnNet').innerText=store.referrals.length*45;
- document.getElementById('refLink').value=location.origin+location.pathname+'?ref='+store.refCode;
- document.getElementById('referralList').innerHTML=store.referrals.length?store.referrals.map(r=>r.name).join('<br>'):'No referrals yet';
- document.getElementById('bonusStatus').innerText=store.referrals.length>=100?'QUALIFIED 2000=1800':'Need '+(100-store.referrals.length)+' more';
- document.getElementById('bonusProgress').value=store.referrals.length;
- if(store.referrals.length>=100 && store.bonusGross===0){store.bonusGross=2000; save();}
- document.getElementById('bonusTotal').innerText=(store.bonusGross*0.9).toFixed(0)+' GHS Net';
- document.getElementById('bonusWithdrawn').innerText=store.bonusWithdrawnNet+' GHS';
- document.getElementById('bonusRemaining').innerText=((store.bonusGross*0.9)-store.bonusWithdrawnNet).toFixed(0)+' GHS';
- document.getElementById('myCashouts').innerHTML=store.cashouts.length?store.cashouts.slice(-5).map(c=>`${c.gross}->${c.net} ${c.status}`).join('<br>'):'';
- if(store.role==='ADMIN'){document.getElementById('allCashouts').innerHTML=store.cashouts.map((c,i)=>`<div style="border:1px solid #e2e8f0;padding:6px;margin:4px 0;border-radius:8px;display:flex;justify-content:space-between"><span>${c.gross}->Send ${c.net} Net</span><button onclick="approveOne(${i})">Approve</button></div>`).join('');}
-}
-function like(id){if(store.likesToday>=5) return; if(store.likedIds.includes(id)) return; store.likedIds.push(id); store.likesToday++; store.walletGross+=0.2; store.lastLikeDate=todayStr(); save();}
-function requestCashout(){let gross=parseFloat(document.getElementById('cashoutAmount').value); if(gross<20) return alert('Min 20 Gross'); if(store.walletGross<gross) return alert('Not enough'); let net=gross*0.9; store.walletGross-=gross; store.cashouts.push({gross,net,status:'Pending Friday',date:new Date().toLocaleString()}); save(); alert('Requested '+gross+'->'+net+' Net');}
-function withdrawBonus(){let rem=(store.bonusGross*0.9)-store.bonusWithdrawnNet; if(rem<450) return alert('Finished'); store.bonusWithdrawnNet+=450; store.cashouts.push({gross:500,net:450,status:'Bonus Pending'}); save(); alert('Bonus 500->450 requested');}
-function addProduct(){let url=document.getElementById('imgUrl').value; let file=document.getElementById('imgUpload').files[0]; if(file){let r=new FileReader(); r.onload=e=>{store.products.push({id:Date.now(),url:e.target.result}); save();}; r.readAsDataURL(file);}else if(url){store.products.push({id:Date.now(),url}); save();}}
-function simulateReferral(){let name='User'+Math.floor(Math.random()*1000); store.referrals.push({name}); store.walletGross+=50; save(); alert('Referral '+name+' 50 Gross=45 Net credited');}
-function copyRef(){navigator.clipboard.writeText(document.getElementById('refLink').value); alert('Copied');}
-function approveOne(i){store.cashouts[i].status='Approved Sent '+store.cashouts[i].net; save();}
-function approveAllFriday(){store.cashouts.forEach(c=>{if(c.status.includes('Pending')) c.status='Approved Sent '+c.net;}); save();}
-function payMembership(){let email=document.getElementById('payEmail').value; let key=document.getElementById('paystackKey').value; if(!key.includes('pk_live')) return alert('Paste pk_live_...'); let handler=PaystackPop.setup({key:key,email:email,amount:299*100,currency:'GHS',ref:''+Math.floor(Math.random()*1000000000+1),callback:function(r){document.getElementById('payStatus').innerText='Success '+r.reference; save(); alert('299 Paid - USER activated');},onClose:function(){}}); handler.openIframe();}
-document.getElementById('cashoutAmount').addEventListener('input',render);
-render();
+const MEMBERSHIP_FEE=299,LIKE_GROSS=0.20,LIKE_NET=0.18,MAX_LIKES_PER_DAY=5,REF_GROSS=50,REF_NET=45,BONUS_GROSS=2000,BONUS_NET=1800,BONUS_CHUNK_GROSS=500,BONUS_CHUNK_NET=450,MIN_CASHOUT_GROSS=20,ADMIN_EMAIL='buyearnghana@gmail.com';
+const PAYSTACK_KEY='pk_live_YOUR_REAL_KEY_HERE';
+let currentUser=JSON.parse(localStorage.getItem('buyearn_current')||'null'),);let users=JSON.parse(localStorage.getItem('buyearn_users')||'{}');let products=JSON.parse(localStorage.getItem('buyearn_products')||'[]');let likesToday=JSON.parse(localStorage.getItem('buyearn_likes')||'{}');let cashouts=JSON.parse(localStorage.getItem('buyearn_cashouts')||'[]');let bonusWithdraws=JSON.parse(localStorage.getItem('buyearn_bonus_w')||'[]');
+function saveAll(){localStorage.setItem('buyearn_users',JSON.stringify(users));localStorage.setItem('buyearn_products',JSON.stringify(products));localStorage.setItem('buyearn_likes',JSON.stringify(likesToday));localStorage.setItem('buyearn_cashouts',JSON.stringify(cashouts));localStorage.setItem('buyearn_bonus_w',JSON.stringify(bonusWithdraws));if(currentUser)localStorage.setItem('buyearn_current',JSON.stringify(currentUser));}
+function getToday(){return new Date().toISOString().slice(0,10);}function isFriday(){return new Date().getDay()===5;}
+function init(){if(currentUser){document.getElementById('userEmailBadge').innerText=currentUser.email+(currentUser.email===ADMIN_EMAIL?' (ADMIN)':'');document.getElementById('authCard').style.display='none';document.getElementById('refLink').innerText=window.location.origin+window.location.pathname+'?ref='+currentUser.id;updateWallet();renderUserGallery();renderAdminGallery();renderAdmin();checkReferralFromURL();}else{document.getElementById('userGallery').innerHTML='<p>Login to see Like Tasks</p>';checkReferralFromURL();}}
+function payMembership(){const email=document.getElementById('email').value.trim().toLowerCase();const name=document.getElementById('name').value.trim();if(!email||!name)return alert('Enter email and name');const ref=new URLSearchParams(window.location.search).get('ref');if(confirm('PAY 299 GHS Membership? (Paystack LIVE)')){createUser(email,name,ref);return;}}
+function createUser(email,name,refBy){let id='user_'+Math.random().toString(36).slice(2,10);if(users[email]){id=users[email].id;}if(!users[email]){users[email]={id:id,email:email,name:name,gross:0,net:0,refs:0,bonusGross:0,bonusNet:0,bonusWithdrawn:0,joined:Date.now()};}currentUser=users[email];if(refBy){for(let e in users){if(users[e].id===refBy){users[e].gross+=REF_GROSS;users[e].net+=REF_NET;users[e].refs+=1;if(users[e].refs>=100){if(users[e].bonusGross===0){users[e].bonusGross=BONUS_GROSS;users[e].bonusNet=BONUS_NET;}}break;}}}saveAll();alert('✅ Membership Active! 299 Paid. Now Like 5/day = 1 GHS=0.90 Net');location.reload();}
+function logout(){localStorage.removeItem('buyearn_current');location.reload();}
+function updateWallet(){if(!currentUser)return;const u=users[currentUser.email];document.getElementById('gross').innerText=u.gross.toFixed(2)+' GHS';document.getElementById('net').innerText=u.net.toFixed(2)+' GHS';const today=getToday();const key=currentUser.email+'_'+today;const count=likesToday[key]||0;document.getElementById('likeCount').innerText=`Likes: ${count}/${MAX_LIKES_PER_DAY} today`;document.getElementById('maxStatus').innerText=count>=MAX_LIKES_PER_DAY?'MAX 5 reached - Tomorrow':'';document.getElementById('myRefs').innerText=`${u.refs}/100`;document.getElementById('bonusGross').innerText=u.bonusGross;document.getElementById('bonusNet').innerText=u.bonusNet;document.getElementById('bonusStatus').innerText=u.refs>=100?'✅ QUALIFIED - 2000=1800 + FREE Renewal':`Need ${100-u.refs} more`;}
+function handleLike(productId){if(!currentUser)return alert('Login first');const today=getToday();const key=currentUser.email+'_'+today;const count=likesToday[key]||0;if(count>=MAX_LIKES_PER_DAY)return alert('MAX 5 reached - Tomorrow');const likedKey=key+'_'+productId;if(localStorage.getItem('liked_'+likedKey))return alert('Already liked today');likesToday[key]=count+1;localStorage.setItem('liked_'+likedKey,'1');users[currentUser.email].gross+=LIKE_GROSS;users[currentUser.email].net+=LIKE_NET;saveAll();updateWallet();renderUserGallery();alert(`✅ Liked! +${LIKE_GROSS} Gross = ${LIKE_NET} Net. ${likesToday[key]}/${MAX_LIKES_PER_DAY} today`);}
+function requestCashout(){if(!currentUser)return;const u=users[currentUser.email];if(u.gross<MIN_CASHOUT_GROSS)return document.getElementById('cashoutMsg').innerText=`Min ${MIN_CASHOUT_GROSS} Gross needed. You have ${u.gross}`;if(!isFriday()){document.getElementById('cashoutMsg').innerText='Cashout FRIDAY ONLY (Today is not Friday) - Request saved for Friday';}cashouts.push({id:Date.now(),email:currentUser.email,gross:u.gross,net:u.net,date:new Date().toISOString(),status:'pending',type:'like'});saveAll();document.getElementById('cashoutMsg').innerText=`✅ Request sent! Admin will send Net = ${u.net.toFixed(2)} (10% fee: ${u.gross}=${u.net}) on FRIDAY`;renderAdmin();}
+function requestBonusWithdraw(){if(!currentUser)return;const u=users[currentUser.email];if(u.bonusNet<=0)return document.getElementById('bonusMsg').innerText='Not qualified - Need 100 refs';if(u.bonusNet-u.bonusWithdrawn<BONUS_CHUNK_GROSS)return document.getElementById('bonusMsg').innerText='Min 500 Gross = 450 Net per withdraw';if(!isFriday())document.getElementById('bonusMsg').innerText='Bonus Withdraw FRIDAY ONLY - Request saved';bonusWithdraws.push({id:Date.now(),email:currentUser.email,gross:BONUS_CHUNK_GROSS,net:BONUS_CHUNK_NET,status:'pending'});saveAll();document.getElementById('bonusMsg').innerText=`✅ Bonus Request 500=450 Net sent! Admin sends 450 GHS Friday`;renderAdmin();}
+function uploadProduct(){const file=document.getElementById('fileInput').files[0];const name=document.getElementById('productName').value||(file?file.name:'Product');if(!file)return alert('Choose picture first!');if(currentUser&&currentUser.email!==ADMIN_EMAIL)return alert('Only Admin can upload - Login as buyearnghana@gmail.com');const reader=new FileReader();reader.onload=function(e){const newProduct={id:Date.now(),image:e.target.result,name:name,gross:LIKE_GROSS,net:LIKE_NET};products.push(newProduct);saveAll();renderAdminGallery();renderUserGallery();alert('✅ UPLOADED! Users can now LIKE & EARN 20p=18p Net LIVE!');document.getElementById('fileInput').value='';document.getElementById('productName').value='';};reader.readAsDataURL(file);}
+function renderAdminGallery(){const div=document.getElementById('adminGallery');if(!div)return;div.innerHTML=products.map(p=>`<div style="border:1px solid #ccc;padding:5px;border-radius:8px;background:white"><img src="${p.image}" style="width:100%;height:100px;object-fit:cover;border-radius:6px;" /><p style="font-size:11px;">${p.name} - 20p=18p</p><button onclick="deleteProduct(${p.id})" style="background:red;color:white;border:none;padding:4px 8px;border-radius:4px;width:100%">Delete</button></div>`).join('');}
+function renderUserGallery(){const div=document.getElementById('userGallery');if(!div)return;if(products.length===0){div.innerHTML='<p style="font-size:13px">No gallery yet - Admin (buyearnghana@gmail.com) will upload pictures. Then you Like = 20p=18p</p>';return;}const today=getToday();const keyBase=currentUser?currentUser.email+'_'+today:'';div.innerHTML=products.map(p=>{const liked=currentUser?localStorage.getItem('liked_'+keyBase+'_'+p.id):null;return `<div style="border:1px solid #eee;padding:10px;border-radius:12px;background:white"><img src="${p.image}" class="prod" /><h4 style="margin:8px 0">${p.name}</h4><p style="font-size:12px">Reward: ${p.gross} Gross = ${p.net} Net</p><button onclick="handleLike(${p.id})" class="btn ${liked?'btn-gold':'btn-dark'}" ${liked?'disabled':''}>${liked?'✅ Liked Today':'❤️ LIKE & EARN 20p=18p'}</button></div>`;}).join('');}
+function deleteProduct(id){products=products.filter(p=>p.id!==id);saveAll();renderAdminGallery();renderUserGallery();}
+function simulateReferral(){if(!currentUser)return alert('Login first');users[currentUser.email].gross+=REF_GROSS;users[currentUser.email].net+=REF_NET;users[currentUser.email].refs+=1;if(users[currentUser.email].refs>=100&&users[currentUser.email].bonusGross===0){users[currentUser.email].bonusGross=BONUS_GROSS;users[currentUser.email].bonusNet=BONUS_NET;}saveAll();updateWallet();renderAdmin();alert(`✅ TEST Referral! +${REF_GROSS} Gross = ${REF_NET} Net (50=45)`);}
+function renderAdmin(){const adminDiv=document.getElementById('adminCashouts');const bonusDiv=document.getElementById('adminBonus');const allDiv=document.getElementById('allUsers');if(adminDiv)adminDiv.innerHTML=cashouts.filter(c=>c.status==='pending').map(c=>`<div style="border:1px solid #ddd;padding:8px;margin:6px 0;border-radius:8px;background:white"><b>${c.email}</b> - Gross ${c.gross.toFixed(2)} = Net ${c.net.toFixed(2)} - ${new Date(c.date).toLocaleString()}<button onclick="approveCashout(${c.id})" class="btn btn-green" style="padding:6px;margin-top:4px">✅ Approve & Send Net ${c.net.toFixed(2)} MoMo (Friday)</button></div>`).join('')||'No pending';if(bonusDiv)bonusDiv.innerHTML=bonusWithdraws.filter(b=>b.status==='pending').map(b=>`<div style="border:1px solid #ddd;padding:8px;margin:6px 0;border-radius:8px;background:white"><b>${b.email}</b> - ${b.gross} Gross = ${b.net} Net<button onclick="approveBonus(${b.id})" class="btn btn-green" style="padding:6px;margin-top:4px">✅ Approve & Send 450 Net MoMo</button></div>`).join('')||'No pending';if(allDiv){let html='';for(let e in users){html+=`<div style="border-bottom:1px solid #eee;padding:6px 0"><b>${e}</b> | ${users[e].name} | Gross:${users[e].gross.toFixed(2)} Net:${users[e].net.toFixed(2)} | Refs:${users[e].refs} | Bonus Net:${users[e].bonusNet} | ID:${users[e].id}</div>`;}allDiv.innerHTML=html||'No users yet';}}
+function approveCashout(id){const c=cashouts.find(x=>x.id===id);if(!c)return;if(!isFriday()&&!confirm('Today is NOT Friday - Approve anyway for testing?'))return;if(confirm(`Send Net ${c.net.toFixed(2)} GHS to ${c.email} via MoMo?`)){c.status='approved';if(users[c.email]){users[c.email].gross=0;users[c.email].net=0;}saveAll();renderAdmin();updateWallet();alert(`✅ Sent ${c.net.toFixed(2)} Net MoMo to ${c.email} - You keep 10% fee = ${(c.gross-c.net).toFixed(2)} Profit!`);}}
+function approveBonus(id){const b=bonusWithdraws.find(x=>x.id===id);if(!b)return;if(!isFriday()&&!confirm('Not Friday - Approve anyway for test?'))return;if(confirm(`Send Bonus Net 450 GHS to ${b.email}?`)){b.status='approved';if(users[b.email])users[b.email].bonusWithdrawn+=b.gross;saveAll();renderAdmin();alert(`✅ Sent 450 Net MoMo Bonus to ${b.email} - You keep 50 Profit!`);}}
+function checkReferralFromURL(){const ref=new URLSearchParams(window.location.search).get('ref');if(ref&&!currentUser){document.getElementById('authCard').innerHTML+=`<p style="background:#dcfce7;padding:8px;border-radius:8px;margin-top:8px;font-size:13px">🎉 Referred by ${ref} - Pay 299 & Referrer gets 50=45 automatic!</p>`;}}
+init();
 </script>
 </body>
 </html>
