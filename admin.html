@@ -3,43 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin - BuyEarn</title>
+<title>Admin - No Firebase</title>
 <style>
 body{font-family:Arial;background:#111;color:#fff;padding:15px}
 .card{background:#222;padding:14px;margin:14px 0;border-radius:12px}
 .green{background:#00c853;color:#000;padding:14px;width:100%;border:none;border-radius:8px;font-weight:900}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.prod{aspect-ratio:1/1;background:#000;border-radius:10px;overflow:hidden;border:1px solid #444}
-.prod img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
-<h2 style="color:#00c853">ADMIN - Real Upload</h2>
+<h2 style="color:#00c853">ADMIN - No Firebase - Simple</h2>
 <div class="card">
-<b>Upload will show on USER platform</b><br><br>
-<input type="file" id="file" multiple accept="image/*"><br><br>
-<button class="green" onclick="save()">Upload & Save to User Platform</button>
+<b>How to change Kente images (No Firebase needed):</b><br><br>
+1. Go to postimages.org → Upload your 4 Kente dresses<br>
+2. Copy Direct Links<br>
+3. Edit index.html → Replace 4 links inside PRODUCTS<br>
+4. Commit → Done! Shows everywhere!<br><br>
+<button class="green" onclick="location.href='index.html'">Go to User Platform</button>
 </div>
-<div class="card">
-<b>Saved Pictures - 4 Square Preview:</b>
-<div class="grid" id="list"></div>
-<button onclick="if(confirm('Clear?')){localStorage.setItem('buyearn_pics','[]');render();}" style="background:#ff3d00;color:#fff;padding:12px;width:100%;border:none;border-radius:8px;margin-top:10px">Clear All</button>
-</div>
-<div class="card" style="text-align:center"><a href="index.html" style="color:#00c853">Go to User - See Your Kente Dress</a></div>
-<script>
-let pics = JSON.parse(localStorage.getItem('buyearn_pics')||'[]');
-function render(){ let l=document.getElementById('list'); l.innerHTML=''; if(pics.length==0){l.innerHTML='No pictures';return;} pics.forEach(p=>{l.innerHTML+=`<div class="prod"><img src="${p}"></div>`}); }
-function save(){
- let files=document.getElementById('file').files;
- if(files.length==0){alert('Choose file first');return;}
- let count=0;
- for(let f of files){
-  let r=new FileReader();
-  r.onload=function(e){ pics.push(e.target.result); localStorage.setItem('buyearn_pics', JSON.stringify(pics)); count++; render(); if(count==files.length) alert(count+' Saved! Now go to User platform - Kente will show in 4 square!'); };
-  r.readAsDataURL(f);
- }
-}
-render();
-</script>
 </body>
 </html>
