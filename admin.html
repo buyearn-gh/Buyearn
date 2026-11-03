@@ -3,42 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://js.paystack.co/v1/inline.js"></script>
-<title>BuyEarn Ghana</title>
+<title>Admin - BuyEarn</title>
 <style>
-body{font-family:Arial;background:#0a0a0a;color:#fff;margin:0}
-.top{background:#000;padding:16px;text-align:center;border-bottom:3px solid #00c853}
-.green{background:#00c853;color:#000;padding:16px;border:none;width:100%;font-weight:900;border-radius:10px;font-size:18px}
-.card{background:#1a1a1a;margin:12px;padding:14px;border-radius:14px;border:1px solid #333}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.prod{background:#000;border-radius:14px;overflow:hidden;border:1px solid #444;aspect-ratio:1/1;display:flex;flex-direction:column}
-.prod img{width:100%;height:78%;object-fit:cover}
-.prod button{width:100%;height:22%;background:#00c853;color:#000;border:none;font-weight:900}
+body{font-family:Arial;background:#111;color:#fff;padding:15px}
+.card{background:#222;padding:14px;margin:14px 0;border-radius:12px}
+.green{background:#00c853;color:#000;padding:14px;width:100%;border:none;border-radius:8px;font-weight:900}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.prod{aspect-ratio:1/1;background:#000;border-radius:10px;overflow:hidden;border:1px solid #444}
+.prod img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
-<div class="top">
-<h2 style="color:#00c853;margin:0">BuyEarn Ghana - 299 GHS</h2>
-<div id="status" style="margin:10px 0"></div>
-<button class="green" onclick="payNow()">🔒 PAY 299 GHS NOW</button>
+<h2 style="color:#00c853">ADMIN - Real Upload</h2>
+<div class="card">
+<b>Upload will show on USER platform</b><br><br>
+<input type="file" id="file" multiple accept="image/*"><br><br>
+<button class="green" onclick="save()">Upload & Save to User Platform</button>
 </div>
 <div class="card">
-<h3>👍 Like Tasks - 4 Square</h3>
-<div class="grid" id="tasks"></div>
+<b>Saved Pictures - 4 Square Preview:</b>
+<div class="grid" id="list"></div>
+<button onclick="if(confirm('Clear?')){localStorage.setItem('buyearn_pics','[]');render();}" style="background:#ff3d00;color:#fff;padding:12px;width:100%;border:none;border-radius:8px;margin-top:10px">Clear All</button>
 </div>
-<div class="card" style="text-align:center"><a href="admin.html" style="color:#00c853">Admin</a></div>
+<div class="card" style="text-align:center"><a href="index.html" style="color:#00c853">Go to User - See Your Kente Dress</a></div>
 <script>
-let paid = localStorage.getItem('buyearn_paid')==='yes';
-function render(){
- let pics = JSON.parse(localStorage.getItem('buyearn_pics')||'[]');
- document.getElementById('status').innerHTML = paid ? '✅ PAID' : '❌ Not Paid - '+pics.length+' products';
- let t=document.getElementById('tasks');
- if(pics.length==0){ t.innerHTML='<p style="color:#ff0">No products yet. Go to Admin and Upload your Kente dress, then come back here.</p>'; return; }
- t.innerHTML='';
- pics.forEach(p=>{ t.innerHTML+=`<div class="prod"><img src="${p}"><button onclick="like()">👍 Like</button></div>`; });
+let pics = JSON.parse(localStorage.getItem('buyearn_pics')||'[]');
+function render(){ let l=document.getElementById('list'); l.innerHTML=''; if(pics.length==0){l.innerHTML='No pictures';return;} pics.forEach(p=>{l.innerHTML+=`<div class="prod"><img src="${p}"></div>`}); }
+function save(){
+ let files=document.getElementById('file').files;
+ if(files.length==0){alert('Choose file first');return;}
+ let count=0;
+ for(let f of files){
+  let r=new FileReader();
+  r.onload=function(e){ pics.push(e.target.result); localStorage.setItem('buyearn_pics', JSON.stringify(pics)); count++; render(); if(count==files.length) alert(count+' Saved! Now go to User platform - Kente will show in 4 square!'); };
+  r.readAsDataURL(f);
+ }
 }
-function like(){ if(!paid){alert('Pay 299 first');return;} alert('Liked +0.20 GHS'); }
-function payNow(){ PaystackPop.setup({key:'pk_test_5e1f462e255725f9845d892e519636bc1a699da8',email:'user'+Date.now()+'@buyearn.com',amount:29900,currency:'GHS',callback:function(r){localStorage.setItem('buyearn_paid','yes');location.reload();},onClose:function(){}}).openIframe(); }
 render();
 </script>
 </body>
