@@ -3,55 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin - BuyEarn 4 Square</title>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<title>BuyEarn Ghana</title>
 <style>
-body{font-family:Arial;background:#111;color:#fff;margin:0;padding:15px}
-.card{background:#222;padding:14px;margin:14px 0;border-radius:12px;border:1px solid #333}
-.green{background:#00c853;color:#000;padding:14px;width:100%;border:none;border-radius:8px;font-weight:900;font-size:16px}
-.red{background:#ff3d00;color:#fff;padding:14px;width:100%;border:none;border-radius:8px;margin-top:10px;font-weight:bold}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.prod{aspect-ratio:1/1;background:#000;border-radius:10px;overflow:hidden;border:1px solid #444}
-.prod img{width:100%;height:100%;object-fit:cover}
-input[type=file]{background:#000;padding:10px;border-radius:8px;width:90%}
+body{font-family:Arial;background:#0a0a0a;color:#fff;margin:0}
+.top{background:#000;padding:16px;text-align:center;border-bottom:3px solid #00c853}
+.green{background:#00c853;color:#000;padding:16px;border:none;width:100%;font-weight:900;border-radius:10px;font-size:18px}
+.card{background:#1a1a1a;margin:12px;padding:14px;border-radius:14px;border:1px solid #333}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prod{background:#000;border-radius:14px;overflow:hidden;border:1px solid #444;aspect-ratio:1/1;display:flex;flex-direction:column}
+.prod img{width:100%;height:78%;object-fit:cover}
+.prod button{width:100%;height:22%;background:#00c853;color:#000;border:none;font-weight:900}
 </style>
 </head>
 <body>
-<h2 style="color:#00c853">ADMIN - BuyEarn Ghana</h2>
-
+<div class="top">
+<h2 style="color:#00c853;margin:0">BuyEarn Ghana - 299 GHS</h2>
+<div id="status" style="margin:10px 0"></div>
+<button class="green" onclick="payNow()">🔒 PAY 299 GHS NOW</button>
+</div>
 <div class="card">
-<b>Note:</b> User platform now uses FIXED_PICS inside index.html code - Same on phone + laptop! To change pictures, edit FIXED_PICS links in index.html!
-<br><br>
-<b>Quick Test Upload (Will show in Admin preview only - local):</b><br><br>
-<input type="file" id="file" multiple accept="image/*"><br><br>
-<button class="green" onclick="preview()">Preview as 4 Square</button>
-<div class="grid" id="preview"></div>
+<h3>👍 Like Tasks - 4 Square</h3>
+<div class="grid" id="tasks"></div>
 </div>
-
-<div class="card">
-<b>Cashout Approval - FRIDAY ONLY - REAL MONEY LOGIC</b><br>
-20 Gross = 18 Net (You keep 2)<br>
-50 Gross = 45 Net (You keep 5)<br>
-500 Gross = 450 Net (You keep 50)<br><br>
-<button class="green" onclick="alert('Batch Approved! Send MoMo: 18, 45, 450 Net to users - You keep fees!')">✅ Approve All FRIDAY Cashouts</button>
-</div>
-
-<div class="card" style="text-align:center">
-<a href="index.html" style="color:#00c853;font-weight:bold">Back to User Platform</a><br><br>
-<button onclick="localStorage.setItem('buyearn_paid','yes');alert('You are now PAID for testing - Go to User platform!')" style="background:#333;color:#fff;padding:10px;border-radius:8px;border:none;width:100%">Make Me PAID (Test)</button>
-<button class="red" onclick="localStorage.clear();alert('Cleared!');location.reload()">Clear All Data</button>
-</div>
-
+<div class="card" style="text-align:center"><a href="admin.html" style="color:#00c853">Admin</a></div>
 <script>
-function preview(){
- let files=document.getElementById('file').files;
- let p=document.getElementById('preview'); p.innerHTML='';
- if(files.length==0){ alert('Choose files'); return; }
- for(let f of files){
-   let r=new FileReader();
-   r.onload=function(e){ p.innerHTML+=`<div class="prod"><img src="${e.target.result}"></div>`; };
-   r.readAsDataURL(f);
- }
+let paid = localStorage.getItem('buyearn_paid')==='yes';
+function render(){
+ let pics = JSON.parse(localStorage.getItem('buyearn_pics')||'[]');
+ document.getElementById('status').innerHTML = paid ? '✅ PAID' : '❌ Not Paid - '+pics.length+' products';
+ let t=document.getElementById('tasks');
+ if(pics.length==0){ t.innerHTML='<p style="color:#ff0">No products yet. Go to Admin and Upload your Kente dress, then come back here.</p>'; return; }
+ t.innerHTML='';
+ pics.forEach(p=>{ t.innerHTML+=`<div class="prod"><img src="${p}"><button onclick="like()">👍 Like</button></div>`; });
 }
+function like(){ if(!paid){alert('Pay 299 first');return;} alert('Liked +0.20 GHS'); }
+function payNow(){ PaystackPop.setup({key:'pk_test_5e1f462e255725f9845d892e519636bc1a699da8',email:'user'+Date.now()+'@buyearn.com',amount:29900,currency:'GHS',callback:function(r){localStorage.setItem('buyearn_paid','yes');location.reload();},onClose:function(){}}).openIframe(); }
+render();
 </script>
 </body>
 </html>
