@@ -4,46 +4,57 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://js.paystack.co/v1/inline.js"></script>
-<title>BuyEarn Ghana - REAL KENTE 4 SQUARE</title>
+<title>BuyEarn Ghana - No Firebase</title>
 <style>
 body{font-family:Arial;background:#0a0a0a;color:#fff;margin:0}
 .top{background:#000;padding:16px;text-align:center;border-bottom:3px solid #00c853}
-.green{background:#00c853;color:#000;padding:16px;border:none;width:100%;font-weight:900;border-radius:10px;font-size:18px}
+.green{background:#00c853;color:#000;padding:16px;border:none;width:100%;font-weight:900;border-radius:10px;font-size:18px;cursor:pointer}
 .card{background:#1a1a1a;margin:12px;padding:14px;border-radius:14px;border:1px solid #333}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .prod{background:#000;border-radius:14px;overflow:hidden;border:1px solid #444;aspect-ratio:1/1;display:flex;flex-direction:column}
-.prod img{width:100%;height:78%;object-fit:cover}
+.prod img{width:100%;height:78%;object-fit:cover;display:block}
 .prod button{width:100%;height:22%;background:#00c853;color:#000;border:none;font-weight:900}
 </style>
 </head>
 <body>
 <div class="top">
-<h2 style="color:#00c853;margin:0">BuyEarn Ghana - 299 GHS</h2>
-<div id="status" style="margin:10px 0"></div>
-<button class="green" onclick="payNow()">🔒 PAY 299 GHS NOW</button>
+<h2 style="color:#00c853;margin:0">BuyEarn Ghana - 299 GHS - NO Firebase</h2>
+<div id="status" style="margin:10px 0;font-weight:bold"></div>
+<button class="green" onclick="payNow()">🔒 PAY 299 GHS NOW - Paystack</button>
 </div>
 <div class="card">
 <h3>👍 Like Tasks - 4 PERFECT SQUARE - REAL KENTE</h3>
 <div class="grid" id="tasks"></div>
+<p style="font-size:11px;color:#999">No Firebase - Images are inside GitHub code - Shows on phone + laptop + both Vercel links</p>
 </div>
 <div class="card" style="text-align:center"><a href="admin.html" style="color:#00c853">Admin</a></div>
 <script>
+// === 4 KENTE IMAGES - CHANGE THESE 4 LINKS TO YOUR REAL KENTE LINKS ===
+const PRODUCTS = [
+  "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500",
+  "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500",
+  "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500",
+  "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500"
+];
 let paid = localStorage.getItem('buyearn_paid')==='yes';
 function render(){
- let t=document.getElementById('tasks');
- document.getElementById('status').innerHTML = paid ? '✅ PAID - 4 Kente loaded' : '❌ Not paid - 4 Kente loaded';
- // USE YOUR REAL KENTE IMAGE - EMBEDDED - WORKS EVERYWHERE
- const kenteImages = [
-   "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500",
-   "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500",
-   "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500",
-   "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500"
- ];
- t.innerHTML='';
- kenteImages.forEach(src=>{ t.innerHTML+=`<div class="prod"><img src="${src}"><button onclick="like()">👍 Like +0.20</button></div>`; });
+ document.getElementById('status').innerHTML = paid ? '✅ PAID MEMBER' : '❌ Not paid - 4 products loaded';
+ let t=document.getElementById('tasks'); t.innerHTML='';
+ PRODUCTS.forEach(src=>{
+   t.innerHTML+=`<div class="prod"><img src="${src}" onerror="this.src='https://via.placeholder.com/400x400?text=Kente'"><button onclick="like()">👍 Like +0.20</button></div>`;
+ });
 }
-function like(){ if(!paid){alert('Pay 299 first');return;} alert('Liked +0.20'); }
-function payNow(){ PaystackPop.setup({key:'pk_test_5e1f462e255725f9845d892e519636bc1a699da8',email:'user'+Date.now()+'@buyearn.com',amount:29900,currency:'GHS',callback:function(r){localStorage.setItem('buyearn_paid','yes');location.reload();}}).openIframe(); }
+function like(){ if(!paid){alert('Pay 299 GHS first');return;} alert('Liked! +0.20 GHS'); }
+function payNow(){
+ PaystackPop.setup({
+   key:'pk_test_5e1f462e255725f9845d892e519636bc1a699da8',
+   email:'user'+Date.now()+'@buyearn.com',
+   amount:29900,
+   currency:'GHS',
+   callback:function(r){localStorage.setItem('buyearn_paid','yes');alert('PAID! Ref: '+r.reference);location.reload();},
+   onClose:function(){}
+ }).openIframe();
+}
 render();
 </script>
 </body>
