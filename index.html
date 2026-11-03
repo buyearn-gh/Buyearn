@@ -6,70 +6,81 @@
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <title>BuyEarn Ghana - REAL 299</title>
 <style>
-body{font-family:Arial;background:#111;color:#fff;margin:0;padding-bottom:30px}
+body{font-family:Arial;background:#111;color:#fff;margin:0}
 .top{background:#000;padding:15px;text-align:center;border-bottom:2px solid #00c853}
 .green{background:#00c853;color:#000;padding:16px;border:none;width:100%;font-weight:900;border-radius:10px;font-size:18px}
 .card{background:#1e1e1e;margin:12px;padding:14px;border-radius:12px;border:1px solid #333}
-.prod img{width:100%;border-radius:10px;max-height:300px;object-fit:cover}
-.small{font-size:12px;color:#aaa}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prod{background:#000;border-radius:12px;overflow:hidden;border:1px solid #333}
+.prod img{width:100%;height:140px;object-fit:cover;display:block}
+.prod button{width:100%;padding:10px;background:#00c853;color:#000;border:none;font-weight:bold}
+.small{font-size:11px;color:#aaa;text-align:center}
 </style>
 </head>
 <body>
 <div class="top">
 <h2 style="margin:0;color:#00c853">BuyEarn Ghana - REAL 299 GHS</h2>
-<div id="status" style="margin:10px 0">Loading...</div>
-<button class="green" onclick="payNow()">🔒 PAY 299 GHS NOW - REAL (Paystack)</button>
-<p class="small">TEST MODE: Using your pk_test key - Will simulate pay</p>
+<div id="status" style="margin:8px 0">Loading...</div>
+<button class="green" onclick="payNow()">🔒 PAY 299 GHS NOW</button>
+<p class="small">Same pictures on phone + laptop - 4 square frame</p>
 </div>
 
 <div class="card">
-<h3>🔒 Your Wallet - REAL</h3>
-<div>Gross: <span id="gross">0</span> GHS | Net: <span id="net">0</span> GHS | Today: <b id="today">0/5</b></div>
+<h3>🔒 Wallet: <span id="gross">0</span> GHS Gross | <span id="net">0</span> Net | Today: <b id="today">0/5</b></h3>
 </div>
 
 <div class="card">
-<h3>👍 Like Tasks - REAL PRODUCTS</h3>
-<div id="tasks">Loading...</div>
+<h3>👍 Like Tasks - 4 SQUARE FRAME (User sees here)</h3>
+<div class="grid" id="tasks"></div>
 </div>
 
-<div class="card" style="text-align:center"><a href="admin.html" style="color:#00c853">Go to Admin - Upload Pictures</a></div>
+<div class="card" style="text-align:center">
+<a href="admin.html" style="color:#00c853">Admin</a> | 
+<button onclick="localStorage.setItem('buyearn_paid','yes');location.reload()" style="background:#333;color:#fff;padding:8px;border-radius:6px;border:none">Make PAID (Test)</button>
+</div>
 
 <script>
-let pics = JSON.parse(localStorage.getItem('buyearn_pics')||'[]');
+// === PUT YOUR 4 PICTURES HERE - THESE WILL SHOW SAME ON PHONE + LAPTOP ===
+const FIXED_PICS = [
+ "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
+ "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400",
+ "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=400",
+ "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400"
+];
+// TO USE YOUR OWN PICTURES: Replace the 4 links above with your product image links!
+// You can upload to postimages.org and copy Direct Link
+
 let paid = localStorage.getItem('buyearn_paid')==='yes';
 let likesToday = parseInt(localStorage.getItem('buyearn_today')||'0');
 let gross = parseFloat(localStorage.getItem('buyearn_gross')||'0');
 
 function render(){
- document.getElementById('status').innerHTML = paid ? '✅ PAID MEMBER - 299 GHS PAID' : '❌ Not paid yet';
+ document.getElementById('status').innerHTML = paid ? '✅ PAID MEMBER' : '❌ Not paid - Pay to like';
  document.getElementById('today').innerText = likesToday+'/5';
  document.getElementById('gross').innerText = gross.toFixed(2);
  document.getElementById('net').innerText = (gross*0.9).toFixed(2);
  let t=document.getElementById('tasks');
- if(pics.length===0){ t.innerHTML='<p style="color:#ff0">No pictures yet! Go to Admin.html and upload!</p>'; return; }
  t.innerHTML='';
- pics.forEach(p=>{ t.innerHTML+=`<div style="margin:15px 0;padding:10px;background:#000;border-radius:10px"><img src="${p}" style="width:100%;border-radius:10px"><button onclick="like()" style="background:#00c853;color:#000;padding:12px;width:100%;margin-top:8px;border-radius:8px;font-weight:bold;border:none">👍 Like +0.20 GHS</button></div>`; });
+ FIXED_PICS.forEach((p,i)=>{
+  t.innerHTML+=`<div class="prod"><img src="${p}"><button onclick="like()">👍 Like +0.20</button></div>`;
+ });
 }
 function like(){
- if(!paid){ alert('Pay 299 first!'); return; }
+ if(!paid){ alert('Pay 299 GHS first!'); return; }
  if(likesToday>=5){ alert('5 likes done today!'); return; }
  likesToday++; gross+=0.20;
- localStorage.setItem('buyearn_today', likesToday);
- localStorage.setItem('buyearn_gross', gross);
- render(); alert('Liked! +0.20 GHS');
+ localStorage.setItem('buyearn_today',likesToday);
+ localStorage.setItem('buyearn_gross',gross);
+ render(); alert('Liked +0.20 GHS!');
 }
 function payNow(){
  var handler = PaystackPop.setup({
     key: 'pk_test_5e1f462e255725f9845d892e519636bc1a699da8',
     email: 'user'+Date.now()+'@buyearn.com',
-    amount: 29900,
-    currency: 'GHS',
-    callback: function(res){
-      localStorage.setItem('buyearn_paid','yes'); paid=true; render(); alert('PAYMENT SUCCESS! Ref: '+res.reference+' You are MEMBER now!');
-    },
-    onClose: function(){ alert('You closed payment'); }
-  });
-  handler.openIframe();
+    amount: 29900, currency: 'GHS',
+    callback: function(res){ localStorage.setItem('buyearn_paid','yes'); paid=true; render(); alert('PAID SUCCESS '+res.reference); },
+    onClose: function(){}
+  }); handler.openIframe();
 }
 render();
 </script>
