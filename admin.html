@@ -1,9 +1,52 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ADMIN - Sees ALL</title><style>body{font-family:Arial;background:#111;color:#fff;padding:10px} .card{background:#222;padding:12px;border-radius:8px;margin:8px 0} .btn{width:100%;padding:12px;background:#00ff88;color:#000;border:none;border-radius:5px;font-weight:bold;margin:5px 0}</style></head><body>
-<h2>ADMIN - Sees Everything - FINAL A TO Z</h2>
-<div class="card">ADMIN (You): Upload pics, See ALL, Approve on FRIDAY ONLY - Send Net: 18, 45, 450 - Keep 10% fee</div>
-<div class="card"><b>Fee Summary (Your Profit):</b><br>20=18 (keep 2) | 50=45 (keep 5) | 2000=1800 (keep 200) | 500=450 (keep 50)</div>
-<div class="card"><b>Upload Gallery as LIKE TASKS - No Buy Button Only Like</b><br><input type="file"><button class="btn" onclick="alert('Uploaded as LIKE TASK')">Upload</button></div>
-<div class="card"><b>Approve FRIDAY ONLY - Batch approval easy</b><br>User requests 20 Gross -> You Send 18 GHS MoMo (Keep 2)<br>User requests 50 Gross -> You Send 45 GHS (Keep 5)<br>User requests 500 Gross -> You Send 450 GHS (Keep 50)<br><button class="btn" onclick="alert('Batch Approved FRIDAY ONLY - Sent Net amounts')">APPROVE ALL FRIDAY BATCH</button></div>
-<div class="card"><b>All Users - Admin sees everything (Balance + Referrals)</b><br>Private rule: User sees only own balance + own referrals names</div>
-<div class="card"><a href="index.html" style="color:#00ff88">Back to USER - User can see admin platform</a></div>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ADMIN - Sees All</title>
+<style>body{font-family:Arial;background:#111;color:#fff;padding:10px} .card{background:#222;padding:12px;border-radius:8px;margin:8px 0} .btn{width:100%;padding:12px;background:#00ff88;color:#000;border:none;border-radius:8px;font-weight:bold;margin:5px 0} .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px} .grid img{width:100%;height:120px;object-fit:cover;border-radius:6px}</style>
+</head><body>
+<h3>ADMIN - Sees Everything - Upload Pictures</h3>
+<div class="card">
+<b>Upload Gallery as LIKE TASKS (No Buy Button, Only Like)</b><br>
+<input type="file" id="file" accept="image/*" multiple>
+<button class="btn" onclick="upload()">Upload - Save so Users can see</button>
+<div id="preview" class="grid"></div>
+</div>
+
+<div class="card">
+<b>All Uploaded Pictures (User will see these)</b>
+<div id="all" class="grid"></div>
+<button class="btn" style="background:#ff4444;color:#fff" onclick="clearPics()">Clear All Pictures</button>
+</div>
+
+<div class="card">
+<b>Cashout Approval - FRIDAY ONLY Batch</b><br>
+20 Gross = 18 Net (keep 2) | 50=45 (keep 5) | 500=450 (keep 50)<br>
+<button class="btn" onclick="alert('Approved - Send Net MoMo')">Approve Batch FRIDAY</button>
+</div>
+
+<div class="card"><a href="index.html" style="color:#00ff88">Back to User</a></div>
+
+<script>
+function upload(){
+  let files=document.getElementById('file').files;
+  if(files.length===0){alert('Choose pictures');return;}
+  let pics=JSON.parse(localStorage.getItem('buyearn_pics')||'[]');
+  let count=0;
+  for(let f of files){
+    let reader=new FileReader();
+    reader.onload=e=>{
+      pics.push(e.target.result);
+      localStorage.setItem('buyearn_pics',JSON.stringify(pics));
+      count++;
+      if(count===files.length){show(); alert('Uploaded! Users will see now in index.html');}
+    };
+    reader.readAsDataURL(f);
+  }
+}
+function show(){
+  let pics=JSON.parse(localStorage.getItem('buyearn_pics')||'[]');
+  let div=document.getElementById('all');
+  div.innerHTML='';
+  pics.forEach(s=>{let i=document.createElement('img'); i.src=s; div.appendChild(i);});
+}
+function clearPics(){localStorage.removeItem('buyearn_pics'); show(); alert('Cleared');}
+show();
+</script>
 </body></html>
