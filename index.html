@@ -1,103 +1,77 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BuyEarn GH - REAL 299 GHS</title>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://js.paystack.co/v1/inline.js"></script>
+<title>BuyEarn Ghana - REAL 299</title>
 <style>
-body{font-family:Arial;background:#f5f5f5;margin:0;padding:10px}
-.card{background:#fff;padding:12px;border-radius:10px;margin:8px 0;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
-.btn{width:100%;padding:14px;background:#000;color:#fff;border:none;border-radius:8px;margin:5px 0;font-weight:bold;font-size:15px}
-.btn-green{background:#00a859} .btn:disabled{background:#ccc}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pic-card{background:#fff;border-radius:10px;padding:5px;text-align:center}
-.pic-card img{width:100%;height:140px;object-fit:cover;border-radius:8px;display:block}
-.paybox{background:#000;color:#fff;padding:15px;border-radius:10px;text-align:center;margin:10px 0}
+body{font-family:Arial;background:#111;color:#fff;margin:0;padding-bottom:30px}
+.top{background:#000;padding:15px;text-align:center;border-bottom:2px solid #00c853}
+.green{background:#00c853;color:#000;padding:16px;border:none;width:100%;font-weight:900;border-radius:10px;font-size:18px}
+.card{background:#1e1e1e;margin:12px;padding:14px;border-radius:12px;border:1px solid #333}
+.prod img{width:100%;border-radius:10px;max-height:300px;object-fit:cover}
+.small{font-size:12px;color:#aaa}
 </style>
-</head><body>
+</head>
+<body>
+<div class="top">
+<h2 style="margin:0;color:#00c853">BuyEarn Ghana - REAL 299 GHS</h2>
+<div id="status" style="margin:10px 0">Loading...</div>
+<button class="green" onclick="payNow()">🔒 PAY 299 GHS NOW - REAL (Paystack)</button>
+<p class="small">TEST MODE: Using your pk_test key - Will simulate pay</p>
+</div>
+
+<div class="card">
+<h3>🔒 Your Wallet - REAL</h3>
+<div>Gross: <span id="gross">0</span> GHS | Net: <span id="net">0</span> GHS | Today: <b id="today">0/5</b></div>
+</div>
+
+<div class="card">
+<h3>👍 Like Tasks - REAL PRODUCTS</h3>
+<div id="tasks">Loading...</div>
+</div>
+
+<div class="card" style="text-align:center"><a href="admin.html" style="color:#00c853">Go to Admin - Upload Pictures</a></div>
+
 <script>
-const PK='pk_live_0f37f02ac63223a809256075ba4fcb3315400869';
-const LIKE=0.20, MAX=5;
-function isFriday(){let d=new Date().getDay(); return d===5;}
-function net(g){return {n:g*0.9,f:g*0.1};}
-let bal=parseFloat(localStorage.getItem('b')||'0');
-let likes=parseInt(localStorage.getItem('l')||'0');
-let last=localStorage.getItem('ld')||'';
-let paid=localStorage.getItem('paid')==='yes';
-let today=new Date().toDateString();
-if(last!==today){likes=0; localStorage.setItem('l','0'); localStorage.setItem('ld',today);}
-function ui(){
-  document.getElementById('bal').innerText=bal.toFixed(2);
-  document.getElementById('net').innerText=(bal*0.9).toFixed(2);
-  document.getElementById('lc').innerText=likes+'/5';
-  document.getElementById('fr').innerText=isFriday()?'✅ FRIDAY - Cashout ACTIVE':'❌ NOT FRIDAY';
-  document.getElementById('status').innerText=paid?'✅ PAID MEMBER - 299 GHS':'❌ NOT PAID - Pay 299 GHS to unlock likes';
-  document.getElementById('joinBtn').style.display=paid?'none':'block';
-  document.getElementById('likeSection').style.display=paid?'block':'none';
-  loadPics();
+let pics = JSON.parse(localStorage.getItem('buyearn_pics')||'[]');
+let paid = localStorage.getItem('buyearn_paid')==='yes';
+let likesToday = parseInt(localStorage.getItem('buyearn_today')||'0');
+let gross = parseFloat(localStorage.getItem('buyearn_gross')||'0');
+
+function render(){
+ document.getElementById('status').innerHTML = paid ? '✅ PAID MEMBER - 299 GHS PAID' : '❌ Not paid yet';
+ document.getElementById('today').innerText = likesToday+'/5';
+ document.getElementById('gross').innerText = gross.toFixed(2);
+ document.getElementById('net').innerText = (gross*0.9).toFixed(2);
+ let t=document.getElementById('tasks');
+ if(pics.length===0){ t.innerHTML='<p style="color:#ff0">No pictures yet! Go to Admin.html and upload!</p>'; return; }
+ t.innerHTML='';
+ pics.forEach(p=>{ t.innerHTML+=`<div style="margin:15px 0;padding:10px;background:#000;border-radius:10px"><img src="${p}" style="width:100%;border-radius:10px"><button onclick="like()" style="background:#00c853;color:#000;padding:12px;width:100%;margin-top:8px;border-radius:8px;font-weight:bold;border:none">👍 Like +0.20 GHS</button></div>`; });
 }
-function pay299(){
-  let email=prompt('Enter your Email for 299 GHS receipt:');
-  if(!email){return;}
-  let handler=PaystackPop.setup({
-    key:PK,
-    email:email,
-    amount:299*100,
-    currency:'GHS',
-    ref:''+Math.floor((Math.random()*1000000000)+1),
-    onClose:function(){alert('Payment cancelled');},
-    callback:function(response){
-      localStorage.setItem('paid','yes');
-      localStorage.setItem('email',email);
-      paid=true;
-      bal+=0;
-      alert('REAL PAYMENT SUCCESS! Ref: '+response.reference+' - 299 GHS received! You are now MEMBER! Likes unlocked!');
-      ui();
-    }
+function like(){
+ if(!paid){ alert('Pay 299 first!'); return; }
+ if(likesToday>=5){ alert('5 likes done today!'); return; }
+ likesToday++; gross+=0.20;
+ localStorage.setItem('buyearn_today', likesToday);
+ localStorage.setItem('buyearn_gross', gross);
+ render(); alert('Liked! +0.20 GHS');
+}
+function payNow(){
+ var handler = PaystackPop.setup({
+    key: 'pk_test_5e1f462e255725f9845d892e519636bc1a699da8',
+    email: 'user'+Date.now()+'@buyearn.com',
+    amount: 29900,
+    currency: 'GHS',
+    callback: function(res){
+      localStorage.setItem('buyearn_paid','yes'); paid=true; render(); alert('PAYMENT SUCCESS! Ref: '+res.reference+' You are MEMBER now!');
+    },
+    onClose: function(){ alert('You closed payment'); }
   });
   handler.openIframe();
 }
-function like(){if(!paid){alert('Pay 299 GHS first!');return;} if(likes>=5){alert('5 likes done today');return;} bal+=LIKE; likes++; localStorage.setItem('b',bal); localStorage.setItem('l',likes); localStorage.setItem('ld',today); ui();}
-function cash(g){if(!paid){alert('Pay 299 first');return;} if(!isFriday()){alert('FRIDAY ONLY');return;} if(bal<g){alert('Need '+g);return;} let r=net(g); bal-=g; localStorage.setItem('b',bal); ui(); alert('CASHOUT REQUEST REAL: Gross '+g+' -> Net '+r.n+' GHS will be sent to your MoMo FRIDAY. Fee '+r.f);}
-function loadPics(){
-  let pics=JSON.parse(localStorage.getItem('buyearn_pics')||'[]');
-  let grid=document.getElementById('grid');
-  if(pics.length===0){grid.innerHTML='<p>Admin hasn't uploaded products yet. Check later.</p>'; return;}
-  grid.innerHTML='';
-  pics.forEach(src=>{
-    let div=document.createElement('div'); div.className='pic-card';
-    div.innerHTML=`<img src="${src}"><button class="btn" onclick="like()">👍 LIKE +0.20</button>`;
-    grid.appendChild(div);
-  });
-}
+render();
 </script>
-
-<div class="paybox">
-<h2 style="margin:0">BuyEarn Ghana - REAL 299 GHS</h2>
-<p id="status">Checking...</p>
-<button id="joinBtn" class="btn btn-green" onclick="pay299()">🔒 PAY 299 GHS NOW - REAL MONEY (Paystack)</button>
-<p style="font-size:12px">After payment: Like 5/day = 1 GHS/day, Referral 50, Cashout Friday 20=18 Net</p>
-</div>
-
-<div class="card">
-<h3 style="margin:0">🔒 Your Wallet - REAL</h3>
-<p>Gross: <b><span id="bal">0.00</span> GHS</b> | Net: <b><span id="net">0.00</span> GHS</b> (10% fee: 20=18, 50=45, 500=450)</p>
-<p>Today: <b id="lc">0/5</b></p>
-</div>
-
-<div id="likeSection">
-<div class="card">
-<h3 style="margin:0">👍 Like Tasks - REAL PRODUCTS</h3>
-<div id="grid" class="grid"></div>
-</div>
-</div>
-
-<div class="card">
-<h3 style="margin:0">💸 Cashout FRIDAY ONLY - REAL MoMo</h3>
-<p id="fr"></p>
-<button class="btn" onclick="cash(20)">Cashout 20 -> Get 18 Net MoMo</button>
-<button class="btn" onclick="cash(50)">Cashout 50 Referral -> Get 45 Net</button>
-<button class="btn" onclick="cash(500)">Withdraw Bonus 500 -> Get 450 Net</button>
-</div>
-
-<div class="card" style="text-align:center"><a href="admin.html">Admin - Sees All Paid Users</a></div>
-
-<script>ui();</script>
-</body></html>
+</body>
+</html>
