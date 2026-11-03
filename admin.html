@@ -1,67 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuyEarn ADMIN - Boss Only</title>
-<style>body{font-family:Arial;padding:15px;background:#111;color:#fff} .card{background:#222;padding:15px;border-radius:10px;margin:10px 0} .btn{background:#00ff88;color:#000;padding:12px;border:none;border-radius:5px;font-weight:bold;width:100%;margin:5px 0} .red{color:#ff4444;font-weight:bold}</style>
-</head>
-<body>
-<script>
-// 🔒 FINAL LOCK - NO USER CAN SEE ADMIN PLATFORM
-const role = localStorage.getItem('buyearn_role');
-if(role!=='ADMIN'){
-  alert('⛔ ACCESS DENIED! Only ADMIN can see ADMIN PLATFORM! No USER can SEE ADMIN PLATFORM!');
-  window.location.href='index.html';
-}
-function calcNet(gross){ return {net:gross*0.9, fee:gross*0.1}; }
-function logout(){ localStorage.setItem('buyearn_role','USER'); location.href='index.html'; }
-</script>
-
-<h1>🔒 BUYEARN ADMIN PANEL - BOSS ONLY</h1>
-<p class="red">NO USER CAN SEE THIS PAGE - Protected!</p>
-
-<div class="card" style="background:#fff3cd;color:#000">
-<h3>💰 YOUR PROFIT - 10% FEE ON ALL CASHOUTS</h3>
-<p>20 GHS: User gets 18 GHS Net | You keep 2 GHS</p>
-<p>50 GHS Referral: User gets 45 GHS | You keep 5 GHS</p>
-<p>500 GHS Bonus Withdraw: User gets 450 GHS | You keep 50 GHS</p>
-<p>2000 GHS Yearly: User gets 1800 GHS | You keep 200 GHS</p>
-<p><b>Total Profit Example: 100 users x 2 GHS = 200 GHS/week</b></p>
-</div>
-
-<div class="card">
-<h3>📤 ADMIN (You): Upload Gallery as LIKE TASKS</h3>
-<p>Rule: Gallery pics are LIKE TASKS. NO Buy Button, ONLY Like Button</p>
-<input type="file" id="imgUpload" accept="image/*">
-<button class="btn" onclick="alert('Uploaded! Now users see it in index.html as LIKE TASK - 0.20 GHS per like, max 5/day')">Upload Product Image</button>
-</div>
-
-<div class="card">
-<h3>✅ Approve Cashouts - FRIDAY ONLY (Batches)</h3>
-<p>Rule: Approve ONLY on FRIDAY. Send Net amounts via MoMo.</p>
-<div style="background:#000;padding:10px;border-radius:5px">
-<p>Example Requests:</p>
-<p>User A requests 20 Gross → You SEND 18 GHS MoMo → You KEEP 2 GHS</p>
-<p>User B requests 50 Gross (Referral) → You SEND 45 GHS → You KEEP 5 GHS</p>
-<p>User C requests 500 Gross (Bonus) → You SEND 450 GHS → You KEEP 50 GHS</p>
-<button class="btn" onclick="alert('Approved! Sent 18 GHS Net to user. Keep 2 GHS profit.')">APPROVE BATCH - FRIDAY ONLY</button>
-</div>
-</div>
-
-<div class="card">
-<h3>👥 All Users & Referrals (Admin sees ALL)</h3>
-<p>Admin sees: ALL Users, Their Balances, Their Referrals</p>
-<p>User sees: ONLY Own Balance + Own Referrals names (PRIVATE)</p>
-<div id="allUsers">Loading all users... (Connect to DB here)</div>
-</div>
-
-<div class="card">
-<h3>⚙️ Roles</h3>
-<p><b>ADMIN (You):</b> Upload pics, See ALL, Approve FRIDAY ONLY, Send Net</p>
-<p><b>USER:</b> Like 5/day, See OWN balance PRIVATE, See ONLY YOUR referrals, Cashout FRIDAY ONLY</p>
-<button class="btn" style="background:#ff4444;color:#fff" onclick="logout()">Logout to USER view (Test)</button>
-</div>
-
-</body>
-</html>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ADMIN - Sees ALL</title><style>body{font-family:Arial;background:#111;color:#fff;padding:10px} .card{background:#222;padding:12px;border-radius:8px;margin:8px 0} .btn{width:100%;padding:12px;background:#00ff88;color:#000;border:none;border-radius:5px;font-weight:bold;margin:5px 0}</style></head><body>
+<h2>ADMIN - Sees Everything - FINAL A TO Z</h2>
+<div class="card">ADMIN (You): Upload pics, See ALL, Approve on FRIDAY ONLY - Send Net: 18, 45, 450 - Keep 10% fee</div>
+<div class="card"><b>Fee Summary (Your Profit):</b><br>20=18 (keep 2) | 50=45 (keep 5) | 2000=1800 (keep 200) | 500=450 (keep 50)</div>
+<div class="card"><b>Upload Gallery as LIKE TASKS - No Buy Button Only Like</b><br><input type="file"><button class="btn" onclick="alert('Uploaded as LIKE TASK')">Upload</button></div>
+<div class="card"><b>Approve FRIDAY ONLY - Batch approval easy</b><br>User requests 20 Gross -> You Send 18 GHS MoMo (Keep 2)<br>User requests 50 Gross -> You Send 45 GHS (Keep 5)<br>User requests 500 Gross -> You Send 450 GHS (Keep 50)<br><button class="btn" onclick="alert('Batch Approved FRIDAY ONLY - Sent Net amounts')">APPROVE ALL FRIDAY BATCH</button></div>
+<div class="card"><b>All Users - Admin sees everything (Balance + Referrals)</b><br>Private rule: User sees only own balance + own referrals names</div>
+<div class="card"><a href="index.html" style="color:#00ff88">Back to USER - User can see admin platform</a></div>
+</body></html>
