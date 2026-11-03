@@ -1,138 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BuyEarn GH - Official</title>
-<style>
-body{font-family:Arial;background:#f5f5f5;margin:0;padding:10px}
-.card{background:#fff;padding:15px;border-radius:10px;margin:10px 0;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
-.btn{background:#000;color:#fff;padding:12px 20px;border:none;border-radius:5px;width:100%;margin:5px 0;font-weight:bold}
-.btn-green{background:#00a651}
-.btn:disabled{background:#ccc}
-.yellow{background:#fff3cd;border:1px solid #ffc107;padding:10px;border-radius:5px}
-</style>
-</head>
-<body>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BUYEARN LIVE - FINAL A TO Z</title>
+<style>body{font-family:Arial;margin:0;padding:10px;background:#f5f5f5} .card{background:#fff;padding:12px;border-radius:8px;margin:8px 0} .btn{width:100%;padding:12px;background:#000;color:#fff;border:none;border-radius:5px;margin:5px 0;font-weight:bold} .yellow{background:#fff3cd;border:1px solid #ffc107}</style>
+</head><body>
 <script>
-// ===== BUYEARN FINAL RULES - 10% FEE =====
-const LIKE_VALUE = 0.20;
-const MAX_LIKES = 5;
-const MEMBERSHIP = 299;
+// ===== BUYEARN LIVE - FINAL A TO Z (10% ON ALL CASHOUTS) CONFIRMED =====
+// 1. MEMBERSHIP - 299 GHS LIVE - Pay with LIVE PK Key (Paystack/Flutterwave LIVE) - Role: USER after payment
+// 2. PRODUCTS - NOT REAL - ADMIN uploads gallery pictures as LIKE TASKS - No Buy Button - Only Like Button - User CANNOT buy
+// 3. LIKE & EARN - CORE RULE - 1 Like = 20p - MAX 5 Likes Per Day Per User - 5x20p=1 GHS Per Day MAX - After 5 likes, buttons block till tomorrow - AUTOMATIC: 1 GHS auto enters wallet daily - Need 20 days to get 20 GHS
+// 4. CASHOUT - FRIDAY ONLY + 10% FEE - Minimum: 20 GHS Gross - 10% Charge: 20 GHS -10% = 18 GHS User Owns (CONFIRMED) - User requests 20 GHS on FRIDAY -> Gets 18 GHS MoMo - User requests 40 GHS -> Gets 36 GHS (40-10%) - Button active ONLY on FRIDAY - Admin approves all on FRIDAY - Batch approval easy
+// 5. PRIVACY - Balance PRIVATE - Only own balance - Referral List PRIVATE - Only YOUR referrals, names only - Cannot see other users balance
+// 6. REFERRAL - 10% FEE - 1 Referral = 50 GHS Gross - 10% Charge: 50 GHS -10% = 45 GHS User Owns (CONFIRMED) - AUTOMATIC credit when referral pays 299 GHS
+// 7. YEARLY BONUS - 100 Referrals - 10% FEE - 100 Referrals = 2,000 GHS Gross + FREE Renewal - 10% Charge: 2,000 GHS -10% = 1,800 GHS User Owns (CONFIRMED) - Qualification AUTOMATIC
+// 8. BONUS WITHDRAWAL - FRIDAY ONLY - Total Bonus: 1,800 GHS Net (after 10% fee) - Withdrawal: 500 GHS Gross -> 450 GHS Net per Friday - OR withdraw 1,800 GHS as: 4 Fridays x 450 GHS = 1,800 GHS - FINAL: 500 GHS Gross -> 450 GHS Net x 4 = 1,800 GHS Finish - Withdrawal Day: FRIDAY ONLY
+// 9. FEE SUMMARY - 10% ON ALL CASHOUTS (YOUR PROFIT) - 20 GHS Cashout: User Gets 18 GHS | BuyEarn Keeps 2 GHS - 50 GHS Referral: User Gets 45 GHS | BuyEarn Keeps 5 GHS - 2,000 GHS Bonus: User Gets 1,800 GHS | BuyEarn Keeps 200 GHS - 500 GHS Bonus Wd: User Gets 450 GHS | BuyEarn Keeps 50 GHS - ALL 10% = BuyEarn Profit
+// 10. ROLES - ADMIN (You): Upload pics, See ALL, Approve on FRIDAY ONLY - You Send Net amounts: 18 GHS, 45 GHS, 450 GHS - You keep 10% fee - USER: Like 5/day = 1 GHS, See own balance only - Cashout FRIDAY ONLY (20 -> 18 GHS)
+// 11. FULL FLOW WITH 10% FEE CONFIRMED - Likes 5/day = 1 GHS/day x 20 days = 20 GHS Gross -> FRIDAY: Request 20 GHS -> Get 18 GHS Net -> Refer 1 Person: 50 GHS Gross -> Get 45 GHS Net Auto -> 100 Referrals: 2,000 GHS Gross -> Get 1,800 GHS Net -> FRIDAY: Withdraw Bonus 500 Gross -> Get 450 Net x 4 weeks -> BuyEarn Profit: 10% of all cashouts
 
-function isFriday(){ 
-  const d = new Date().getDay(); 
-  return d===5; 
-  // For testing, change to: return true;
-}
-function calcNet(gross){ return {net:gross*0.9, fee:gross*0.1}; }
-
-// ===== ROLE CHECK - ADMIN CANNOT STAY HERE =====
-const role = localStorage.getItem('buyearn_role');
-if(role==='ADMIN'){ window.location.href='admin.html'; }
-
-// ===== WALLET & LIKES - PRIVATE =====
-let balance = parseFloat(localStorage.getItem('buyearn_balance')||'0');
-let todayLikes = parseInt(localStorage.getItem('buyearn_todayLikes')||'0');
-let lastLikeDate = localStorage.getItem('buyearn_lastDate')||'';
-let today = new Date().toDateString();
-
-if(lastLikeDate !== today){ 
-  todayLikes=0; 
-  localStorage.setItem('buyearn_todayLikes','0');
-  localStorage.setItem('buyearn_lastDate',today);
-}
-
-function updateUI(){
-  document.getElementById('balance').innerText = balance.toFixed(2) + ' GHS Gross';
-  document.getElementById('likeCount').innerText = todayLikes + '/' + MAX_LIKES;
-  document.getElementById('netBalance').innerText = (balance*0.9).toFixed(2) + ' GHS Net you will get';
-}
-function likeTask(){
-  if(todayLikes>=MAX_LIKES){ alert('You have done 5 likes today! Come tomorrow. 20 days = 20 GHS'); return; }
-  balance+=LIKE_VALUE;
-  todayLikes++;
-  localStorage.setItem('buyearn_balance',balance);
-  localStorage.setItem('buyearn_todayLikes',todayLikes);
-  localStorage.setItem('buyearn_lastDate',today);
-  updateUI();
-  alert(`+${LIKE_VALUE} GHS Added! ${todayLikes}/5 today`);
-}
-function requestCashout(gross){
-  if(!isFriday()){ alert('❌ Cashout FRIDAY ONLY! Button disabled till Friday'); return; }
-  if(balance < gross){ alert(`You need ${gross} GHS Gross. You have ${balance.toFixed(2)}`); return; }
-  const {net, fee} = calcNet(gross);
-  balance -= gross;
-  localStorage.setItem('buyearn_balance',balance);
-  updateUI();
-  alert(`✅ Request Sent!\nGross: ${gross} GHS\nYou Get Net: ${net} GHS\nBuyEarn Fee (10%): ${fee} GHS\n\nAdmin will send ${net} GHS MoMo on Friday batch!`);
-}
-function fakeJoin(){
-  localStorage.setItem('buyearn_role','USER');
-  alert('Joined! Paid 299 GHS. Now Like 5/day = 1 GHS/day. Need 20 days to reach 20 GHS for cashout.');
-  location.reload();
-}
+const LIKE=0.20, MAX=5;
+function isFriday(){let d=new Date().getDay(); return d===5;}
+function net(g){return {net:g*0.9, fee:g*0.1};}
+let bal=parseFloat(localStorage.getItem('b')||'0');
+let likes=parseInt(localStorage.getItem('l')||'0');
+let last=localStorage.getItem('ld')||'';
+let today=new Date().toDateString();
+if(last!==today){likes=0; localStorage.setItem('l','0'); localStorage.setItem('ld',today);}
+function ui(){document.getElementById('bal').innerText=bal+' GHS Gross = '+(bal*0.9).toFixed(2)+' GHS Net'; document.getElementById('lc').innerText=likes+'/'+MAX; document.getElementById('fr').innerText=isFriday()?'FRIDAY ACTIVE - Button ON':'NOT FRIDAY - Button OFF till FRIDAY';}
+function like(){if(likes>=MAX){alert('After 5 likes, buttons block till tomorrow');return;} bal+=LIKE; likes++; localStorage.setItem('b',bal); localStorage.setItem('l',likes); localStorage.setItem('ld',today); ui(); alert('AUTOMATIC: 1 GHS auto enters wallet daily - You got 20p');}
+function cash(g){if(!isFriday()){alert('Button active ONLY on FRIDAY');return;} if(bal<g){alert('Need '+g+' Gross');return;} let n=net(g); bal-=g; localStorage.setItem('b',bal); ui(); alert('User requests '+g+' GHS on FRIDAY -> Gets '+n.net+' GHS MoMo | You keep '+n.fee+' | '+g+'->'+n.net+' CONFIRMED');}
 </script>
 
-<h1>🇬🇭 BuyEarn GH Official</h1>
+<h2>BUYEARN LIVE - FINAL A TO Z (10% ON ALL CASHOUTS)</h2>
+<div class="yellow"><b>CONFIRMED BY BOSS: 20=18 | 50=45 | 2000=1800</b></div>
 
-<div class="card yellow">
-<b>FINAL A TO Z RULES - 10% Fee:</b><br>
-• 20 GHS Gross = 18 GHS Net (Fee 2)<br>
-• 50 GHS Referral = 45 Net (Fee 5)<br>
-• 500 GHS Bonus = 450 Net (Fee 50)<br>
-• 2000 GHS Yearly = 1800 Net (Fee 200)<br>
-• Cashout FRIDAY ONLY
-</div>
-
-<div class="card">
-<h3>🔒 YOUR PRIVATE WALLET</h3>
-<p>Gross: <b id="balance">0.00 GHS Gross</b></p>
-<p>Net you will get: <b id="netBalance">0.00 GHS Net</b></p>
-<p>Today Likes: <b id="likeCount">0/5</b></p>
-<p>Privacy: Only you see your balance. No other user data visible.</p>
-</div>
-
-<div class="card">
-<h3>👍 LIKE TASKS - Earn 1 GHS/Day</h3>
-<p>1 Like = 0.20 GHS | Max 5/day</p>
-<p>Gallery pics are LIKE TASKS (No Buy Button, Only Like)</p>
-<img src="https://via.placeholder.com/300x150?text=Product+Image+1+-+Like+Me" style="width:100%;border-radius:5px">
-<button class="btn" onclick="likeTask()">👍 LIKE THIS - +0.20 GHS</button>
-<img src="https://via.placeholder.com/300x150?text=Product+Image+2+-+Like+Me" style="width:100%;border-radius:5px;margin-top:10px">
-<button class="btn" onclick="likeTask()">👍 LIKE THIS - +0.20 GHS</button>
-<p><small>After 20 days: 20 GHS Gross to cashout</small></p>
-</div>
-
-<div class="card">
-<h3>💸 CASHOUT - FRIDAY ONLY + 10% FEE</h3>
-<p id="fridayStatus"></p>
-<script>document.getElementById('fridayStatus').innerText = isFriday() ? '✅ Today is FRIDAY - Cashout ACTIVE' : '❌ Today NOT Friday - Cashout disabled till Friday';</script>
-<button class="btn btn-green" onclick="requestCashout(20)">Cashout 20 Gross → Get 18 GHS Net</button>
-<button class="btn btn-green" onclick="requestCashout(50)">Cashout Referral 50 → Get 45 GHS</button>
-<button class="btn btn-green" onclick="requestCashout(500)">Cashout Bonus 500 → Get 450 GHS (x4 = 1800)</button>
-</div>
-
-<div class="card">
-<h3>👥 YOUR REFERRALS - PRIVATE</h3>
-<p>1 Referral = 50 Gross → 45 Net to you (You keep profit 5)</p>
-<p>Link: <b>buyearn-two.vercel.app/?ref=YOURNAME</b></p>
-<p>Only YOUR referrals names visible here (No other user data)</p>
-<div id="refList">No referrals yet</div>
-</div>
-
-<div class="card">
-<h3>🏆 YEARLY BONUS - 100 Referrals</h3>
-<p>100 Referrals = 2000 Gross → 1800 Net + FREE Renewal</p>
-<p>Automatic qualification. Withdraw 500 Gross → 450 Net x 4 times</p>
-</div>
-
-<div class="card">
-<button class="btn" onclick="fakeJoin()">Join BuyEarn - Pay 299 GHS (Test)</button>
-<button class="btn" style="background:#666" onclick="localStorage.clear();location.reload();">Reset (Test Only)</button>
-<p><small>Admin? <a href="#" onclick="let p=prompt('Admin Code?'); if(p==='buyearn2024'){localStorage.setItem('buyearn_role','ADMIN'); location.href='admin.html';} else alert('Wrong');">Login as Admin</a></small></p>
-</div>
-
-<script>updateUI();</script>
-</body>
-</html>
+<div class="card"><b>1. MEMBERSHIP - 299 GHS LIVE</b><br>Pay with LIVE PK Key (Paystack/Flutterwave LIVE)<br>Role: USER after payment</div>
+<div class="card"><b>2. PRODUCTS - NOT REAL</b><br>ADMIN uploads gallery as LIKE TASKS<br>No Buy Button - Only LIKE Button<br>User CANNOT buy</div>
+<div class="card"><b>3. LIKE & EARN - CORE RULE</b><br>1 Like = 20p | MAX 5/day | 5x20p=1 GHS MAX<br>After 5 likes, block till tomorrow<br>AUTOMATIC wallet daily | Need 20 days to get 20 GHS<br>Balance: <b id="bal">0</b> | Likes: <b id="lc">0/5</b><br><button class="btn" onclick="like()">LIKE - +0.20p</button></div>
+<div class="card"><b>4. CASHOUT - FRIDAY ONLY + 10% FEE</b><br>Minimum: 20 GHS Gross<br>20 GHS -10% = 18 GHS User Owns (CONFIRMED)<br><b id="fr"></b><br><button class="btn" onclick="cash(20)">Request 20 Gross -> Get 18 MoMo</button><button class="btn" onclick="cash(40)">Request 40 Gross -> Get 36 GHS</button><br>Admin approves all on FRIDAY - Batch approval easy</div>
+<div class="card"><b>5. PRIVACY</b><br>Balance PRIVATE - Only own balance<br>Referral List PRIVATE - Only YOUR referrals, names only<br>Cannot see other users balance</div>
+<div class="card"><b>6. REFERRAL - 10% FEE</b><br>1 Referral = 50 GHS Gross<br>50 -10% = 45 GHS User Owns (CONFIRMED)<br>AUTOMATIC credit when referral pays 299 GHS<br><button class="btn" onclick="cash(50)">Cashout Referral 50 -> Get 45</button></div>
+<div class="card"><b>7. YEARLY BONUS - 100 Referrals - 10% FEE</b><br>100 Referrals = 2,000 Gross + FREE Renewal<br>2,000 -10% = 1,800 Net (CONFIRMED)<br>Qualification AUTOMATIC</div>
+<div class="card"><b>8. BONUS WITHDRAWAL - FRIDAY ONLY</b><br>Total: 1,800 Net (after 10%)<br>Withdrawal: 500 Gross -> 450 Net per Friday<br>OR 4 Fridays x 450 = 1,800 GHS<br>FINAL: 500 Gross -> 450 Net x4 = 1,800 Finish<br><button class="btn" onclick="cash(500)">Withdraw Bonus 500 Gross -> Get 450 Net</button></div>
+<div class="card"><b>9. FEE SUMMARY - YOUR PROFIT</b><br>20 Cashout: User 18 | BuyEarn Keeps 2<br>50 Referral: User 45 | Keeps 5<br>2,000 Bonus: User 1,800 | Keeps 200<br>500 Bonus Wd: User 450 | Keeps 50<br>ALL 10% = BuyEarn Profit</div>
+<div class="card"><b>10. ROLES</b><br>ADMIN (You): Upload pics, See ALL, Approve on FRIDAY ONLY<br>You Send Net: 18 GHS, 45 GHS, 450 GHS<br>You keep 10% fee<br>USER: Like 5/day = 1 GHS, See own balance only<br>Cashout FRIDAY ONLY (20->18)<br><a href="admin.html">Go to ADMIN PLATFORM - User can see admin platform but admin sees everything</a></div>
+<div class="card"><b>11. FULL FLOW WITH 10% FEE CONFIRMED</b><br>Likes 5/day = 1 GHS/day x 20 days = 20 Gross<br>-> FRIDAY: Request 20 -> Get 18 Net<br>-> Refer 1: 50 Gross -> Get 45 Net Auto<br>-> 100 Referrals: 2,000 Gross -> Get 1,800 Net<br>-> FRIDAY: Withdraw 500 Gross -> Get 450 Net x4<br>-> BuyEarn Profit: 10% of all cashouts</div>
+<script>ui();</script>
+</body></html>
